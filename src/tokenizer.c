@@ -3,6 +3,7 @@
 
 #include "inc/tokenizer.h"
 #include "inc/tokenizer_config.h"
+#include "inc/dbg.h"
 
 token_t **tokenizer__string(const token_config_t *config, const char *str)
 {
@@ -14,7 +15,9 @@ token_t **tokenizer__string(const token_config_t *config, const char *str)
         for (j = 0; config->check_functions[j]; j++) {
             if (config->check_functions[j](0, str[i])) {
                 tokens = realloc(tokens, sizeof(token_t) * ++size);
+                check_mem(tokens);
                 tokens[size - 2] = malloc(sizeof(token_t));
+                check_mem(tokens[size - 2]);
 
                 token = tokens[size - 2];
                 token->col = i;
@@ -24,6 +27,7 @@ token_t **tokenizer__string(const token_config_t *config, const char *str)
 
                 for (pos = 0; config->check_functions[j](pos, str[i]); pos++, i++) {
                     token->value = realloc(token->value, sizeof(char) * (pos + 2));
+                    check_mem(token->value);
                     token->value[pos] = '\0';
                     if (str[i] == '\\') {
                         if (str[i + 1] == 'n') {
@@ -50,6 +54,9 @@ token_t **tokenizer__string(const token_config_t *config, const char *str)
     tokens[size - 1] = NULL;
 
     return tokens;
+
+    error:
+    return NULL;
 }
 
 void tokenizer__clean_tokens(token_t **tokens)
