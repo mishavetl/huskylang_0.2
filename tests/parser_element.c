@@ -1,6 +1,6 @@
 #include <criterion/criterion.h>
-#include "../src/inc/parser.h"
-#include "../src/inc/tokenizer.h"
+#include "parser.h"
+#include "tokenizer.h"
 
 Test(parser_element, new__correctly_sets_enum_field) {
     token_t token;

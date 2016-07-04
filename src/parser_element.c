@@ -1,5 +1,5 @@
-#include "inc/list.h"
-#include "inc/parser_element.h"
+#include "list.h"
+#include "parser_element.h"
 
 INIT_LIST(parser_element, parser_element_t *);
 

@@ -1,6 +1,6 @@
 #include <criterion/criterion.h>
-#include "../src/inc/tokenizer.h"
-#include "../src/inc/tokenizer_config.h"
+#include "tokenizer.h"
+#include "tokenizer_config.h"
 
 token_t **tokens;
 extern token_config_t token_config;

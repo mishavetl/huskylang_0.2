@@ -1,5 +1,5 @@
 #include <criterion/criterion.h>
-#include "../src/inc/tokenizer_config.h"
+#include "tokenizer_config.h"
 
 
 Test(tokenizer, generate_config__generates_all_token_check_functions) {

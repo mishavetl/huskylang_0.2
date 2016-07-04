@@ -2,7 +2,7 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "inc/tokenizer_config.h"
+#include "tokenizer_config.h"
 
 #define DELIMITERS ":,()"
 #define SPACE " \t"

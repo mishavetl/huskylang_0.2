@@ -1,6 +1,6 @@
 #include <criterion/criterion.h>
-#include "../src/inc/list.h"
-#include "../src/inc/dbg.h"
+#include "list.h"
+#include "dbg.h"
 
 typedef struct {
     const char *s;

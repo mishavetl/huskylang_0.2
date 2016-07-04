@@ -1,9 +1,8 @@
 #include <stdlib.h>
 #include <string.h>
-
-#include "inc/tokenizer.h"
-#include "inc/tokenizer_config.h"
-#include "inc/dbg.h"
+#include "tokenizer.h"
+#include "tokenizer_config.h"
+#include "dbg.h"
 
 token_t **tokenizer__string(const token_config_t *config, const char *str)
 {

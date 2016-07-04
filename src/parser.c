@@ -1,8 +1,8 @@
 #include <string.h>
-#include "inc/list.h"
-#include "inc/parser_element.h"
-#include "inc/parser.h"
-#include "inc/dbg.h"
+#include "list.h"
+#include "parser_element.h"
+#include "parser.h"
+#include "dbg.h"
 
 #define DELIMITERS ",:"
 #define PRIORITY_START "("

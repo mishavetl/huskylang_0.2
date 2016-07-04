@@ -1,7 +1,7 @@
 #include <stdio.h>
-#include "inc/tokenizer.h"
-#include "inc/parser.h"
-#include "inc/parser_element.h"
+#include "tokenizer.h"
+#include "parser.h"
+#include "parser_element.h"
 
 int main(void)
 {
