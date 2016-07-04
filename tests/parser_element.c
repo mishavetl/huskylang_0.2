@@ -2,7 +2,7 @@
 #include "../src/inc/parser.h"
 #include "../src/inc/tokenizer.h"
 
-Test(parser, parser_element__new__correctly_sets_enum_field) {
+Test(parser_element, new__correctly_sets_enum_field) {
     token_t token;
     parser_element_node_t parser_elem;
     parser_element_t *elem;
@@ -16,7 +16,7 @@ Test(parser, parser_element__new__correctly_sets_enum_field) {
     parser_element__clean(elem);
 }
 
-Test(parser, parser_element__new__correctly_sets_union_field) {
+Test(parser_element, new__correctly_sets_union_field) {
     token_t token;
     parser_element_node_t parser_elem;
     parser_element_t *elem;

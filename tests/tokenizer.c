@@ -105,3 +105,32 @@ Test(tokenizer, string__works_without_spaces, .fini = teardown) {
      cr_assert_str_eq(tokens[6]->value, "bar");
      cr_assert_eq(tokens[6]->type, tid_atom);
 }
+
+Test(tokenizer, string__tokenizes_brackets_as_delimeters, .fini = teardown) {
+    tokens = tokenizer__string(&token_config, "1, (2, 3), 5");
+
+    cr_assert_str_eq(tokens[0]->value, "1");
+    cr_assert_eq(tokens[0]->type, tid_num);
+    cr_assert_str_eq(tokens[1]->value, ",");
+    cr_assert_eq(tokens[1]->type, tid_del);
+
+    cr_assert_str_eq(tokens[2]->value, "(");
+    cr_assert_eq(tokens[2]->type, tid_del);
+
+    cr_assert_str_eq(tokens[3]->value, "2");
+    cr_assert_eq(tokens[3]->type, tid_num);
+    cr_assert_str_eq(tokens[4]->value, ",");
+    cr_assert_eq(tokens[4]->type, tid_del);
+
+    cr_assert_str_eq(tokens[5]->value, "3");
+    cr_assert_eq(tokens[5]->type, tid_num);
+
+    cr_assert_str_eq(tokens[6]->value, ")");
+    cr_assert_eq(tokens[6]->type, tid_del);
+
+    cr_assert_str_eq(tokens[7]->value, ",");
+    cr_assert_eq(tokens[7]->type, tid_del);
+
+    cr_assert_str_eq(tokens[8]->value, "5");
+    cr_assert_eq(tokens[8]->type, tid_num);
+}

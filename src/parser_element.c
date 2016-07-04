@@ -23,21 +23,30 @@ parser_element_t *parser_element__new(token_t *token, parser_element_node_t *mix
 }
 
 /**
+ * Prints specified amount of spaces to stdout
+ *
+ */
+void print_spaces(int n)
+{
+    printf("%*s", n, "");
+}
+
+/**
  * Print parser element tree
  *
  */
 void parser_element__printall(parser_element_node_t *cur, int n)
 {
     if (cur->val->type == tid_parser_mixed) {
-        printf("%.*s", n, " ");
+        print_spaces(n * 4);
         puts("[");
 
         parser_element__printall(cur->val->data.mixed, n + 1);
 
-        printf("%.*s", n, " ");
+        print_spaces(n * 4);
         printf("]");
     } else {
-        printf("%.*s", n + 1, " ");
+        print_spaces(n * 4);
         printf("%s", cur->val->data.token->value);
     }
 

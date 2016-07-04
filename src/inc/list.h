@@ -51,13 +51,13 @@ typename##_node_t *typename##_node__remove(typename##_node_t *node) { \
 } \
 \
 typename##_node_t *typename##_node__add(typename##_node_t *head1, typename##_node_t *head2) { \
-    typename##_node_t *next; \
+    typename##_node_t *last; \
     typename##_node_t *head3 = head1; \
     while (head1) { \
-        next = head1->next; \
-        typename##_node__append_before(head2, head1); \
-        head1 = next; \
+        last = head1; \
+        head1 = head1->next; \
     } \
+    typename##_node__append_before(head2, last); \
     \
     return head3; \
 } \

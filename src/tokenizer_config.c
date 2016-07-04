@@ -4,7 +4,7 @@
 
 #include "inc/tokenizer_config.h"
 
-#define DELIMITERS ":,"
+#define DELIMITERS ":,()"
 #define SPACE " \t"
 
 TOKENS

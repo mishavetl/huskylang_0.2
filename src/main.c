@@ -9,7 +9,7 @@ int main(void)
     token_config_t token_config;
 
     tokenizer__generate_config(&token_config);
-    tokens = tokenizer__string(&token_config, "1 + 2");
+    tokens = tokenizer__string(&token_config, "1 * (1 * 2), (1 + (1 * 2)), 3");
 
     parser_element_node_t *head = parser__parse(tokens);
     parser_element__printall(head, 0);
