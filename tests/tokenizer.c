@@ -115,7 +115,7 @@ Test(tokenizer, string__tokenizes_brackets_as_delimeters, .fini = teardown) {
     cr_assert_eq(tokens[1]->type, tid_del);
 
     cr_assert_str_eq(tokens[2]->value, "(");
-    cr_assert_eq(tokens[2]->type, tid_del);
+    cr_assert_eq(tokens[2]->type, tid_prior_start);
 
     cr_assert_str_eq(tokens[3]->value, "2");
     cr_assert_eq(tokens[3]->type, tid_num);
@@ -126,7 +126,7 @@ Test(tokenizer, string__tokenizes_brackets_as_delimeters, .fini = teardown) {
     cr_assert_eq(tokens[5]->type, tid_num);
 
     cr_assert_str_eq(tokens[6]->value, ")");
-    cr_assert_eq(tokens[6]->type, tid_del);
+    cr_assert_eq(tokens[6]->type, tid_prior_end);
 
     cr_assert_str_eq(tokens[7]->value, ",");
     cr_assert_eq(tokens[7]->type, tid_del);

@@ -1,12 +1,45 @@
 #ifndef _PARSER_H
 #define _PARSER_H
 
-#include "list.h"
 #include "tokenizer.h"
-#include "parser_element.h"
 
-parser_element_node_t *parser__funcall(parser_element_node_t *cur);
-parser_element_node_t *parser__parse(token_t **tokens);
-parser_element_node_t *parser__tokens_to_list(token_t **tokens);
+#define EMPTY_MAPV -1
+#define TERMINATE_MAPV -2
+
+/**
+ * Type of map values
+ *
+ */
+typedef int mapv_t;
+
+/**
+ * Function Call Tree structure
+ *
+ * @author mishavetl
+ *
+ * @member tokens (an array of tokens)
+ * @member map ({{1, 2}, NULL, {3}, NULL})
+ *
+ */
+typedef struct call_tree {
+    token_t **tokens;
+    mapv_t **map;
+    size_t size;
+} call_tree_t;
+
+/**
+ * Constructs a call tree
+ *
+ * @author mishavetl
+ *
+ * @param call_tree (pointer to an instance of the call_tree)
+ * @param tokens (an array of tokens)
+ * @param i (index of token to start from; at first call have to be 0)
+ *
+ * @ret (status of the parse -1 for error, 0 for success)
+ *
+ */
+int parser__funcall(call_tree_t *call_tree, token_t **tokens, mapv_t i);
+// call_tree_t *parser__parse(token_t **tokens);
 
 #endif

@@ -1,199 +1,265 @@
 #include <criterion/criterion.h>
-#include "parser.h"
 #include "tokenizer.h"
-#include "tokenizer_config.h"
+#include "parser.h"
+#include "memory.h"
+#include "dbg.h"
 
-#define INIT(query) \
-    token_config_t config; \
-    tokenizer__generate_config(&config); \
-    token_t **tokens = tokenizer__string(&config, query); \
-    parser_element_node_t *head = parser__tokens_to_list(tokens);
+Test(parser, funcall__typical_function_call) {
+    call_tree_t tree;
 
-#define FINI() \
-    parser_element__cleanall(head); \
-    tokenizer__clean_tokens(tokens);
+    static token_t funname = {.value = "+", .type = tid_atom};
+    static token_t arg1 = {.value = "1", .type = tid_num};
+    static token_t arg2 = {.value = "2", .type = tid_num};
+    static token_t del = {.value = ",", .type = tid_del};
 
-Test(parser, tokens_to_list__converts_simple_sequence_of_integers_separated_by_a_comma_to_a_list) {
-    INIT("1, 2, 3");
+    token_t *tokens[] = {
+        &funname,
+        &arg1,
+        &del,
+        &arg2,
+        NULL
+    };
 
-    parser_element_node_t *mixed = head->val->data.mixed;
+    cr_assert_eq(parser__funcall(&tree, tokens, 0), 0, "Status.");
+    cr_assert_arr_eq(tree.tokens, tokens, sizeof(tokens), "Tree tokens and passed tokens equality.");
 
-    cr_assert_str_eq(mixed->val->data.token->value, "1");
-    cr_assert_str_eq(mixed->next->val->data.token->value, "2");
-    cr_assert_str_eq(mixed->next->next->val->data.token->value, "3");
-    cr_assert_eq(mixed->next->next->next, NULL);
+    cr_assert_eq(tree.map[0][0], EMPTY_MAPV);
+    cr_assert_eq(tree.map[0][1], EMPTY_MAPV);
+    cr_assert_eq(tree.map[0][2], 1);
+    cr_assert_eq(tree.map[0][3], 3);
+    cr_assert_null(tree.map[1]);
+    cr_assert_null(tree.map[2]);
+    cr_assert_null(tree.map[3]);
 
-    FINI();
+    FREE(tree.map[0]);
+    FREE(tree.map);
 }
 
-Test(parser, tokens_to_list__converts_a_sequence_of_integers_separated_by_a_comma_with_brackets_to_a_list) {
-    INIT("1, (2, 3), 5");
+Test(parser, funcall__only_one_arg) {
+    call_tree_t tree;
 
-    parser_element_node_t *mixed = head->val->data.mixed;
+    static token_t funname = {.value = "+", .type = tid_atom};
+    static token_t arg1 = {.value = "1", .type = tid_num};
 
-    cr_assert_str_eq(mixed->val->data.token->value, "1");
+    token_t *tokens[] = {
+        &funname,
+        &arg1,
+        NULL
+    };
 
-    cr_assert_str_eq(mixed->next->val->data.mixed->val->data.mixed->val->data.token->value, "2");
-    cr_assert_str_eq(mixed->next->val->data.mixed->val->data.mixed->next->val->data.token->value, "3");
-    cr_assert_eq(mixed->next->val->data.mixed->val->data.mixed->next->next, NULL);
+    cr_assert_eq(parser__funcall(&tree, tokens, 0), 0, "Status.");
+    cr_assert_arr_eq(tree.tokens, tokens, sizeof(tokens), "Tree tokens and passed tokens equality.");
 
-    cr_assert_str_eq(mixed->next->next->val->data.token->value, "5");
-    cr_assert_eq(mixed->next->next->next, NULL);
+    cr_assert_eq(tree.map[0][0], EMPTY_MAPV);
+    cr_assert_eq(tree.map[0][1], EMPTY_MAPV);
+    cr_assert_eq(tree.map[0][2], 1);
+    cr_assert_null(tree.map[1]);
 
-    FINI();
+    FREE(tree.map[0]);
+    FREE(tree.map);
 }
 
-Test(parser, tokens_to_list__converts_a_function_call_with_brackets_to_a_list) {
-    INIT("(2 * 3) + 3");
+Test(parser, funcall__with_fname_located_between_two_args) {
+    call_tree_t tree;
 
-    cr_assert_str_eq(head->val->data.mixed->val->data.mixed->val->data.mixed->val->data.token->value, "2");
-    cr_assert_str_eq(head->val->data.mixed->val->data.mixed->next->val->data.mixed->val->data.token->value, "*");
-    cr_assert_str_eq(head->val->data.mixed->val->data.mixed->next->next->val->data.mixed->val->data.token->value, "3");
-    cr_assert_eq(head->val->data.mixed->val->data.mixed->next->next->next, NULL);
+    static token_t funname = {.value = "-", .type = tid_atom};
+    static token_t arg1 = {.value = "1", .type = tid_num};
+    static token_t arg2 = {.value = "2", .type = tid_num};
 
-    cr_assert_str_eq(head->next->val->data.mixed->val->data.token->value, "+");
-    cr_assert_str_eq(head->next->next->val->data.mixed->val->data.token->value, "3");
-    cr_assert_eq(head->next->next->next, NULL);
+    token_t *tokens[] = {
+        &arg1,
+        &funname,
+        &arg2,
+        NULL
+    };
 
-    FINI();
+    cr_assert_eq(parser__funcall(&tree, tokens, 0), 0, "Status.");
+    cr_assert_arr_eq(tree.tokens, tokens, sizeof(tokens), "Tree tokens and passed tokens equality.");
+
+    cr_assert_null(tree.map[0]);
+    cr_assert_eq(tree.map[1][0], EMPTY_MAPV);
+    cr_assert_eq(tree.map[1][1], 0);
+    cr_assert_eq(tree.map[1][2], 2);
+    cr_assert_null(tree.map[2]);
+
+    FREE(tree.map[1]);
+    FREE(tree.map);
 }
 
-Test(parser, tokens_to_list__converts_a_list_of_integers_with_brackets) {
-    INIT("(1, 2, 3)");
+Test(parser, funcall__with_fname_located_between_multiple_args_after_first) {
+    call_tree_t tree;
 
-    cr_assert_str_eq(head->val->data.mixed->val->data.mixed->val->data.mixed->val->data.token->value, "1");
-    cr_assert_str_eq(head->val->data.mixed->val->data.mixed->val->data.mixed->next->val->data.token->value, "2");
-    cr_assert_str_eq(head->val->data.mixed->val->data.mixed->val->data.mixed->next->next->val->data.token->value, "3");
-    cr_assert_eq(head->val->data.mixed->val->data.mixed->val->data.mixed->next->next->next, NULL);
+    static token_t funname = {.value = "-", .type = tid_atom};
+    static token_t arg1 = {.value = "1", .type = tid_num};
+    static token_t arg2 = {.value = "2", .type = tid_num};
+    static token_t arg3 = {.value = "3", .type = tid_num};
+    static token_t arg4 = {.value = "4", .type = tid_num};
+    static token_t arg5 = {.value = "5", .type = tid_num};
+    static token_t del = {.value = ",", .type = tid_del};
 
-    FINI();
+    token_t *tokens[] = {
+        &arg1,
+        &funname,
+        &arg2,
+        &del,
+        &arg3,
+        &del,
+        &arg4,
+        &del,
+        &arg5,
+        NULL
+    };
+
+    cr_assert_eq(parser__funcall(&tree, tokens, 0), 0, "Status.");
+    cr_assert_arr_eq(tree.tokens, tokens, sizeof(tokens), "Tree tokens and passed tokens equality.");
+
+    cr_assert_null(tree.map[0]);
+    cr_assert_eq(tree.map[1][0], EMPTY_MAPV);
+    cr_assert_eq(tree.map[1][1], 0);
+    cr_assert_eq(tree.map[1][2], 2);
+    cr_assert_eq(tree.map[1][3], 4);
+    cr_assert_eq(tree.map[1][4], 6);
+    cr_assert_eq(tree.map[1][5], 8);
+    cr_assert_null(tree.map[2]);
+    cr_assert_null(tree.map[3]);
+    cr_assert_null(tree.map[4]);
+    cr_assert_null(tree.map[5]);
+    cr_assert_null(tree.map[6]);
+    cr_assert_null(tree.map[7]);
+    cr_assert_null(tree.map[8]);
+
+    FREE(tree.map[1]);
+    FREE(tree.map);
 }
 
-Test(parser, tokens_to_list__converts_function_call_without_mixed_arguments_1) {
-    INIT("1, 2 + 3, 4, 5");
+Test(parser, funcall__with_fname_located_between_multiple_args_after_second) {
+    call_tree_t tree;
 
-    cr_assert_str_eq(head->val->data.mixed->val->data.token->value, "1");
-    cr_assert_str_eq(head->val->data.mixed->next->val->data.token->value, "2");
-    cr_assert_str_eq(head->next->val->data.mixed->val->data.token->value, "+");
-    cr_assert_str_eq(head->next->next->val->data.mixed->val->data.token->value, "3");
-    cr_assert_str_eq(head->next->next->val->data.mixed->next->val->data.token->value, "4");
-    cr_assert_str_eq(head->next->next->val->data.mixed->next->next->val->data.token->value, "5");
-    cr_assert_eq(head->next->next->val->data.mixed->next->next->next, NULL);
-    cr_assert_eq(head->next->next->next, NULL);
+    static token_t funname = {.value = "-", .type = tid_atom};
+    static token_t arg1 = {.value = "1", .type = tid_num};
+    static token_t arg2 = {.value = "2", .type = tid_num};
+    static token_t arg3 = {.value = "3", .type = tid_num};
+    static token_t arg4 = {.value = "4", .type = tid_num};
+    static token_t arg5 = {.value = "5", .type = tid_num};
+    static token_t del = {.value = ",", .type = tid_del};
 
-    FINI();
+    token_t *tokens[] = {
+        &arg1,
+        &del,
+        &arg2,
+        &funname,
+        &arg3,
+        &del,
+        &arg4,
+        &del,
+        &arg5,
+        NULL
+    };
+
+    cr_assert_eq(parser__funcall(&tree, tokens, 0), 0, "Status.");
+    cr_assert_arr_eq(tree.tokens, tokens, sizeof(tokens), "Tree tokens and passed tokens equality.");
+
+    cr_assert_null(tree.map[0]);
+    cr_assert_null(tree.map[1]);
+    cr_assert_null(tree.map[2]);
+    cr_assert_eq(tree.map[3][0], EMPTY_MAPV);
+    cr_assert_eq(tree.map[3][1], 0);
+    cr_assert_eq(tree.map[3][2], 2);
+    cr_assert_eq(tree.map[3][3], 4);
+    cr_assert_eq(tree.map[3][4], 6);
+    cr_assert_eq(tree.map[3][5], 8);
+    cr_assert_null(tree.map[4]);
+    cr_assert_null(tree.map[5]);
+    cr_assert_null(tree.map[6]);
+    cr_assert_null(tree.map[7]);
+    cr_assert_null(tree.map[8]);
+
+    FREE(tree.map[3]);
+    FREE(tree.map);
 }
 
-Test(parser, tokens_to_list__converts_function_call_without_mixed_arguments_2) {
-    INIT("+ 1, 2");
+Test(parser, funcall__with_fname_located_between_multiple_args_after_third) {
+    call_tree_t tree;
 
-    cr_assert_str_eq(head->val->data.mixed->val->data.token->value, "+");
-    cr_assert_str_eq(head->next->val->data.mixed->val->data.token->value, "1");
-    cr_assert_str_eq(head->next->val->data.mixed->next->val->data.token->value, "2");
-    cr_assert_eq(head->next->val->data.mixed->next->next, NULL);
-    cr_assert_eq(head->next->next, NULL);
+    static token_t funname = {.value = "-", .type = tid_atom};
+    static token_t arg1 = {.value = "1", .type = tid_num};
+    static token_t arg2 = {.value = "2", .type = tid_num};
+    static token_t arg3 = {.value = "3", .type = tid_num};
+    static token_t arg4 = {.value = "4", .type = tid_num};
+    static token_t arg5 = {.value = "5", .type = tid_num};
+    static token_t del = {.value = ",", .type = tid_del};
 
-    FINI();
+    token_t *tokens[] = {
+        &arg1,
+        &del,
+        &arg2,
+        &del,
+        &arg3,
+        &funname,
+        &arg4,
+        &del,
+        &arg5,
+        NULL
+    };
+
+    cr_assert_eq(parser__funcall(&tree, tokens, 0), 0, "Status.");
+    cr_assert_arr_eq(tree.tokens, tokens, sizeof(tokens), "Tree tokens and passed tokens equality.");
+
+    cr_assert_null(tree.map[0]);
+    cr_assert_null(tree.map[1]);
+    cr_assert_null(tree.map[2]);
+    cr_assert_null(tree.map[3]);
+    cr_assert_null(tree.map[4]);
+    cr_assert_eq(tree.map[5][0], EMPTY_MAPV);
+    cr_assert_eq(tree.map[5][1], 0);
+    cr_assert_eq(tree.map[5][2], 2);
+    cr_assert_eq(tree.map[5][3], 4);
+    cr_assert_eq(tree.map[5][4], 6);
+    cr_assert_eq(tree.map[5][5], 8);
+    cr_assert_null(tree.map[6]);
+    cr_assert_null(tree.map[7]);
+    cr_assert_null(tree.map[8]);
+
+    FREE(tree.map[5]);
+    FREE(tree.map);
 }
 
-Test(parser, tokens_to_list__converts_function_call_with_namespaced_function_name) {
-    INIT("foo:bar 1, 2");
+Test(parser, funcall__with_fname_located_between_multiple_args_before_last) {
+    call_tree_t tree;
 
-    cr_assert_str_eq(head->val->data.mixed->val->data.token->value, "foo");
-    cr_assert_str_eq(head->val->data.mixed->next->val->data.token->value, "bar");
-    cr_assert_str_eq(head->next->val->data.mixed->val->data.token->value, "1");
-    cr_assert_str_eq(head->next->val->data.mixed->next->val->data.token->value, "2");
-    cr_assert_eq(head->next->val->data.mixed->next->next, NULL);
-    cr_assert_eq(head->next->next, NULL);
+    static token_t funname = {.value = "-", .type = tid_atom};
+    static token_t arg1 = {.value = "1", .type = tid_num};
+    static token_t arg2 = {.value = "2", .type = tid_num};
+    static token_t arg3 = {.value = "3", .type = tid_num};
+    static token_t arg4 = {.value = "4", .type = tid_num};
+    static token_t del = {.value = ",", .type = tid_del};
 
-    FINI();
-}
+    token_t *tokens[] = {
+        &arg1,
+        &del,
+        &arg2,
+        &del,
+        &arg3,
+        &funname,
+        &arg4,
+        NULL
+    };
 
-Test(parser, tokens_to_list__converts_function_call_without_mixed_arguments_3) {
-    INIT("1 + 2");
+    cr_assert_eq(parser__funcall(&tree, tokens, 0), 0, "Status.");
+    cr_assert_arr_eq(tree.tokens, tokens, sizeof(tokens), "Tree tokens and passed tokens equality.");
 
-    cr_assert_str_eq(head->val->data.mixed->val->data.token->value, "1");
-    cr_assert_str_eq(head->next->val->data.mixed->val->data.token->value, "+");
-    cr_assert_str_eq(head->next->next->val->data.mixed->val->data.token->value, "2");
-    cr_assert_eq(head->next->next->next, NULL);
+    cr_assert_null(tree.map[0]);
+    cr_assert_null(tree.map[1]);
+    cr_assert_null(tree.map[2]);
+    cr_assert_null(tree.map[3]);
+    cr_assert_null(tree.map[4]);
+    cr_assert_eq(tree.map[5][0], EMPTY_MAPV);
+    cr_assert_eq(tree.map[5][1], 0);
+    cr_assert_eq(tree.map[5][2], 2);
+    cr_assert_eq(tree.map[5][3], 4);
+    cr_assert_eq(tree.map[5][4], 6);
+    cr_assert_null(tree.map[6]);
 
-    FINI();
-}
-
-Test(parser, funcall__parses_function_call_without_mixed_arguments_1) {
-    INIT("1, 2 + 3, 4, 5");
-
-    head = parser__funcall(head);
-
-    cr_assert_str_eq(head->val->data.mixed->val->data.token->value, "+");
-    cr_assert_eq(head->val->data.mixed->next, NULL);
-    cr_assert_str_eq(head->next->val->data.mixed->val->data.token->value, "1");
-    cr_assert_str_eq(head->next->val->data.mixed->next->val->data.token->value, "2");
-    cr_assert_str_eq(head->next->val->data.mixed->next->next->val->data.token->value, "3");
-    cr_assert_str_eq(head->next->val->data.mixed->next->next->next->val->data.token->value, "4");
-    cr_assert_str_eq(head->next->val->data.mixed->next->next->next->next->val->data.token->value, "5");
-    cr_assert_eq(head->next->val->data.mixed->next->next->next->next->next, NULL);
-    cr_assert_eq(head->next->next, NULL);
-
-    FINI();
-}
-
-Test(parser, funcall__parses_function_call_without_mixed_arguments_2) {
-    INIT("1 + 2");
-
-    head = parser__funcall(head);
-
-    cr_assert_str_eq(head->val->data.mixed->val->data.token->value, "+");
-    cr_assert_eq(head->val->data.mixed->next, NULL);
-    cr_assert_str_eq(head->next->val->data.mixed->val->data.token->value, "1");
-    cr_assert_str_eq(head->next->val->data.mixed->next->val->data.token->value, "2");
-    cr_assert_eq(head->next->val->data.mixed->next->next, NULL);
-    cr_assert_eq(head->next->next, NULL);
-
-    FINI();
-}
-
-Test(parser, funcall__parses_function_call_with_namespaced_function_name) {
-    INIT("1 foo:bar 2");
-
-    head = parser__funcall(head);
-
-    cr_assert_str_eq(head->val->data.mixed->val->data.token->value, "foo");
-    cr_assert_str_eq(head->val->data.mixed->next->val->data.token->value, "bar");
-    cr_assert_str_eq(head->next->val->data.mixed->val->data.token->value, "1");
-    cr_assert_str_eq(head->next->val->data.mixed->next->val->data.token->value, "2");
-    cr_assert_eq(head->next->val->data.mixed->next->next, NULL);
-    cr_assert_eq(head->next->next, NULL);
-
-    FINI();
-}
-
-Test(parser, funcall__parses_function_call_with_nested_function_calls_and_brackets) {
-    INIT("* 1, (1 + 2), 2, (3 + 3)");
-
-    head = parser__funcall(head);
-
-    cr_assert_str_eq(head->val->data.mixed->val->data.token->value, "*");
-
-    cr_assert_str_eq(head->next->val->data.mixed->val->data.token->value, "1");
-
-    cr_assert_str_eq(head->next->val->data.mixed->next->val->data.mixed->val->data.mixed->val->data.token->value, "+");
-    cr_assert_str_eq(
-        head->next->val->data.mixed->next->val->data.mixed->next->val->data.mixed->val->data.token->value, "1"
-    );
-    cr_assert_str_eq(
-        head->next->val->data.mixed->next->val->data.mixed->next->val->data.mixed->next->val->data.token->value, "2"
-    );
-
-    cr_assert_str_eq(head->next->val->data.mixed->next->next->val->data.token->value, "2");
-
-    cr_assert_str_eq(head->next->val->data.mixed->next->next->next->val->data.mixed->val->data.mixed->val->data.token->value, "+");
-    cr_assert_str_eq(
-        head->next->val->data.mixed->next->next->next->val->data.mixed->next->val->data.mixed->val->data.token->value, "3"
-    );
-    cr_assert_str_eq(
-        head->next->val->data.mixed->next->next->next->val->data.mixed->next->val->data.mixed->next->val->data.token->value, "3"
-    );
-
-    FINI();
+    FREE(tree.map[5]);
+    FREE(tree.map);
 }
