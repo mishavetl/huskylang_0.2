@@ -6,11 +6,9 @@
 int parser__funcall(call_tree_t *call_tree, token_t **tokens, mapv_t i)
 {
     mapv_t size = 0;
-    mapv_t *args = malloc(sizeof(mapv_t) * ++size);
+    mapv_t *args = NULL;
     mapv_t i_start = i, fname_i = EMPTY_MAPV, fname_arg_i;
     int possible_fname = 1;
-
-    args[size - 1] = EMPTY_MAPV;
 
     call_tree->tokens = tokens;
     call_tree->map = malloc(sizeof(mapv_t *) * (i + 1));

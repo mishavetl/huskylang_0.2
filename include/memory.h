@@ -9,7 +9,7 @@
  * @param ptr (just a pointer)
  *
  */
-#define FREE(ptr) if (ptr) free(ptr);
+#define FREE(ptr) if (ptr) { free(ptr); ptr = NULL; }
 
 
 #endif

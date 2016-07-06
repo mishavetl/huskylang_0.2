@@ -11,12 +11,9 @@ void print_tree(const call_tree_t *tree, mapv_t i)
 
     for (; !tree->map[i]; i++);
 
-    printf("(%s%s%s ",
-        tree->tokens[i]->value,
-        tree->map[i][0] == EMPTY_MAPV ? "" : ":",
-        tree->map[i][0] == EMPTY_MAPV ? "" : tree->tokens[tree->map[i][0]]->value);
+    printf("(%s ", tree->tokens[i]->value);
 
-    for (j = 1; tree->map[i][j] != TERMINATE_MAPV; j++) {
+    for (j = 0; tree->map[i][j] != TERMINATE_MAPV; j++) {
         m = tree->map[i][j];
 
         if (m == EMPTY_MAPV) continue;
@@ -34,10 +31,12 @@ void clean(call_tree_t *tree, token_t **tokens)
     int i;
 
     if (tree) {
-        for (i = 0; i < tree->size; i++) {
-            FREE(tree->map[i]);
+        if (tree->map) {
+            for (i = 0; i < tree->size; i++) {
+                FREE(tree->map[i]);
+            }
+            FREE(tree->map);
         }
-        FREE(tree->map);
     }
 
     tokenizer__clean_tokens(tokens);
