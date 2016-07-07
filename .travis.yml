@@ -1,0 +1,10 @@
+language: c
+script: make configure && make && make test
+
+notifications:
+  email:
+    - mishavetl@gmail.com
+
+compiler:
+  - clang
+  - gcc
