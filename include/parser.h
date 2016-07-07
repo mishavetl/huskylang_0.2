@@ -34,12 +34,11 @@ typedef struct call_tree {
  *
  * @param call_tree (pointer to an instance of the call_tree)
  * @param tokens (an array of tokens)
- * @param i (index of token to start from; at first call have to be 0)
  *
- * @ret (status of the parse -1 for error, 0 for success)
+ * @ret (status of the parse -1 for error, >= 0 for success)
  *
  */
-int parser__funcall(call_tree_t *call_tree, token_t **tokens, mapv_t i);
+mapv_t parser__funcall(call_tree_t *call_tree, token_t **tokens);
 // call_tree_t *parser__parse(token_t **tokens);
 
 #endif

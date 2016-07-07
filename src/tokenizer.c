@@ -13,7 +13,7 @@ token_t **tokenizer__string(const token_config_t *config, const char *str)
     for (i = 0; i < strlen(str); i++) {
         for (j = 0; config->check_functions[j]; j++) {
             if (config->check_functions[j](0, str[i])) {
-                tokens = realloc(tokens, sizeof(token_t) * ++size);
+                tokens = realloc(tokens, sizeof(token_t *) * ++size);
                 check_mem(tokens);
                 tokens[size - 2] = malloc(sizeof(token_t));
                 check_mem(tokens[size - 2]);

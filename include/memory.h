@@ -11,5 +11,16 @@
  */
 #define FREE(ptr) if (ptr) { free(ptr); ptr = NULL; }
 
+/**
+ * Count 2d array length
+ *
+ * @author mishavetl
+ *
+ * @param ar (2d array)
+ *
+ * @ret (length of 2d array)
+ *
+ */
+size_t count_2d(void **ar);
 
 #endif

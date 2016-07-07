@@ -17,13 +17,13 @@ void print_tree(const call_tree_t *tree, mapv_t i)
         m = tree->map[i][j];
 
         if (m == EMPTY_MAPV) continue;
-        if (tree->map[m]) print_tree(tree, j);
+        if (tree->map[m]) print_tree(tree, m);
         else printf("%s", tree->tokens[m]->value);
 
         if (tree->map[i][j + 1] != TERMINATE_MAPV) printf(" ");
     }
 
-    printf(")\n");
+    printf(")");
 }
 
 void clean(call_tree_t *tree, token_t **tokens)
@@ -48,13 +48,14 @@ int main(void)
     token_t **tokens;
     token_config_t token_config;
 
-    check(tokenizer__generate_config(&token_config) == 0, "Token config generation failed.");
-    check((tokens = tokenizer__string(&token_config, "1 + 1")), "Tokenization failed.");
-    check(parser__funcall(&tree, tokens, 0) == 0, "Function call parsing failed.");
+    check(tokenizer__generate_config(&token_config) >= 0, "Token config generation failed.");
+    check((tokens = tokenizer__string(&token_config, "1 + 2, 3, 4, 5, 6, 7, 8, 9, 10")), "Tokenization failed.");
+    check(parser__funcall(&tree, tokens) >= 0, "Function call parsing failed.");
 
     // tokens = tokenizer__string(&token_config, "1 * (1 * 2), (1 + (1 * 2)), foo");
 
     print_tree(&tree, 0);
+    puts("");
 
     clean(&tree, tokens);
     exit(EXIT_SUCCESS);
