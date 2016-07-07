@@ -9,7 +9,7 @@ all:
 	cd $(BUILD_DIR); make
 
 configure:
-	make -p $(BUILD_DIR)
+	mkdir -p $(BUILD_DIR)
 	cd $(BUILD_DIR); cmake -DCMAKE_BUILD_TYPE=Debug ..
 
 test:
