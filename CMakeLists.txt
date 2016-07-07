@@ -14,7 +14,7 @@ ExternalProject_Add(
   GIT_REPOSITORY "https://github.com/Snaipe/Criterion.git"
   GIT_TAG "bleeding"
 
-  CMAKE_ARGS "-DCMAKE_SKIP_RPATH=ON"
+  INSTALL_COMMAND "echo"
 
   UPDATE_COMMAND ""
   PATCH_COMMAND ""
@@ -24,7 +24,8 @@ ExternalProject_Add(
 # Config
 ##
 
-set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+
 
 ##
 # Main Part
@@ -42,4 +43,9 @@ target_link_libraries(husky src)
 file(GLOB testfiles "tests/*.c")
 
 add_executable(husky_tests ${testfiles})
+
+include_directories(husky_tests
+  PUBLIC ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Criterion-prefix/src/Criterion/include
+)
+
 target_link_libraries(husky_tests src criterion)
