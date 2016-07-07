@@ -1,5 +1,5 @@
 language: c
-script: make configure && make && make test
+script: make configure && sudo make && make test
 
 notifications:
   email:
