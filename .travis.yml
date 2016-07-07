@@ -1,5 +1,7 @@
 language: c
-script: make configure && sudo make && make test
+sudo: required
+
+script: make configure && sudo make && sudo make test
 
 notifications:
   email:
