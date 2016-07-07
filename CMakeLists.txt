@@ -14,6 +14,8 @@ ExternalProject_Add(
   GIT_REPOSITORY "https://github.com/Snaipe/Criterion.git"
   GIT_TAG "bleeding"
 
+  CMAKE_ARGS "-DCMAKE_SKIP_RPATH=ON"
+
   UPDATE_COMMAND ""
   PATCH_COMMAND ""
 )
