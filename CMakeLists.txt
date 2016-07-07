@@ -26,6 +26,14 @@ ExternalProject_Add(
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
+ExternalProject_Get_Property(Criterion BINARY_DIR SOURCE_DIR)
+set(Criterion_BIN_DIR ${BINARY_DIR})
+set(Criterion_SRC_DIR ${SOURCE_DIR})
+
+link_directories(${Criterion_BIN_DIR})
+include_directories(
+  PUBLIC ${Criterion_SRC_DIR}/include
+)
 
 ##
 # Main Part
@@ -43,9 +51,4 @@ target_link_libraries(husky src)
 file(GLOB testfiles "tests/*.c")
 
 add_executable(husky_tests ${testfiles})
-
-include_directories(husky_tests
-  PUBLIC ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Criterion-prefix/src/Criterion/include
-)
-
 target_link_libraries(husky_tests src criterion)
