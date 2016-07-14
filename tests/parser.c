@@ -7,10 +7,10 @@
 Test(parser, funcall__typical_function_call) {
     call_tree_t tree;
 
-    static token_t funname = {.value = "+", .type = tid_atom};
-    static token_t arg1 = {.value = "1", .type = tid_num};
-    static token_t arg2 = {.value = "2", .type = tid_num};
-    static token_t del = {.value = ",", .type = tid_del};
+    static token_t funname = {.value = "+", .type = tok_atom};
+    static token_t arg1 = {.value = "1", .type = tok_num};
+    static token_t arg2 = {.value = "2", .type = tok_num};
+    static token_t del = {.value = ",", .type = tok_del};
 
     token_t *tokens[] = {
         &funname,
@@ -38,10 +38,10 @@ Test(parser, funcall__typical_function_call) {
 Test(parser, funcall__with_module) {
     call_tree_t tree;
 
-    static token_t fname = {.value = "foo:bar", .type = tid_atom};
-    static token_t arg1 = {.value = "1", .type = tid_num};
-    static token_t arg2 = {.value = "2", .type = tid_num};
-    static token_t del = {.value = ",", .type = tid_del};
+    static token_t fname = {.value = "foo:bar", .type = tok_atom};
+    static token_t arg1 = {.value = "1", .type = tok_num};
+    static token_t arg2 = {.value = "2", .type = tok_num};
+    static token_t del = {.value = ",", .type = tok_del};
 
     token_t *tokens[] = {
         &fname,
@@ -70,8 +70,8 @@ Test(parser, funcall__with_module) {
 Test(parser, funcall__only_one_arg) {
     call_tree_t tree;
 
-    static token_t funname = {.value = "foo", .type = tid_atom};
-    static token_t arg1 = {.value = "1", .type = tid_num};
+    static token_t funname = {.value = "foo", .type = tok_atom};
+    static token_t arg1 = {.value = "1", .type = tok_num};
 
     token_t *tokens[] = {
         &funname,
@@ -94,9 +94,9 @@ Test(parser, funcall__only_one_arg) {
 Test(parser, funcall__with_fname_located_between_two_args) {
     call_tree_t tree;
 
-    static token_t funname = {.value = "-", .type = tid_atom};
-    static token_t arg1 = {.value = "1", .type = tid_num};
-    static token_t arg2 = {.value = "2", .type = tid_num};
+    static token_t funname = {.value = "-", .type = tok_atom};
+    static token_t arg1 = {.value = "1", .type = tok_num};
+    static token_t arg2 = {.value = "2", .type = tok_num};
 
     token_t *tokens[] = {
         &arg1,
@@ -121,13 +121,13 @@ Test(parser, funcall__with_fname_located_between_two_args) {
 Test(parser, funcall__with_fname_located_between_multiple_args_after_first) {
     call_tree_t tree;
 
-    static token_t funname = {.value = "-", .type = tid_atom};
-    static token_t arg1 = {.value = "1", .type = tid_num};
-    static token_t arg2 = {.value = "2", .type = tid_num};
-    static token_t arg3 = {.value = "3", .type = tid_num};
-    static token_t arg4 = {.value = "4", .type = tid_num};
-    static token_t arg5 = {.value = "5", .type = tid_num};
-    static token_t del = {.value = ",", .type = tid_del};
+    static token_t funname = {.value = "-", .type = tok_atom};
+    static token_t arg1 = {.value = "1", .type = tok_num};
+    static token_t arg2 = {.value = "2", .type = tok_num};
+    static token_t arg3 = {.value = "3", .type = tok_num};
+    static token_t arg4 = {.value = "4", .type = tok_num};
+    static token_t arg5 = {.value = "5", .type = tok_num};
+    static token_t del = {.value = ",", .type = tok_del};
 
     token_t *tokens[] = {
         &arg1,
@@ -167,13 +167,13 @@ Test(parser, funcall__with_fname_located_between_multiple_args_after_first) {
 Test(parser, funcall__with_fname_located_between_multiple_args_after_second) {
     call_tree_t tree;
 
-    static token_t funname = {.value = "-", .type = tid_atom};
-    static token_t arg1 = {.value = "1", .type = tid_num};
-    static token_t arg2 = {.value = "2", .type = tid_num};
-    static token_t arg3 = {.value = "3", .type = tid_num};
-    static token_t arg4 = {.value = "4", .type = tid_num};
-    static token_t arg5 = {.value = "5", .type = tid_num};
-    static token_t del = {.value = ",", .type = tid_del};
+    static token_t funname = {.value = "-", .type = tok_atom};
+    static token_t arg1 = {.value = "1", .type = tok_num};
+    static token_t arg2 = {.value = "2", .type = tok_num};
+    static token_t arg3 = {.value = "3", .type = tok_num};
+    static token_t arg4 = {.value = "4", .type = tok_num};
+    static token_t arg5 = {.value = "5", .type = tok_num};
+    static token_t del = {.value = ",", .type = tok_del};
 
     token_t *tokens[] = {
         &arg1,
@@ -213,13 +213,13 @@ Test(parser, funcall__with_fname_located_between_multiple_args_after_second) {
 Test(parser, funcall__with_fname_located_between_multiple_args_after_third) {
     call_tree_t tree;
 
-    static token_t funname = {.value = "-", .type = tid_atom};
-    static token_t arg1 = {.value = "1", .type = tid_num};
-    static token_t arg2 = {.value = "2", .type = tid_num};
-    static token_t arg3 = {.value = "3", .type = tid_num};
-    static token_t arg4 = {.value = "4", .type = tid_num};
-    static token_t arg5 = {.value = "5", .type = tid_num};
-    static token_t del = {.value = ",", .type = tid_del};
+    static token_t funname = {.value = "-", .type = tok_atom};
+    static token_t arg1 = {.value = "1", .type = tok_num};
+    static token_t arg2 = {.value = "2", .type = tok_num};
+    static token_t arg3 = {.value = "3", .type = tok_num};
+    static token_t arg4 = {.value = "4", .type = tok_num};
+    static token_t arg5 = {.value = "5", .type = tok_num};
+    static token_t del = {.value = ",", .type = tok_del};
 
     token_t *tokens[] = {
         &arg1,
@@ -259,12 +259,12 @@ Test(parser, funcall__with_fname_located_between_multiple_args_after_third) {
 Test(parser, funcall__with_fname_located_between_multiple_args_before_last) {
     call_tree_t tree;
 
-    static token_t funname = {.value = "-", .type = tid_atom};
-    static token_t arg1 = {.value = "1", .type = tid_num};
-    static token_t arg2 = {.value = "2", .type = tid_num};
-    static token_t arg3 = {.value = "3", .type = tid_num};
-    static token_t arg4 = {.value = "4", .type = tid_num};
-    static token_t del = {.value = ",", .type = tid_del};
+    static token_t funname = {.value = "-", .type = tok_atom};
+    static token_t arg1 = {.value = "1", .type = tok_num};
+    static token_t arg2 = {.value = "2", .type = tok_num};
+    static token_t arg3 = {.value = "3", .type = tok_num};
+    static token_t arg4 = {.value = "4", .type = tok_num};
+    static token_t del = {.value = ",", .type = tok_del};
 
     token_t *tokens[] = {
         &arg1,
@@ -299,16 +299,16 @@ Test(parser, funcall__with_fname_located_between_multiple_args_before_last) {
 Test(parser, funcall__with_nested_function_calls) {
     call_tree_t tree;
 
-    static token_t funname = {.value = "-", .type = tid_atom};
-    static token_t funname1 = {.value = "+", .type = tid_atom};
-    static token_t funname2 = {.value = "*", .type = tid_atom};
-    static token_t prior_start = {.value = "(", .type = tid_prior_start};
-    static token_t prior_end = {.value = ")", .type = tid_prior_end};
-    static token_t arg1 = {.value = "1", .type = tid_num};
-    static token_t arg2 = {.value = "2", .type = tid_num};
-    static token_t arg3 = {.value = "3", .type = tid_num};
-    static token_t arg4 = {.value = "4", .type = tid_num};
-    static token_t del = {.value = ",", .type = tid_del};
+    static token_t funname = {.value = "-", .type = tok_atom};
+    static token_t funname1 = {.value = "+", .type = tok_atom};
+    static token_t funname2 = {.value = "*", .type = tok_atom};
+    static token_t prior_start = {.value = "(", .type = tok_prior_start};
+    static token_t prior_end = {.value = ")", .type = tok_prior_end};
+    static token_t arg1 = {.value = "1", .type = tok_num};
+    static token_t arg2 = {.value = "2", .type = tok_num};
+    static token_t arg3 = {.value = "3", .type = tok_num};
+    static token_t arg4 = {.value = "4", .type = tok_num};
+    static token_t del = {.value = ",", .type = tok_del};
 
     token_t *tokens[] = {
         &funname,
@@ -359,16 +359,16 @@ Test(parser, funcall__with_nested_function_calls) {
 Test(parser, funcall__with_multiple_nested_function_calls_in_one) {
     call_tree_t tree;
 
-    static token_t funname = {.value = "-", .type = tid_atom};
-    static token_t funname1 = {.value = "+", .type = tid_atom};
-    static token_t funname2 = {.value = "*", .type = tid_atom};
-    static token_t prior_start = {.value = "(", .type = tid_prior_start};
-    static token_t prior_end = {.value = ")", .type = tid_prior_end};
-    static token_t arg1 = {.value = "1", .type = tid_num};
-    static token_t arg2 = {.value = "2", .type = tid_num};
-    static token_t arg3 = {.value = "3", .type = tid_num};
-    static token_t arg4 = {.value = "4", .type = tid_num};
-    static token_t del = {.value = ",", .type = tid_del};
+    static token_t funname = {.value = "-", .type = tok_atom};
+    static token_t funname1 = {.value = "+", .type = tok_atom};
+    static token_t funname2 = {.value = "*", .type = tok_atom};
+    static token_t prior_start = {.value = "(", .type = tok_prior_start};
+    static token_t prior_end = {.value = ")", .type = tok_prior_end};
+    static token_t arg1 = {.value = "1", .type = tok_num};
+    static token_t arg2 = {.value = "2", .type = tok_num};
+    static token_t arg3 = {.value = "3", .type = tok_num};
+    static token_t arg4 = {.value = "4", .type = tok_num};
+    static token_t del = {.value = ",", .type = tok_del};
 
     token_t *tokens[] = {
         &arg1,

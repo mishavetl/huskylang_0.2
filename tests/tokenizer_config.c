@@ -8,7 +8,7 @@ Test(tokenizer, generate_config__generates_all_token_check_functions) {
 
     tokenizer__generate_config(&token_config);
 
-    for (i = 0; i < __tid_amount; i++) {
+    for (i = 0; i < __tok_amount; i++) {
       cr_assert(token_config.check_functions[i]);
     }
 }

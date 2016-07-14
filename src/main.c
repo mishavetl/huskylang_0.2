@@ -1,67 +1,94 @@
 #include <stdio.h>
-#include <stdlib.h>
+#include <argp.h>
+
 #include "tokenizer.h"
 #include "dbg.h"
 #include "parser.h"
 #include "memory.h"
+#include "std.h"
+#include "performer.h"
+#include "main_utils.h"
+#include "argconfig.h"
 
-void print_tree(const call_tree_t *tree, mapv_t i)
+extern FILE *stdin;
+
+gc_t *gc_global;
+
+int main(int argc, char *argv[])
 {
-    mapv_t j, m;
+    struct arguments arguments;
 
-    for (; !tree->map[i]; i++);
-
-    printf("(%s ", tree->tokens[i]->value);
-
-    for (j = 0; tree->map[i][j] != TERMINATE_MAPV; j++) {
-        m = tree->map[i][j];
-
-        if (m == EMPTY_MAPV) continue;
-        if (tree->map[m]) print_tree(tree, m);
-        else printf("%s", tree->tokens[m]->value);
-
-        if (tree->map[i][j + 1] != TERMINATE_MAPV) printf(" ");
-    }
-
-    printf(")");
-}
-
-void clean(call_tree_t *tree, token_t **tokens)
-{
-    int i;
-
-    if (tree) {
-        if (tree->map) {
-            for (i = 0; i < tree->size; i++) {
-                FREE(tree->map[i]);
-            }
-            FREE(tree->map);
-        }
-    }
-
-    tokenizer__clean_tokens(tokens);
-}
-
-int main(void)
-{
     call_tree_t tree;
-    token_t **tokens;
+    token_t **tokens = NULL;
     token_config_t token_config;
+    var_t **vars;
+    type_t ret;
+    int line;
+
+    FILE *f = NULL;
+    char *buffer;
+    size_t size = 0;
+
+    /* Parse arguments. */
+
+    arguments.silent = 0;
+    arguments.verbose = 0;
+    arguments.interactive = 0;
+    arguments.script_path = NULL;
+
+    argp_parse(&argp, argc, argv, 0, 0, &arguments);
+
+    /* Init. */
+    
+    gc_t gc_global_heap = gc__init();
+    gc_global = &gc_global_heap;
+
+    tree.map = NULL;
 
     check(tokenizer__generate_config(&token_config) >= 0, "Token config generation failed.");
-    check((tokens = tokenizer__string(&token_config, "1 + 2, 3, 4, 5, 6, 7, 8, 9, 10")), "Tokenization failed.");
-    check(parser__funcall(&tree, tokens) >= 0, "Function call parsing failed.");
 
-    // tokens = tokenizer__string(&token_config, "1 * (1 * 2), (1 + (1 * 2)), foo");
+    if (arguments.interactive) {
+        puts("Not implemented.");
+	goto error;
+    } else {
+	check((f = fopen(arguments.script_path, "rb")), "Error opening file.");
+    }
 
-    print_tree(&tree, 0);
-    puts("");
+    /* Interpretation process. */
 
-    clean(&tree, tokens);
+    for (line = 1; ; line++) {
+	if (arguments.interactive) {
+	    goto error;
+	} else {
+	    if (getline(&buffer, &size, f) == -1) {
+		break;
+	    }
+	}
+
+	if (strlen(buffer) > 1) {
+	    check((tokens = tokenizer__string(&token_config, buffer, line)), "Tokenization failed.");
+	    check(parser__funcall(&tree, tokens) >= 0, "Function call parsing failed.");
+
+	    check((vars = get_stdlib_variables()), "Failed to get stdlib variables.");
+	    check(performer__execute(&tree, vars, &ret) >= 0, "Failed to perform execution of the tree.");
+
+	    clean(&tree, tokens);
+	}
+	/* printf("ret: %s\n", ret.value.atom); */
+    }
+
+    FREE(buffer);
+
+    if (f) fclose(f);
+    gc__clean(gc_global);
+
     exit(EXIT_SUCCESS);
 
     error:
 
+    if (f) fclose(f);
+
+    gc__clean(gc_global);
     clean(&tree, tokens);
     exit(EXIT_FAILURE);
 }

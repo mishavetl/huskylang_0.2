@@ -1,6 +1,8 @@
 Husky Programming Language
 ==========================
 
+**alpha**
+
 [![Build Status](https://travis-ci.org/mishavetl/huskylang.svg?branch=master)](https://travis-ci.org/mishavetl/huskylang)
 
 ### Why husky?
@@ -10,7 +12,7 @@ Husky Programming Language
 ### Features
 
  * pure functional programming
- * minimal syntax
+ * nelisp minimal syntax
  * no statements
 
 ### Examples

@@ -4,11 +4,11 @@
 #include "tokenizer_config.h"
 #include "dbg.h"
 
-token_t **tokenizer__string(const token_config_t *config, const char *str)
+token_t **tokenizer__string(const token_config_t *config, const char *str, size_t line)
 {
     token_t **tokens = NULL;
     token_t *token;
-    size_t i, j, pos, line = 1, size = 1;
+    size_t i, j, pos, size = 1;
 
     for (i = 0; i < strlen(str); i++) {
         for (j = 0; config->check_functions[j]; j++) {
@@ -30,7 +30,6 @@ token_t **tokenizer__string(const token_config_t *config, const char *str)
                     token->value[pos] = '\0';
                     if (str[i] == '\\') {
                         if (str[i + 1] == 'n') {
-                            line++;
                             token->value[pos] = '\n';
                             i++;
                         }

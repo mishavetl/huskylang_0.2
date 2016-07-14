@@ -1,11 +1,10 @@
-#ifndef TOKENIZER_H
-#define TOKENIZER_H
+#ifndef __tokenizer_h__
+#define __tokenizer_h__
 
-#include <stdbool.h>
 #include "tokenizer_config.h"
 
 /**
- * Token structure
+ * STRUCT token
  *
  * @author mishavetl
  *
@@ -23,17 +22,18 @@ typedef struct token {
 } token_t;
 
 /**
- * Translates string to the token array
+ * Translates a string to a token array
  *
  * @author mishavetl
  *
  * @param config (Token Config structure)
  * @param str (string to translate)
+ * @param line (line number)
  *
  * @ret (token array if success, NULL if error)
  *
  */
-token_t **tokenizer__string(const token_config_t *config, const char *str);
+token_t **tokenizer__string(const token_config_t *config, const char *str, size_t line);
 
 /**
  * Free token array memory

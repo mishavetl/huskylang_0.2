@@ -1,8 +1,7 @@
-cmake_minimum_required (VERSION 2.8)
+cmake_minimum_required (VERSION 2.8.12)
 project(huskylang)
 
 include(ExternalProject)
-include_directories(${CMAKE_SOURCE_DIR}/include)
 
 ##
 # Dependencies
@@ -32,7 +31,8 @@ set(Criterion_SRC_DIR ${SOURCE_DIR})
 
 link_directories(${Criterion_BIN_DIR})
 include_directories(
-  PUBLIC ${Criterion_SRC_DIR}/include
+  ${CMAKE_SOURCE_DIR}/include
+  ${Criterion_SRC_DIR}/include
 )
 
 ##

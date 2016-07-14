@@ -1,31 +1,8 @@
-#ifndef _PARSER_H
-#define _PARSER_H
+#ifndef __parser_h__
+#define __parser_h__
 
 #include "tokenizer.h"
-
-#define EMPTY_MAPV -1
-#define TERMINATE_MAPV -2
-
-/**
- * Type of map values
- *
- */
-typedef int mapv_t;
-
-/**
- * Function Call Tree structure
- *
- * @author mishavetl
- *
- * @member tokens (an array of tokens)
- * @member map ({{1, 2}, NULL, {3}, NULL})
- *
- */
-typedef struct call_tree {
-    token_t **tokens;
-    mapv_t **map;
-    size_t size;
-} call_tree_t;
+#include "call_tree.h"
 
 /**
  * Constructs a call tree

@@ -1,0 +1,4 @@
+set i, foo
+
+io:puts (1 + 2)
+io:puts foo, bar

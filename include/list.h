@@ -1,5 +1,5 @@
-#ifndef _LIST_H
-#define _LIST_H
+#ifndef __list_h__
+#define __list_h__
 
 #include <stdlib.h>
 #include "dbg.h"

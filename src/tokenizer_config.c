@@ -4,24 +4,23 @@
 
 #include "tokenizer_config.h"
 
-#define DELIMITERS ","
-#define SPACES " \t"
+#define DELIMITERS ",()"
+#define SPACES " \t\n"
 
-TOKENS
-(
-    TOKEN(tid_num,
+TOKENS(
+    TOKEN(num,
         return isdigit(ch);
     );
-    TOKEN(tid_del,
-        return pos == 0 && index(DELIMITERS, ch);
-    );
-    TOKEN(tid_prior_start,
+    TOKEN(prior_start,
         return pos == 0 && ch == '(';
     );
-    TOKEN(tid_prior_end,
+    TOKEN(prior_end,
         return pos == 0 && ch == ')';
     );
-    TOKEN(tid_atom,
+    TOKEN(del,
+        return pos == 0 && index(DELIMITERS, ch);
+    );
+    TOKEN(atom,
         return !index(DELIMITERS, ch) && !index(SPACES, ch);
     );
 

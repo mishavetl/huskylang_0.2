@@ -32,15 +32,14 @@ mapv_t parser__funcall_(call_tree_t *call_tree, token_t **tokens, mapv_t *i_)
     mapv_t i_start = i, fname_i = EMPTY_MAPV, fname_arg_i;
     int possible_fname = 1;
 
-
     for (; tokens[i]; i++) {
-        if (tokens[i]->type == tid_prior_end) {
+        if (tokens[i]->type == tok_prior_end) {
             break;
         }
 
-        if (tokens[i]->type != tid_del) {
-            if (tokens[i + 1] && tokens[i]->type != tid_prior_start) {
-                if (tokens[i + 1]->type != tid_del && tokens[i + 1]->type != tid_prior_end) {
+        if (tokens[i]->type != tok_del) {
+            if (tokens[i + 1] && tokens[i]->type != tok_prior_start) {
+                if (tokens[i + 1]->type != tok_del && tokens[i + 1]->type != tok_prior_end) {
                     if (possible_fname) {
                         if (fname_i != EMPTY_MAPV) {
                             args[fname_arg_i] = fname_i;
@@ -56,7 +55,7 @@ mapv_t parser__funcall_(call_tree_t *call_tree, token_t **tokens, mapv_t *i_)
 
                         continue;
                     } else {
-                        sentinel("syntax error: 'multiple function names in a function call' at column %ld, token: '%s'", tokens[i]->col, tokens[i]->value);
+                        sentinel("syntax error: 'multiple function names in a function call' at column %ld, line %ld-%ld, token: '%s'", tokens[i]->col, tokens[i_start]->linefrom, tokens[i_start]->lineto, tokens[i]->value);
                     }
                 }
             }
@@ -64,7 +63,7 @@ mapv_t parser__funcall_(call_tree_t *call_tree, token_t **tokens, mapv_t *i_)
             args = realloc(args, sizeof(mapv_t) * ++size);
             check_mem(args);
 
-            if (tokens[i]->type == tid_prior_start) {
+            if (tokens[i]->type == tok_prior_start) {
                 i++;
                 args[size - 1] = parser__funcall_(call_tree, tokens, &i);
 
@@ -76,7 +75,7 @@ mapv_t parser__funcall_(call_tree_t *call_tree, token_t **tokens, mapv_t *i_)
     }
 
     if (fname_i == -1) {
-        sentinel("syntax error: 'no function name candidates' at column %ld, token: '%s'", tokens[i_start]->col, tokens[i_start]->value);
+        sentinel("syntax error: 'no function name candidates' at column %ld, line %ld-%ld, token: '%s'", tokens[i_start]->col, tokens[i_start]->linefrom, tokens[i_start]->lineto, tokens[i_start]->value);
     }
 
     args = realloc(args, sizeof(mapv_t) * ++size);
@@ -84,6 +83,7 @@ mapv_t parser__funcall_(call_tree_t *call_tree, token_t **tokens, mapv_t *i_)
 
     call_tree->map[fname_i] = args;
     call_tree->size = i;
+    call_tree->start = fname_i;
 
     *i_ = i;
 
