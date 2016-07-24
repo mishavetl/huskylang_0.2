@@ -5,8 +5,15 @@
 #include "tokenizer.h"
 
 typedef struct variable {
-    char *name;
+    const char *name;
     type_t *value;
 } var_t;
+
+typedef struct scope {
+    size_t vsize;
+    var_t **vars;
+} scope_t;
+
+int setvar(scope_t *scope, const char *name, type_t *value);
 
 #endif

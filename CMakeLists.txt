@@ -42,7 +42,7 @@ include_directories(
 add_subdirectory(src)
 
 add_executable(husky src/main.c)
-target_link_libraries(husky src)
+target_link_libraries(husky src m)
 
 ##
 # Tests

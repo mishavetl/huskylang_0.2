@@ -1,4 +1,3 @@
-set i, foo
+io:puts (number:to_string (1 + 1, (2 + 3), 3))
 
-io:puts (1 + 2)
-io:puts foo, bar
+io:puts (atom:to_string atom), (number:to_string 102)

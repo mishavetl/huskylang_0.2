@@ -11,7 +11,7 @@ size_t count_2d(void **ar)
     return len;
 }
 
-inline gc_t gc__init()
+inline gc_t gc_init()
 {
     return (gc_t) {
         .ptrs = NULL,
@@ -19,7 +19,7 @@ inline gc_t gc__init()
     };
 }
 
-void gc__clean(gc_t *gc)
+void gc_clean(gc_t *gc)
 {
     long long i;
 
@@ -32,7 +32,7 @@ void gc__clean(gc_t *gc)
     }
 }
 
-void *gc__add(gc_t *gc, void *ptr)
+void *gc_add(gc_t *gc, void *ptr)
 {
     gc->ptrs = realloc(gc->ptrs, sizeof(void *) * ++gc->size);
 

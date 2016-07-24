@@ -11,6 +11,6 @@
  *
  *
  */
-int performer__execute(call_tree_t *tree, var_t **vars, type_t *ret);
+int performer__execute(call_tree_t *tree, scope_t *vars, type_t *ret);
 
 #endif

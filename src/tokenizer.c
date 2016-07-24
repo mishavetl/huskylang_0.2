@@ -3,6 +3,7 @@
 #include "tokenizer.h"
 #include "tokenizer_config.h"
 #include "dbg.h"
+#include "memory.h"
 
 token_t **tokenizer__string(const token_config_t *config, const char *str, size_t line)
 {
@@ -64,11 +65,11 @@ void tokenizer__clean_tokens(token_t **tokens)
     if (tokens) {
         for (i = 0; tokens[i]; i++) {
             if (tokens[i]) {
-                if (tokens[i]->value) free(tokens[i]->value);
-                free(tokens[i]);
+                FREE(tokens[i]->value);
+                FREE(tokens[i]);
             }
         }
 
-        free(tokens);
+        FREE(tokens);
     }
 }

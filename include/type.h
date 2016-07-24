@@ -3,6 +3,9 @@
 
 #include "list.h"
 #include "tokenizer.h"
+#include "function.h"
+
+typedef struct variable var_t;
 
 /**
  * STRUCT type
@@ -14,15 +17,17 @@
  *
  */
 typedef struct type {
-    enum {
+    enum tid {
         tid_num, // number
         tid_atom, // atom
-        tid_fn // function
+        tid_fn, // function
+        tid_string // string
     } type;
     union {
-        int (*fn)(struct type **args, struct type *);
+        fn_t *fn;
         int num;
         const char *atom;
+        const char *string;
     } value;
 } type_t;
 

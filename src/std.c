@@ -1,139 +1,147 @@
 #include <stdlib.h>
+#include <math.h>
+#include <string.h>
+
+#include "type.h"
 #include "std.h"
 #include "variable.h"
 #include "memory.h"
 #include "dbg.h"
+#include "function.h"
 
 extern gc_t *gc_global;
 
-int plus(type_t **args, type_t *ret)
+void plus(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
 {
     size_t i;
-
-    check_mem(args);
 
     ret->type = tid_num;
     ret->value.num = 0;
 
-    for (i = 0; args[i]; i++) {
-        check(args[i]->type == tid_num, "Invalid argument type.");
+    for (i = 0; i < argc; i++) {
+        check(args[i]->type == tid_num, "%d", args[i]->type);
         ret->value.num += args[i]->value.num;
     }
 
-    return 0;
+    return;
 
     error:
 
-    return -1;
+    ret->type = tid_atom;
+    ret->value.atom = "bad";
 }
 
-int minus(type_t **args, type_t *ret)
+void number__to_string(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
 {
-    size_t i;
+    char *string = gc_add(gc_global, malloc(sizeof(char) * (log10(args[0]->value.num) + 2)));
 
-    check_mem(args);
+    check_mem(string);
 
-    ret->type = tid_num;
+    sprintf(string, "%d", args[0]->value.num);
 
-    check(args[0]->type == tid_num, "Invalid argument type.");
-    ret->value.num = args[0]->value.num;
+    ret->type = tid_string;
+    ret->value.string = string;
 
-    for (i = 1; args[i]; i++) {
-        check(args[i]->type == tid_num, "Invalid argument type.");
-        ret->value.num -= args[i]->value.num;
-    }
 
-    return 0;
+    return;
 
     error:
 
-    return -1;
+    ret->type = tid_atom;
+    ret->value.atom = "bad";
 }
 
-int io__puts(type_t **args, type_t *ret)
+void atom__to_string(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
+{
+    ret->type = tid_string;
+    ret->value.string = gc_add(gc_global, strdup(args[0]->value.atom));
+    check_mem(ret->value.string);
+
+    return;
+
+    error:
+
+    ret->type = tid_atom;
+    ret->value.atom = "bad";
+}
+
+// void minus(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
+// {
+//     size_t i;
+
+//     ret->type = tid_num;
+
+//     check(args[0]->type == tid_num);
+//     ret->value.num = args[0]->value.num;
+
+//     for (i = 1; args[i]; i++) {
+//         check(args[i]->type == tid_num);
+//         ret->value.num -= args[i]->value.num;
+//     }
+
+//     error:
+
+//     ret->type = atom;
+//     ret->value.atom = "bad";
+// }
+
+void io__puts(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
 {
     size_t i;
 
-    check_mem(args);
+    ret->type = tid_atom;
 
     for (i = 0; args[i]; i++) {
-        switch (args[i]->type) {
-            case tid_num:
-                printf("%d", args[i]->value.num);
-                break;
-
-            case tid_atom:
-                printf("%s", args[i]->value.atom);
-                break;
-
-            default:
-                sentinel("system error unsupported argument type '%d'", args[i]->type);
-        }
+        printf("%s", args[i]->value.atom);
     }
 
     puts("");
 
-    ret->type = tid_atom;
     ret->value.atom = "good";
 
-    return 0;
-
-    error:
-
-    return -1;
+    return;
 }
 
-int lister(type_t **args, type_t *ret)
-{
-    check_mem(args);
+// void lister(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
+// {
+//     ret->type = tid_atom;
+//     ret->value.atom = "good";
+// }
 
-    ret->type = tid_atom;
-    ret->value.atom = "good";
+// void set(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
+// {
+//     ret->type = tid_atom;
 
-    return 0;
+//     check(argc == 2, "Bad argc.");
+//     check(args[0]->type == tid_atom, "Invalid variable identifier");
 
-    error:
+//     setvar(scope, args[0]->value.atom, args[1]);
+//     ret->value.atom = "good";
 
-    return -1;
-}
+// error:
 
-var_t **get_stdlib_variables()
-{
-    var_t **vars = gc__add(gc_global, malloc(sizeof(var_t *) * 5));
-    type_t *fn_plus = gc__add(gc_global, malloc(sizeof(type_t)));
-    type_t *fn_minus = gc__add(gc_global, malloc(sizeof(type_t)));
-    type_t *fn_io__puts = gc__add(gc_global, malloc(sizeof(type_t)));
-    type_t *fn_lister = gc__add(gc_global, malloc(sizeof(type_t)));
+//     ret->value.atom = "bad";
+// }
 
-    fn_plus->type = tid_fn;
-    fn_plus->value.fn = plus;
-
-    vars[0] = gc__add(gc_global, malloc(sizeof(var_t)));
-    vars[0]->name = "+";
-    vars[0]->value = fn_plus;
-
-    fn_minus->type = tid_fn;
-    fn_minus->value.fn = minus;
-
-    vars[1] = gc__add(gc_global, malloc(sizeof(var_t)));
-    vars[1]->name = "-";
-    vars[1]->value = fn_minus;
-
-    fn_io__puts->type = tid_fn;
-    fn_io__puts->value.fn = io__puts;
-
-    vars[2] = gc__add(gc_global, malloc(sizeof(var_t)));
-    vars[2]->name = "io:puts";
-    vars[2]->value = fn_io__puts;
-
-    fn_lister->type = tid_fn;
-    fn_lister->value.fn = lister;
-
-    vars[3] = gc__add(gc_global, malloc(sizeof(var_t)));
-    vars[3]->name = "'";
-    vars[3]->value = fn_lister;
-
-    vars[4] = NULL;
-
-    return vars;
-}
+STDFUNCTIONS(4,
+    REGSTDFUNCTION("+",
+        create_function(
+            plus, INFINITY_ARGS,
+            (const int []) {tid_num}, 1,
+            gc_global))
+    REGSTDFUNCTION("io:puts",
+        create_function(
+            io__puts, INFINITY_ARGS,
+            (const int []) {tid_string}, 1,
+            gc_global))
+    REGSTDFUNCTION("number:to_string",
+        create_function(
+            number__to_string, 1,
+            (const int []) {tid_num}, 1,
+            gc_global))
+    REGSTDFUNCTION("atom:to_string",
+        create_function(
+            atom__to_string, 1,
+            (const int []) {tid_atom}, 1,
+            gc_global))
+)

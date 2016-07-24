@@ -21,12 +21,12 @@ int main(int argc, char *argv[])
     call_tree_t tree;
     token_t **tokens = NULL;
     token_config_t token_config;
-    var_t **vars;
+    scope_t *scope;
     type_t ret;
     int line;
 
     FILE *f = NULL;
-    char *buffer;
+    char *buffer = NULL;
     size_t size = 0;
 
     /* Parse arguments. */
@@ -39,8 +39,8 @@ int main(int argc, char *argv[])
     argp_parse(&argp, argc, argv, 0, 0, &arguments);
 
     /* Init. */
-    
-    gc_t gc_global_heap = gc__init();
+
+    gc_t gc_global_heap = gc_init();
     gc_global = &gc_global_heap;
 
     tree.map = NULL;
@@ -49,46 +49,55 @@ int main(int argc, char *argv[])
 
     if (arguments.interactive) {
         puts("Not implemented.");
-	goto error;
+        goto error;
     } else {
-	check((f = fopen(arguments.script_path, "rb")), "Error opening file.");
+        check((f = fopen(arguments.script_path, "rb")), "Error opening file.");
     }
+
+    scope = get_stdlib_variables();
 
     /* Interpretation process. */
 
     for (line = 1; ; line++) {
-	if (arguments.interactive) {
-	    goto error;
-	} else {
-	    if (getline(&buffer, &size, f) == -1) {
-		break;
-	    }
-	}
+        if (arguments.interactive) {
+            goto error;
+        } else {
+            if (getline(&buffer, &size, f) == -1) {
+                break;
+            }
+        }
 
-	if (strlen(buffer) > 1) {
-	    check((tokens = tokenizer__string(&token_config, buffer, line)), "Tokenization failed.");
-	    check(parser__funcall(&tree, tokens) >= 0, "Function call parsing failed.");
+        if (strlen(buffer) > 1) {
+            check((tokens = tokenizer__string(&token_config, buffer, line)), "Tokenization failed.");
+            check(parser__funcall(&tree, tokens) >= 0, "Function call parsing failed.");
+            performer__execute(&tree, scope, &ret);
 
-	    check((vars = get_stdlib_variables()), "Failed to get stdlib variables.");
-	    check(performer__execute(&tree, vars, &ret) >= 0, "Failed to perform execution of the tree.");
+            if (ret.type == tid_atom) {
+                if (strcmp(ret.value.atom, "bad") == 0) {
+                    puts("Error");
+                    goto error;
+                }
+            }
 
-	    clean(&tree, tokens);
-	}
-	/* printf("ret: %s\n", ret.value.atom); */
+            clean(&tree, tokens);
+        }
+        /* printf("ret: %s\n", ret.value.atom); */
     }
 
     FREE(buffer);
 
     if (f) fclose(f);
-    gc__clean(gc_global);
+    gc_clean(gc_global);
 
     exit(EXIT_SUCCESS);
 
     error:
 
-    if (f) fclose(f);
+    FREE(buffer);
 
-    gc__clean(gc_global);
+    if (f) fclose(f);
+    gc_clean(gc_global);
     clean(&tree, tokens);
+
     exit(EXIT_FAILURE);
 }

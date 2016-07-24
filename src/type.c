@@ -3,7 +3,7 @@
 #include "tokenizer.h"
 #include "tokenizer_config.h"
 
-/** TODO **/
+/** @todo */
 int type_from_token(token_t *token, type_t *type)
 {
     check_mem(token);
@@ -16,7 +16,7 @@ int type_from_token(token_t *token, type_t *type)
         type->value.atom = token->value;
         type->type = tid_atom;
     } else {
-        sentinel("type error: 'error creating type' on col: %d, token: '%s'.", token->col, token->value);
+        sentinel("type error: 'error creating type' on col: %ld, token: '%s'.", token->col, token->value);
     }
 
     return 0;
