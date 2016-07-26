@@ -21,7 +21,8 @@ int main(int argc, char *argv[])
     call_tree_t tree;
     token_t **tokens = NULL;
     token_config_t token_config;
-    scope_t *scope;
+    gc_t gc_scope = gc_init();
+    scope_t scope;
     type_t ret;
     int line;
 
@@ -54,7 +55,8 @@ int main(int argc, char *argv[])
         check((f = fopen(arguments.script_path, "rb")), "Error opening file.");
     }
 
-    scope = get_stdlib_variables();
+    scope.gc = &gc_scope;
+    get_stdlib_variables(&scope);
 
     /* Interpretation process. */
 
@@ -70,7 +72,7 @@ int main(int argc, char *argv[])
         if (strlen(buffer) > 1) {
             check((tokens = tokenizer__string(&token_config, buffer, line)), "Tokenization failed.");
             check(parser__funcall(&tree, tokens) >= 0, "Function call parsing failed.");
-            performer__execute(&tree, scope, &ret);
+            performer__execute(&tree, &scope, &ret);
 
             if (ret.type == tid_atom) {
                 if (strcmp(ret.value.atom, "bad") == 0) {
@@ -88,6 +90,8 @@ int main(int argc, char *argv[])
 
     if (f) fclose(f);
     gc_clean(gc_global);
+    gc_clean(scope.gc);
+    FREE(scope.vars);
 
     exit(EXIT_SUCCESS);
 
@@ -97,6 +101,8 @@ int main(int argc, char *argv[])
 
     if (f) fclose(f);
     gc_clean(gc_global);
+    gc_clean(scope.gc);
+    FREE(scope.vars);
     clean(&tree, tokens);
 
     exit(EXIT_FAILURE);

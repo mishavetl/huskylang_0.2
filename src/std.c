@@ -108,22 +108,43 @@ void io__puts(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
 //     ret->value.atom = "good";
 // }
 
-// void set(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
-// {
-//     ret->type = tid_atom;
+void set(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
+{
+    ret->type = tid_atom;
 
-//     check(argc == 2, "Bad argc.");
-//     check(args[0]->type == tid_atom, "Invalid variable identifier");
+    /* Check that variable does not exist. */
+    check(getvar(scope, args[0]->value.atom) < 0, "");
 
-//     setvar(scope, args[0]->value.atom, args[1]);
-//     ret->value.atom = "good";
+    /* Set variable. */
+    check(setvar(scope, args[0]->value.atom, args[1]) >= 0, "");
 
-// error:
+    ret->value.atom = "good";
 
-//     ret->value.atom = "bad";
-// }
+    return;
 
-STDFUNCTIONS(4,
+    error:
+
+    ret->value.atom = "bad";
+}
+
+void get(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
+{
+    int i;
+
+    /* Check that variable does not exist. */
+    check((i = getvar(scope, args[0]->value.atom)) >= 0, "");
+
+    ret->type = scope->vars[i]->value->type;
+    ret->value = scope->vars[i]->value->value;
+
+    return;
+
+    error:
+
+    ret->value.atom = "bad";
+}
+
+STDFUNCTIONS(7,
     REGSTDFUNCTION("+",
         create_function(
             plus, INFINITY_ARGS,
@@ -142,6 +163,21 @@ STDFUNCTIONS(4,
     REGSTDFUNCTION("atom:to_string",
         create_function(
             atom__to_string, 1,
+            (const int []) {tid_atom}, 1,
+            gc_global))
+    REGSTDFUNCTION("var:atom",
+        create_function(
+            set, 2,
+            (const int []) {tid_atom}, 1,
+            gc_global))
+    REGSTDFUNCTION("var:number",
+        create_function(
+            set, 2,
+            (const int []) {tid_atom, tid_num}, 2,
+            gc_global))
+    REGSTDFUNCTION("$",
+        create_function(
+            get, 1,
             (const int []) {tid_atom}, 1,
             gc_global))
 )

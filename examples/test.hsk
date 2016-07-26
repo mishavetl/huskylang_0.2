@@ -1,3 +1,5 @@
-io:puts (number:to_string (1 + 1, (2 + 3), 3))
+foo var:atom bar
+bar var:number 1
 
-io:puts (atom:to_string atom), (number:to_string 102)
+io:puts (atom:to_string ($ foo)), (number:to_string ($ bar))
+io:puts (number:to_string (1 + 1, (2 + 3), 3))

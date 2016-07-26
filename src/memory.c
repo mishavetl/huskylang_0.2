@@ -27,7 +27,7 @@ void gc_clean(gc_t *gc)
         for (i = 0; i < gc->size; i++) {
             FREE(gc->ptrs[i]);
         }
-        
+
         FREE(gc->ptrs);
     }
 }
