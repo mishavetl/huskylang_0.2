@@ -5,6 +5,7 @@
 #include "memory.h"
 #include "variable.h"
 #include "call_tree.h"
+#include "huserr.h"
 
 int find_variable(const var_t **vars, const char *name)
 {
@@ -44,15 +45,36 @@ performer__funcall(
     check(type_from_token(tree->tokens[i], type) >= 0,
         "Failed to construct type.");
 
+    if (type->type != tid_atom) {
+        scope->error = gc_add(scope->gc, malloc(sizeof(huserr_t)));
+        scope->error->name = "typeErr";
+        scope->error->msg = "is not atom";
+        scope->error->token = tree->tokens[i];
+
+        goto error;
+    }
+
     j = find_variable(scope->vars, type->value.atom);
 
     if (j < 0) {
-        ret->type = tid_atom;
-        ret->value.atom = "bad";
+        scope->error = gc_add(scope->gc, malloc(sizeof(huserr_t)));
+        scope->error->name = "nameErr";
+        scope->error->msg = "function undefined";
+        scope->error->token = tree->tokens[i];
+
         goto error;
     }
 
     fn = scope->vars[j]->value;
+
+    if (fn->type != tid_fn) {
+        scope->error = gc_add(scope->gc, malloc(sizeof(huserr_t)));
+        scope->error->name = "typeErr";
+        scope->error->msg = "is not function";
+        scope->error->token = tree->tokens[i];
+
+        goto error;
+    }
 
     for (j = 0; tree->map[i][j] != TERMINATE_MAPV; j++) {
         if (tree->map[i][j] == EMPTY_MAPV) continue;
@@ -65,6 +87,10 @@ performer__funcall(
                 "Failed to construct type.");
         } else {
             performer__funcall(tree, scope, type, tree->map[i][j]);
+
+            if (scope->error) {
+                goto error;
+            }
         }
 
         args[size] = type;
@@ -72,9 +98,10 @@ performer__funcall(
         if (type->type !=
             fn->value.fn->argtypes[size % fn->value.fn->argtypes_size])
         {
-            debug("argtype");
-            ret->type = tid_atom;
-            ret->value.atom = "bad";
+            scope->error = gc_add(scope->gc, malloc(sizeof(huserr_t)));
+            scope->error->name = "typeErr";
+            scope->error->msg = "argument type mismatch";
+            scope->error->token = tree->tokens[tree->map[i][j]];
             goto error;
         }
 
@@ -86,13 +113,17 @@ performer__funcall(
     if (size !=
         fn->value.fn->argc && fn->value.fn->argc != INFINITY_ARGS)
     {
-        debug("size");
-        ret->type = tid_atom;
-        ret->value.atom = "bad";
+        scope->error = gc_add(scope->gc, malloc(sizeof(huserr_t)));
+        scope->error->name = "argumentErr";
+        scope->error->msg = "invalid arguments number";
+        scope->error->token = tree->tokens[i];
         goto error;
     }
 
-    fn->value.fn->callback(args, size, ret, scope);
+    if (fn->value.fn->callback(args, size, ret, scope) <= 0 && scope->error) {
+        scope->error->token = tree->tokens[i];
+        goto error;
+    }
 
     gc_clean(&gc);
 

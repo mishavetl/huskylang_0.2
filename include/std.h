@@ -15,6 +15,7 @@
         scope->vsize = n;                                                       \
         scope->vars[0] = NULL;                                                  \
         __VA_ARGS__                                                             \
+        return 0;                                                               \
     }
 
 #define REGSTDFUNCTION(fname, fn_)                                              \

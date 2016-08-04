@@ -10,7 +10,7 @@ typedef struct type type_t;
 
 typedef int argc_t;
 
-typedef void (*fn_callback_t)(
+typedef int (*fn_callback_t)(
     type_t **args, argc_t argc, type_t *ret, scope_t *scope);
 
 typedef struct function {

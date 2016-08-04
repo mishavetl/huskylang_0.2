@@ -1,0 +1,4 @@
+var:number foo, 1
+var:number foo, 2
+
+io:puts (number:to_string ($ bar))

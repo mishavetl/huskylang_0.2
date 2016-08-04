@@ -2,6 +2,7 @@
 #define __variable_h__
 
 #include "type.h"
+#include "huserr.h"
 #include "tokenizer.h"
 #include "memory.h"
 
@@ -11,6 +12,7 @@ typedef struct variable {
 } var_t;
 
 typedef struct scope {
+    huserr_t *error;
     size_t vsize;
     var_t **vars;
     gc_t *gc;

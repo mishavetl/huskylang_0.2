@@ -12,7 +12,7 @@
 #include "argconfig.h"
 #include "non_posix.h"
 
-gc_t *gc_global;
+// gc_t *gc_global;
 
 int main(int argc, char *argv[])
 {
@@ -63,13 +63,12 @@ int main(int argc, char *argv[])
 
     /* Init. */
 
-    gc_t gc_global_heap = gc_init();
     gc_t gc_scope = gc_init();
 
     scope.gc = &gc_scope;
-    gc_global = &gc_global_heap;
 
     scope.vars = NULL;
+    scope.error = NULL;
     tree.map = NULL;
 
     check(tokenizer__generate_config(&token_config) >= 0, "Token config generation failed.");
@@ -99,22 +98,24 @@ int main(int argc, char *argv[])
             check(parser__funcall(&tree, tokens) >= 0, "Function call parsing failed.");
             performer__execute(&tree, &scope, &ret);
 
-            if (ret.type == tid_atom) {
-                if (strcmp(ret.value.atom, "bad") == 0) {
-                    puts("Error");
-                    goto error;
-                }
+            if (scope.error) {
+                printf(
+                    "Traceback %s: '%s' at token '%s' on line %ld-%ld, column %ld\n",
+                    scope.error->name, scope.error->msg,
+                    scope.error->token->value,
+                    scope.error->token->linefrom,
+                    scope.error->token->linefrom,
+                    scope.error->token->col + 1
+                );
             }
 
             clean(&tree, tokens);
         }
-        /* printf("ret: %s\n", ret.value.atom); */
     }
 
     FREE(buffer);
 
     if (f) fclose(f);
-    gc_clean(gc_global);
     gc_clean(scope.gc);
     FREE(scope.vars);
 
@@ -125,7 +126,6 @@ int main(int argc, char *argv[])
     FREE(buffer);
 
     if (f) fclose(f);
-    gc_clean(gc_global);
     gc_clean(scope.gc);
     FREE(scope.vars);
     clean(&tree, tokens);
