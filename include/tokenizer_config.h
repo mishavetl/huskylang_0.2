@@ -4,18 +4,21 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#define TOKENS(...) int tokenizer__generate_config(token_config_t *config) { \
-    size_t i; \
-    for (i = 0; i <= __tok_amount; i++) { \
-        config->check_functions[i] = NULL; \
-    } \
-    __VA_ARGS__ \
+#define TOKENS(...) int tokenizer__generate_config(token_config_t *config) {    \
+    size_t i;                                                                   \
+    for (i = 0; i <= __tok_amount; i++) {                                       \
+        config->check_functions[i] = NULL;                                      \
+    }                                                                           \
+                                                                                \
+    __VA_ARGS__                                                                 \
+                                                                                \
+    return 0;                                                                   \
 }
 
-#define TOKEN(name, ...) \
-    do { \
-        bool is_tok_##name(size_t pos, char ch) {__VA_ARGS__} \
-        config->check_functions[tok_##name] = is_tok_##name; \
+#define TOKEN(name, ...)                                                        \
+    do {                                                                        \
+        bool is_tok_##name(size_t pos, char ch) {__VA_ARGS__}                   \
+        config->check_functions[tok_##name] = is_tok_##name;                    \
     } while (0);
 
 /**

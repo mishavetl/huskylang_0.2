@@ -23,6 +23,4 @@ TOKENS(
     TOKEN(atom,
         return !strchr(DELIMITERS, ch) && !strchr(SPACES, ch);
     );
-
-    return 0;
 )

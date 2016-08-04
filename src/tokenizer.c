@@ -12,6 +12,10 @@ token_t **tokenizer__string(const token_config_t *config, const char *str, size_
     size_t i, j, pos, size = 1;
 
     for (i = 0; i < strlen(str); i++) {
+        if (str[i] == '-' && str[i + 1] == '-') {
+            break;
+        }
+
         for (j = 0; config->check_functions[j]; j++) {
             if (config->check_functions[j](0, str[i])) {
                 tokens = realloc(tokens, sizeof(token_t *) * ++size);
@@ -50,7 +54,12 @@ token_t **tokenizer__string(const token_config_t *config, const char *str, size_
         }
     }
 
-    tokens[size - 1] = NULL;
+    if (tokens) {
+        tokens[size - 1] = NULL;
+    } else {
+        tokens = malloc(sizeof(token_t *));
+        tokens[0] = NULL;
+    }
 
     return tokens;
 

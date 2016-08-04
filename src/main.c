@@ -12,8 +12,6 @@
 #include "argconfig.h"
 #include "non_posix.h"
 
-// gc_t *gc_global;
-
 int main(int argc, char *argv[])
 {
     call_tree_t tree;
@@ -95,18 +93,21 @@ int main(int argc, char *argv[])
 
         if (strlen(buffer) > 1) {
             check((tokens = tokenizer__string(&token_config, buffer, line)), "Tokenization failed.");
-            check(parser__funcall(&tree, tokens) >= 0, "Function call parsing failed.");
-            performer__execute(&tree, &scope, &ret);
 
-            if (scope.error) {
-                printf(
-                    "Traceback %s: '%s' at token '%s' on line %ld-%ld, column %ld\n",
-                    scope.error->name, scope.error->msg,
-                    scope.error->token->value,
-                    scope.error->token->linefrom,
-                    scope.error->token->linefrom,
-                    scope.error->token->col + 1
-                );
+            if (tokens[0]) {
+                check(parser__funcall(&tree, tokens) >= 0, "Function call parsing failed.");
+                performer__execute(&tree, &scope, &ret);
+
+                if (scope.error) {
+                    printf(
+                        "Traceback %s: '%s' at token '%s' on line %ld-%ld, column %ld\n",
+                        scope.error->name, scope.error->msg,
+                        scope.error->token->value,
+                        scope.error->token->linefrom,
+                        scope.error->token->linefrom,
+                        scope.error->token->col + 1
+                    );
+                }
             }
 
             clean(&tree, tokens);
