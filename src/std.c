@@ -98,6 +98,16 @@ int io__puts(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
     return 0;
 }
 
+int io__putln(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
+{
+    puts("");
+
+    ret->type = tid_atom;
+    ret->value.atom = "good";
+
+    return 0;
+}
+
 // int lister(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
 // {
 //     ret->type = tid_atom;
@@ -145,7 +155,7 @@ int get(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
     return -1;
 }
 
-STDFUNCTIONS(7,
+STDFUNCTIONS(8,
     REGSTDFUNCTION("+",
         create_function(
             plus, INFINITY_ARGS,
@@ -155,6 +165,11 @@ STDFUNCTIONS(7,
         create_function(
             io__puts, INFINITY_ARGS,
             (const int []) {tid_string}, 1,
+            scope->gc))
+    REGSTDFUNCTION("io:putln",
+        create_function(
+            io__puts, 0,
+            (const int []) {}, 0,
             scope->gc))
     REGSTDFUNCTION("number:to_string",
         create_function(

@@ -74,12 +74,18 @@ mapv_t parser__funcall_(call_tree_t *call_tree, token_t **tokens, mapv_t *i_)
         }
     }
 
-    if (fname_i == -1) {
-        sentinel("syntax error: 'no function name candidates' at column %ld, line %ld-%ld, token: '%s'", tokens[i_start]->col, tokens[i_start]->linefrom, tokens[i_start]->lineto, tokens[i_start]->value);
-    }
 
     args = realloc(args, sizeof(mapv_t) * ++size);
     args[size - 1] = TERMINATE_MAPV;
+
+    if (i - i_start == 1) {
+        fname_i = i_start;
+        args[size - 2] = EMPTY_MAPV;
+    }
+
+    if (fname_i == -1) {
+        sentinel("syntax error: 'no function name candidates' at column %ld, line %ld-%ld, token: '%s'", tokens[i_start]->col, tokens[i_start]->linefrom, tokens[i_start]->lineto, tokens[i_start]->value);
+    }
 
     call_tree->map[fname_i] = args;
     call_tree->size = i;

@@ -1,0 +1,4 @@
+-- functions can accept no arguments --
+
+io:puts (atom:to_string (io:putln))
+io:putln

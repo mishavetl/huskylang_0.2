@@ -414,3 +414,54 @@ Test(parser, funcall__with_multiple_nested_function_calls_in_one) {
     FREE(tree.map[9]);
     FREE(tree.map);
 }
+
+Test(parser, funcall__with_no_args) {
+    call_tree_t tree;
+
+    static token_t fname = {.value = "foo:bar", .type = tok_atom};
+
+    token_t *tokens[] = {
+        &fname,
+        NULL
+    };
+
+    cr_assert_geq(parser__funcall(&tree, tokens), 0, "Status.");
+    cr_assert_arr_eq(tree.tokens, tokens, sizeof(tokens), "Tree tokens and passed tokens equality.");
+
+    cr_assert_eq(tree.map[0][0], EMPTY_MAPV);
+    cr_assert_eq(tree.map[0][1], TERMINATE_MAPV);
+
+    FREE(tree.map[0]);
+    FREE(tree.map);
+}
+
+Test(parser, funcall__with_no_args_as_arg) {
+    call_tree_t tree;
+
+    static token_t fname = {.value = "foo", .type = tok_atom};
+    static token_t prior_start = {.value = "(", .type = tok_prior_start};
+    static token_t fname1 = {.value = "foo:bar", .type = tok_atom};
+    static token_t prior_end = {.value = ")", .type = tok_prior_end};
+
+    token_t *tokens[] = {
+        &fname,
+        &prior_start,
+        &fname1,
+        &prior_end,
+        NULL
+    };
+
+    cr_assert_geq(parser__funcall(&tree, tokens), 0, "Status.");
+    cr_assert_arr_eq(tree.tokens, tokens, sizeof(tokens), "Tree tokens and passed tokens equality.");
+
+    cr_assert_eq(tree.map[0][0], EMPTY_MAPV);
+    cr_assert_eq(tree.map[0][1], 2);
+    cr_assert_eq(tree.map[0][2], TERMINATE_MAPV);
+    cr_assert_null(tree.map[1]);
+    cr_assert_eq(tree.map[2][0], EMPTY_MAPV);
+    cr_assert_eq(tree.map[2][1], TERMINATE_MAPV);
+    cr_assert_null(tree.map[3]);
+
+    FREE(tree.map[0]);
+    FREE(tree.map);
+}
