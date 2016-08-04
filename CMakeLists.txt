@@ -11,7 +11,7 @@ if(DEFINED TESTS)
   ExternalProject_Add(
     Criterion
 
-    CMAKE_ARGS -DCMAKE_TOOLCHAIN_FILE=${CMAKE_CURRENT_SOURCE_DIR}/toolchains/Windows32bit.cmake
+    CMAKE_ARGS -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
 
     GIT_REPOSITORY "https://github.com/Snaipe/Criterion.git"
     GIT_TAG "bleeding"
