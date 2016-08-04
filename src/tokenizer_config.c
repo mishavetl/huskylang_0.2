@@ -18,10 +18,10 @@ TOKENS(
         return pos == 0 && ch == ')';
     );
     TOKEN(del,
-        return pos == 0 && index(DELIMITERS, ch);
+        return pos == 0 && strchr(DELIMITERS, ch);
     );
     TOKEN(atom,
-        return !index(DELIMITERS, ch) && !index(SPACES, ch);
+        return !strchr(DELIMITERS, ch) && !strchr(SPACES, ch);
     );
 
     return 0;

@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
 project(huskylang)
 
 include(ExternalProject)
@@ -7,17 +7,22 @@ include(ExternalProject)
 # Dependencies
 ##
 
-ExternalProject_Add(
-  Criterion
+if(DEFINED TESTS)
+  ExternalProject_Add(
+    Criterion
 
-  GIT_REPOSITORY "https://github.com/Snaipe/Criterion.git"
-  GIT_TAG "bleeding"
+    CMAKE_ARGS -DCMAKE_TOOLCHAIN_FILE=${CMAKE_CURRENT_SOURCE_DIR}/toolchains/Windows32bit.cmake
 
-  INSTALL_COMMAND "echo"
+    GIT_REPOSITORY "https://github.com/Snaipe/Criterion.git"
+    GIT_TAG "bleeding"
 
-  UPDATE_COMMAND ""
-  PATCH_COMMAND ""
-)
+    INSTALL_COMMAND "echo"
+
+    UPDATE_COMMAND ""
+    PATCH_COMMAND ""
+  )
+endif(DEFINED TESTS)
+
 
 ##
 # Config
@@ -25,11 +30,19 @@ ExternalProject_Add(
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
-ExternalProject_Get_Property(Criterion BINARY_DIR SOURCE_DIR)
-set(Criterion_BIN_DIR ${BINARY_DIR})
-set(Criterion_SRC_DIR ${SOURCE_DIR})
+add_definitions(--std=c11)
+add_definitions(-Wall -Wextra)
 
-link_directories(${Criterion_BIN_DIR})
+if(DEFINED TESTS)
+  ExternalProject_Get_Property(Criterion BINARY_DIR SOURCE_DIR)
+  set(Criterion_BIN_DIR ${BINARY_DIR})
+  set(Criterion_SRC_DIR ${SOURCE_DIR})
+endif(DEFINED TESTS)
+
+if(DEFINED TESTS)
+  link_directories(${Criterion_BIN_DIR})
+endif(DEFINED TESTS)
+
 include_directories(
   ${CMAKE_SOURCE_DIR}/include
   ${Criterion_SRC_DIR}/include
@@ -48,7 +61,9 @@ target_link_libraries(husky src m)
 # Tests
 ##
 
-file(GLOB testfiles "tests/*.c")
+if(DEFINED TESTS)
+  file(GLOB testfiles "tests/*.c")
 
-add_executable(husky_tests ${testfiles})
-target_link_libraries(husky_tests src criterion)
+  add_executable(husky_tests ${testfiles})
+  target_link_libraries(husky_tests src criterion)
+endif(DEFINED TESTS)

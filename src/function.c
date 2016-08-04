@@ -4,7 +4,7 @@
 #include "function.h"
 #include "dbg.h"
 
-inline fn_t*
+fn_t*
 create_function(
     fn_callback_t fptr, int argc,
     const int argtypes[], int argtypes_size,

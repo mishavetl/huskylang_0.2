@@ -33,7 +33,7 @@ typedef struct garbage_collector {
  * @param gc (garbage collector struct ptr)
  *
  */
-inline gc_t gc_init();
+extern inline gc_t gc_init();
 
 /**
  * Collects garbage_collector memory
@@ -43,7 +43,7 @@ inline gc_t gc_init();
  * @param gc (garbage collector struct ptr)
  *
  */
-inline void gc_clean(gc_t *gc);
+void gc_clean(gc_t *gc);
 
 /**
  * Allocates memory
@@ -56,7 +56,7 @@ inline void gc_clean(gc_t *gc);
  * @return added ptr
  *
  */
-inline void *gc_add(gc_t *gc, void *ptr);
+void *gc_add(gc_t *gc, void *ptr);
 
 /**
  * Count 2d array length

@@ -1,5 +1,6 @@
 #include <stdio.h>
-#include <argp.h>
+#include <unistd.h>
+#include <getopt.h>
 
 #include "tokenizer.h"
 #include "dbg.h"
@@ -9,19 +10,15 @@
 #include "performer.h"
 #include "main_utils.h"
 #include "argconfig.h"
-
-extern FILE *stdin;
+#include "non_posix.h"
 
 gc_t *gc_global;
 
 int main(int argc, char *argv[])
 {
-    struct arguments arguments;
-
     call_tree_t tree;
     token_t **tokens = NULL;
     token_config_t token_config;
-    gc_t gc_scope = gc_init();
     scope_t scope;
     type_t ret;
     int line;
@@ -30,39 +27,67 @@ int main(int argc, char *argv[])
     char *buffer = NULL;
     size_t size = 0;
 
+    char c;
+
     /* Parse arguments. */
 
-    arguments.silent = 0;
-    arguments.verbose = 0;
-    arguments.interactive = 0;
-    arguments.script_path = NULL;
+    char *script_path = NULL;
+    int interactive = 0, version = 0;
 
-    argp_parse(&argp, argc, argv, 0, 0, &arguments);
+    while ((c = getopt(argc, argv, "ivr:")) != -1) {
+        switch (c) {
+            case 'i':
+                interactive = 1;
+                break;
+            case 'v':
+                puts(PROGRAM_TITLE "\n" PROGRAM_VERSION);
+                version = 1;
+                break;
+            case 'r':
+                script_path = optarg;
+                break;
+            default:
+                print_usage(argv[0]);
+                exit(EXIT_FAILURE);
+        }
+    }
+
+    /* Check for correctness of input data. */
+
+    if (script_path == NULL && !interactive && !version) {
+        print_usage(argv[0]);
+        exit(EXIT_FAILURE);
+    } else if (script_path == NULL && !interactive && version) {
+        exit(EXIT_SUCCESS);
+    }
 
     /* Init. */
 
     gc_t gc_global_heap = gc_init();
+    gc_t gc_scope = gc_init();
+
+    scope.gc = &gc_scope;
     gc_global = &gc_global_heap;
 
+    scope.vars = NULL;
     tree.map = NULL;
 
     check(tokenizer__generate_config(&token_config) >= 0, "Token config generation failed.");
 
-    if (arguments.interactive) {
+    if (interactive) {
         puts("Not implemented.");
-        goto error;
+        exit(EXIT_FAILURE);
     } else {
-        check((f = fopen(arguments.script_path, "rb")), "Error opening file.");
+        check((f = fopen(script_path, "rb")), "Error opening file.");
     }
 
-    scope.gc = &gc_scope;
     get_stdlib_variables(&scope);
 
     /* Interpretation process. */
 
     for (line = 1; ; line++) {
-        if (arguments.interactive) {
-            goto error;
+        if (interactive) {
+
         } else {
             if (getline(&buffer, &size, f) == -1) {
                 break;

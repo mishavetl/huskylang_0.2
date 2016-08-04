@@ -20,7 +20,7 @@ typedef struct function {
     fn_callback_t callback;
 } fn_t;
 
-inline fn_t *
+fn_t *
 create_function(
     fn_callback_t fptr, int argc,
     const int argtypes[], int argtypes_size,

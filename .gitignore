@@ -1,6 +1,17 @@
+# ide files.
 .vscode
+
+# build files.
 /build
+/win32build
+/win64build
+
+# precompiled files.
 *.gch
 *.o
+
+# log files.
 *.vallog
+
+# swap files.
 *~
