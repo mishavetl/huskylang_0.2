@@ -11,7 +11,7 @@ Husky Programming Language
 
 ### Features
 
- * pure functional programming
+ * purely functional programming
  * nelisp minimal syntax
  * no statements
 
