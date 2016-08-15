@@ -1,0 +1,10 @@
+-- husky meta programming example --
+
+var:atom plus, +
+var:atom print, io:puts
+
+($ print) (number:to_string (1 ($ plus) 2))
+
+-- 1 ($ +) 2
+
+-- (atom:to_string foo) ($ print) (1 ($ +) 2), (atom:to_string bar)

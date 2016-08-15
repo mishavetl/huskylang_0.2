@@ -18,14 +18,15 @@ typedef int mapv_t;
  * @author mishavetl
  *
  * @member tokens (an array of tokens)
+ * @member meta (array for meta programming features)
  * @member map ({{1, 2}, NULL, {3}, NULL})
  *
  */
 typedef struct call_tree {
+    mapv_t start;
+    int size;
     token_t **tokens;
     mapv_t **map;
-    mapv_t start;
-    size_t size;
 } call_tree_t;
 
 #endif

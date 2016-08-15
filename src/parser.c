@@ -4,12 +4,15 @@
 #include "parser.h"
 #include "dbg.h"
 
+mapv_t parser__funcall_(call_tree_t *call_tree, token_t **tokens, mapv_t *i_);
+
 mapv_t parser__funcall(call_tree_t *call_tree, token_t **tokens)
 {
     mapv_t i = 0;
-    size_t tree_size = sizeof(mapv_t *) * count_2d(tokens);
+    size_t size = count_2d(tokens);
+    size_t tree_size = sizeof(mapv_t *) * size;
 
-    call_tree->map = malloc(tree_size);
+    call_tree->map = (mapv_t **) malloc(tree_size);
     check_mem(call_tree->map);
     memset(call_tree->map, 0, tree_size);
 
@@ -26,11 +29,14 @@ mapv_t parser__funcall(call_tree_t *call_tree, token_t **tokens)
 
 mapv_t parser__funcall_(call_tree_t *call_tree, token_t **tokens, mapv_t *i_)
 {
-    mapv_t size = 0;
-    mapv_t *args = NULL;
+    mapv_t size = 1;
+    mapv_t *args;
     mapv_t i = *i_;
+    mapv_t saved, fname_pos;
     mapv_t i_start = i, fname_i = EMPTY_MAPV, fname_arg_i;
     int possible_fname = 1;
+
+    check_mem(args = (mapv_t *) malloc(sizeof(mapv_t)));
 
     for (; tokens[i]; i++) {
         if (tokens[i]->type == tok_prior_end) {
@@ -38,20 +44,30 @@ mapv_t parser__funcall_(call_tree_t *call_tree, token_t **tokens, mapv_t *i_)
         }
 
         if (tokens[i]->type != tok_del) {
-            if (tokens[i + 1] && tokens[i]->type != tok_prior_start) {
+            saved = i;
+            fname_pos = i;
+
+            if (tokens[i]->type == tok_prior_start) {
+                i++;
+                fname_pos = parser__funcall_(call_tree, tokens, &i);
+                check(fname_pos >= 0, "Nested function call parsing failed.");
+            }
+
+            if (tokens[i + 1]) {
                 if (tokens[i + 1]->type != tok_del && tokens[i + 1]->type != tok_prior_end) {
                     if (possible_fname) {
                         if (fname_i != EMPTY_MAPV) {
-                            args[fname_arg_i] = fname_i;
+                            args[fname_arg_i] = args[0];
                             possible_fname = 0;
                         } else {
-                            args = realloc(args, sizeof(mapv_t) * ++size);
+                            args = (mapv_t *) realloc(args, sizeof(mapv_t) * ++size);
                             check_mem(args);
                             args[size - 1] = EMPTY_MAPV;
                             fname_arg_i = size - 1;
                         }
 
-                        fname_i = i;
+                        args[0] = fname_pos;
+                        fname_i = saved;
 
                         continue;
                     } else {
@@ -60,22 +76,28 @@ mapv_t parser__funcall_(call_tree_t *call_tree, token_t **tokens, mapv_t *i_)
                 }
             }
 
-            args = realloc(args, sizeof(mapv_t) * ++size);
+            if ((!tokens[i + 1] || tokens[i + 1]->type == tok_prior_end)
+                && fname_i == EMPTY_MAPV
+            ) {
+                args = (mapv_t *) realloc(args, sizeof(mapv_t) * ++size);
+                check_mem(args);
+                args[size - 1] = EMPTY_MAPV;
+                fname_arg_i = size - 1;
+
+                args[0] = fname_pos;
+                fname_i = saved;
+
+                continue;
+            }
+
+            args = (mapv_t *) realloc(args, sizeof(mapv_t) * ++size);
             check_mem(args);
 
-            if (tokens[i]->type == tok_prior_start) {
-                i++;
-                args[size - 1] = parser__funcall_(call_tree, tokens, &i);
-
-                check(args[size - 1] >= 0, "Nested function call parsing failed.");
-            } else {
-                args[size - 1] = i;
-            }
+            args[size - 1] = fname_pos;
         }
     }
 
-
-    args = realloc(args, sizeof(mapv_t) * ++size);
+    args = (mapv_t *) realloc(args, sizeof(mapv_t) * ++size);
     args[size - 1] = TERMINATE_MAPV;
 
     if (i - i_start == 1) {
@@ -83,7 +105,7 @@ mapv_t parser__funcall_(call_tree_t *call_tree, token_t **tokens, mapv_t *i_)
         args[size - 2] = EMPTY_MAPV;
     }
 
-    if (fname_i == -1) {
+    if (fname_i == EMPTY_MAPV) {
         sentinel("syntax error: 'no function name candidates' at column %ld, line %ld-%ld, token: '%s'", tokens[i_start]->col, tokens[i_start]->linefrom, tokens[i_start]->lineto, tokens[i_start]->value);
     }
 

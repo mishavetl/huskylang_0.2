@@ -38,12 +38,19 @@ performer__funcall(
     gc_t gc = gc_init();
 
     check_mem(type = gc_add(&gc, malloc(sizeof(type_t))));
-    check_mem(args =
+    check_mem(args = (type_t **)
         gc_add(&gc,
-            malloc(sizeof(type_t *) * (count_mapv(tree->map[i]) + 1))));
+            malloc(sizeof(type_t *) * (count_mapv(tree->map[i]) + 1))
+        )
+    );
 
-    check(type_from_token(tree->tokens[i], type) >= 0,
-        "Failed to construct type.");
+    if (tree->map[tree->map[i][0]] && tree->map[i][0] != i) {
+        performer__funcall(tree, scope, type, tree->map[i][0]);
+    } else {
+        check(type_from_token(tree->tokens[i], type) >= 0,
+            "Failed to construct type."
+        );
+    }
 
     if (type->type != tid_atom) {
         scope->error = gc_add(scope->gc, malloc(sizeof(huserr_t)));
@@ -76,7 +83,7 @@ performer__funcall(
         goto error;
     }
 
-    for (j = 0; tree->map[i][j] != TERMINATE_MAPV; j++) {
+    for (j = 1; tree->map[i][j] != TERMINATE_MAPV; j++) {
         if (tree->map[i][j] == EMPTY_MAPV) continue;
 
         check_mem(type = gc_add(&gc, malloc(sizeof(type_t))));
@@ -84,7 +91,8 @@ performer__funcall(
         if (!tree->map[tree->map[i][j]]) {
             check(
                 type_from_token(tree->tokens[tree->map[i][j]], type) >= 0,
-                "Failed to construct type.");
+                "Failed to construct type."
+            );
         } else {
             performer__funcall(tree, scope, type, tree->map[i][j]);
 
@@ -95,14 +103,16 @@ performer__funcall(
 
         args[size] = type;
 
-        if (type->type !=
-            fn->value.fn->argtypes[size % fn->value.fn->argtypes_size])
-        {
-            scope->error = gc_add(scope->gc, malloc(sizeof(huserr_t)));
-            scope->error->name = "typeErr";
-            scope->error->msg = "argument type mismatch";
-            scope->error->token = tree->tokens[tree->map[i][j]];
-            goto error;
+        if (fn->value.fn->argtypes_size != 0) {
+            if (type->type !=
+                fn->value.fn->argtypes[size % fn->value.fn->argtypes_size]
+            ) {
+                scope->error = gc_add(scope->gc, malloc(sizeof(huserr_t)));
+                scope->error->name = "typeErr";
+                scope->error->msg = "argument type mismatch";
+                scope->error->token = tree->tokens[tree->map[i][j]];
+                goto error;
+            }
         }
 
         size++;
