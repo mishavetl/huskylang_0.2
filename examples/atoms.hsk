@@ -1,0 +1,7 @@
+-- atom usage example --
+
+var:number `number one`, 1
+var:number `number two`, 2
+var:number `number three`, 3
+
+io:puts (number:to_string (+ ($ `number one`), ($ `number two`), ($ `number three`)))

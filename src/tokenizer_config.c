@@ -21,16 +21,25 @@ TOKENS(
         return pos == 0 && strchr(DELIMITERS, ch);
     );
     TOKEN(string,
-        if (pos == 0 && ch == '\'')
+        if (pos == 0 && ch == '\'') {
             return TOKEN_CHAR_SKIP;
-        else if (pos != 0 && ch == '\'')
+        } else if (pos != 0 && ch == '\'') {
             return TOKEN_CHAR_SKIP_AND_END;
-        else if (started)
+        } else if (started) {
             return 1;
-        else
+        } else {
             return 0;
+        }
     );
     TOKEN(atom,
-        return !strchr(DELIMITERS, ch) && !strchr(SPACES, ch);
+        if (pos == 0 && ch == '`') {
+            return TOKEN_CHAR_SKIP;
+        } else if (pos != 0 && ch == '`') {
+            return TOKEN_CHAR_SKIP_AND_END;
+        } else if (started) {
+            return 1;
+        } else {
+            return !strchr(DELIMITERS, ch) && !strchr(SPACES, ch);
+        }
     );
 )

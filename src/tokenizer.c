@@ -10,7 +10,7 @@ token_t **tokenizer__string(const token_config_t *config, const char *str, size_
     token_t **tokens = NULL;
     token_t *token;
     size_t i, j, pos, real_pos, size = 1;
-    int stat;
+    int stat, started;
 
     for (i = 0; i < strlen(str); i++) {
         if (str[i] == '-' && str[i + 1] == '-') {
@@ -32,11 +32,12 @@ token_t **tokenizer__string(const token_config_t *config, const char *str, size_
                 token->linefrom = line;
 
                 for (
-                    real_pos = 0, pos = 0;
-                    (stat = config->check_functions[j](pos, str[i], 1));
+                    real_pos = 0, pos = 0, started = 0;
+                    (stat = config->check_functions[j](pos, str[i], started));
                     pos++, i++
                 ) {
                     if (stat == TOKEN_CHAR_SKIP) {
+                        started = 1;
                         continue;
                     } else if (stat == TOKEN_CHAR_SKIP_AND_END) {
                         i++;

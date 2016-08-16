@@ -73,6 +73,30 @@ Test(tokenizer, string__tokenizes_atoms_with_numbers_and_commas, .fini = teardow
     cr_assert_eq(tokens[8]->type, tok_atom);
 }
 
+Test(tokenizer, string__atoms_with_special_characters, .fini = teardown) {
+    tokens = tokenizer__string(&token_config, "`\\tfoo \\`bar\\` baz\\\\\\n`", 1);
+
+    cr_assert_str_eq(tokens[0]->value, "\tfoo `bar` baz\\\n");
+    cr_assert_eq(tokens[0]->type, tok_atom);
+
+    cr_assert_null(tokens[1]);
+}
+
+Test(tokenizer, string__atoms_with_special_characters_as_an_arg, .fini = teardown) {
+    tokens = tokenizer__string(&token_config, "`\\tfoo \\`bar\\` baz\\\\\\n` foo bar", 1);
+
+    cr_assert_str_eq(tokens[0]->value, "\tfoo `bar` baz\\\n");
+    cr_assert_eq(tokens[0]->type, tok_atom);
+
+    cr_assert_str_eq(tokens[1]->value, "foo");
+    cr_assert_eq(tokens[1]->type, tok_atom);
+
+    cr_assert_str_eq(tokens[2]->value, "bar");
+    cr_assert_eq(tokens[2]->type, tok_atom);
+
+    cr_assert_null(tokens[3]);
+}
+
 Test(tokenizer, string__assigns_last_token_to_null, .fini = teardown) {
     tokens = tokenizer__string(&token_config, "1,", 1);
 
