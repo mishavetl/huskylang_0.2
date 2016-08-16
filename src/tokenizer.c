@@ -9,7 +9,8 @@ token_t **tokenizer__string(const token_config_t *config, const char *str, size_
 {
     token_t **tokens = NULL;
     token_t *token;
-    size_t i, j, pos, size = 1;
+    size_t i, j, pos, real_pos, size = 1;
+    int stat;
 
     for (i = 0; i < strlen(str); i++) {
         if (str[i] == '-' && str[i + 1] == '-') {
@@ -17,7 +18,8 @@ token_t **tokenizer__string(const token_config_t *config, const char *str, size_
         }
 
         for (j = 0; config->check_functions[j]; j++) {
-            if (config->check_functions[j](0, str[i])) {
+            stat = config->check_functions[j](0, str[i], 0);
+            if (stat) {
                 tokens = realloc(tokens, sizeof(token_t *) * ++size);
                 check_mem(tokens);
                 tokens[size - 2] = malloc(sizeof(token_t));
@@ -29,23 +31,37 @@ token_t **tokenizer__string(const token_config_t *config, const char *str, size_
                 token->value = NULL;
                 token->linefrom = line;
 
-                for (pos = 0; config->check_functions[j](pos, str[i]); pos++, i++) {
-                    token->value = realloc(token->value, sizeof(char) * (pos + 2));
+                for (
+                    real_pos = 0, pos = 0;
+                    (stat = config->check_functions[j](pos, str[i], 1));
+                    pos++, i++
+                ) {
+                    if (stat == TOKEN_CHAR_SKIP) {
+                        continue;
+                    } else if (stat == TOKEN_CHAR_SKIP_AND_END) {
+                        i++;
+                        break;
+                    }
+
+                    token->value = realloc(token->value, sizeof(char) * (real_pos + 2));
                     check_mem(token->value);
-                    token->value[pos] = '\0';
+                    token->value[real_pos] = '\0';
+
                     if (str[i] == '\\') {
                         if (str[i + 1] == 'n') {
-                            token->value[pos] = '\n';
-                            i++;
+                            token->value[real_pos] = '\n';
+                        } else if (str[i + 1] == 't') {
+                            token->value[real_pos] = '\t';
                         }
 
                         i++;
                     }
 
-                    if (token->value[pos] == '\0') token->value[pos] = str[i];
+                    if (token->value[real_pos] == '\0') token->value[real_pos] = str[i];
+                    real_pos++;
                 }
 
-                token->value[pos] = '\0';
+                token->value[real_pos] = '\0';
                 token->lineto = line;
                 i--;
 

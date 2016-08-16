@@ -1,0 +1,3 @@
+-- strings usage example --
+
+io:puts '\\hello\\,\n\t\'world\'\n', (atom:to_string foobar)

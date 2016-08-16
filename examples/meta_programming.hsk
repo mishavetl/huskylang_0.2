@@ -2,8 +2,9 @@
 
 var:atom plus, +
 var:atom print, io:puts
+var:atom good, io:puts
 
-($ print) (number:to_string (1 ($ plus) 2))
+($ (($ print) (number:to_string (1 ($ plus) 2)))) 'good'
 
 -- 1 ($ +) 2
 

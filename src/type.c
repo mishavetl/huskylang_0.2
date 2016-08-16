@@ -15,6 +15,9 @@ int type_from_token(token_t *token, type_t *type)
     } else if (token->type == tok_atom) {
         type->value.atom = token->value;
         type->type = tid_atom;
+    } else if (token->type == tok_string) {
+        type->value.string = token->value;
+        type->type = tid_string;
     } else {
         sentinel("type error: 'error creating type' on col: %ld, token: '%s'.", token->col, token->value);
     }

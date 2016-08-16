@@ -171,3 +171,48 @@ Test(tokenizer, string__comments_at_the_end_of_the_line, .fini = teardown) {
 
     cr_assert_null(tokens[9]);
 }
+
+Test(tokenizer, string__basic_string, .fini = teardown) {
+    tokens = tokenizer__string(&token_config, "'foo bar'", 1);
+
+    cr_assert_str_eq(tokens[0]->value, "foo bar");
+    cr_assert_eq(tokens[0]->type, tok_string);
+
+    cr_assert_null(tokens[1]);
+}
+
+Test(tokenizer, string__strings_as_arguments, .fini = teardown) {
+    tokens = tokenizer__string(&token_config, "foo 'foo bar', (bar 'foo bar')", 1);
+
+    cr_assert_str_eq(tokens[0]->value, "foo");
+    cr_assert_eq(tokens[0]->type, tok_atom);
+
+    cr_assert_str_eq(tokens[1]->value, "foo bar");
+    cr_assert_eq(tokens[1]->type, tok_string);
+
+    cr_assert_str_eq(tokens[2]->value, ",");
+    cr_assert_eq(tokens[2]->type, tok_del);
+
+    cr_assert_str_eq(tokens[3]->value, "(");
+    cr_assert_eq(tokens[3]->type, tok_prior_start);
+
+    cr_assert_str_eq(tokens[4]->value, "bar");
+    cr_assert_eq(tokens[4]->type, tok_atom);
+
+    cr_assert_str_eq(tokens[5]->value, "foo bar");
+    cr_assert_eq(tokens[5]->type, tok_string);
+
+    cr_assert_str_eq(tokens[6]->value, ")");
+    cr_assert_eq(tokens[6]->type, tok_prior_end);
+
+    cr_assert_null(tokens[7]);
+}
+
+Test(tokenizer, string__strings_escape_characters, .fini = teardown) {
+    tokens = tokenizer__string(&token_config, "'\\tfoo\\\\ \\'bar\\n'", 1);
+
+    cr_assert_str_eq(tokens[0]->value, "\tfoo\\ 'bar\n");
+    cr_assert_eq(tokens[0]->type, tok_string);
+
+    cr_assert_null(tokens[1]);
+}

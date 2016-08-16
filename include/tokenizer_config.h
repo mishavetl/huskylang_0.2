@@ -4,6 +4,9 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#define TOKEN_CHAR_SKIP 2
+#define TOKEN_CHAR_SKIP_AND_END 3
+
 #define TOKENS(...) int tokenizer__generate_config(token_config_t *config) {    \
     size_t i;                                                                   \
     for (i = 0; i <= __tok_amount; i++) {                                       \
@@ -17,7 +20,7 @@
 
 #define TOKEN(name, ...)                                                        \
     do {                                                                        \
-        bool is_tok_##name(size_t pos, char ch) {__VA_ARGS__}                   \
+        int is_tok_##name(size_t pos, char ch, int started) {__VA_ARGS__}       \
         config->check_functions[tok_##name] = is_tok_##name;                    \
     } while (0);
 
@@ -40,11 +43,12 @@ enum token_type {
     tok_prior_start,
     tok_prior_end,
     tok_del,
+    tok_string,
     tok_atom,
     __tok_amount
 };
 
-typedef bool (*token_check_function_t)(size_t, char);
+typedef int (*token_check_function_t)(size_t, char, int);
 
 /**
  * Token Config structure
