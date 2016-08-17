@@ -6,6 +6,7 @@ Husky Programming Language
 [![Build Status](https://travis-ci.org/mishavetl/huskylang.svg?branch=master)](https://travis-ci.org/mishavetl/huskylang)
 
 ### Why husky?
+
  * fast like a husky
  * friendly like a husky
 
@@ -18,17 +19,14 @@ Husky Programming Language
 ### Examples
 
 ```
-# foo.hsk
-fn even?, ([]
-    ($number), ->
-        (($ number) rem 2) == 0
-    .
-)
+--| foo.hsk |--
 
-io:puts (even? 4)
+var:tuple foo, ({} 1, 2, 3, 4)
+
+io:puts (number:to_string ((($ foo) # 0) + (($ foo) # 1)))
 ```
 
 ```bash
 $ husky foo.hsk
-true
+3
 ```
