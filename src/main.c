@@ -107,6 +107,7 @@ int main(int argc, char *argv[])
                         scope.error->token->linefrom,
                         scope.error->token->col + 1
                     );
+                    scope.error = NULL;
                 }
             }
 

@@ -21,13 +21,15 @@ typedef struct type {
         tid_num, // number
         tid_atom, // atom
         tid_fn, // function
-        tid_string // string
+        tid_string, // string
+        tid_tuple // tuple (immutable array)
     } type;
     union {
         fn_t *fn;
         int num;
         const char *atom;
         const char *string;
+        type_t **tuple;
     } value;
 } type_t;
 
