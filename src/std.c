@@ -25,7 +25,7 @@
  * Registration
  */
 
-STDFUNCTIONS(12,
+STDFUNCTIONS(13,
     REGSTDFUNCTION("+",
         create_function(
             plus, INFINITY_ARGS,
@@ -74,6 +74,11 @@ STDFUNCTIONS(12,
         create_function(
             var__set, 2,
             (const int []) {tid_atom, tid_tuple}, 2,
+            scope->gc));
+    REGSTDFUNCTION("var:string",
+        create_function(
+            var__set, 2,
+            (const int []) {tid_atom, tid_string}, 2,
             scope->gc));
 
     REGSTDFUNCTION("$",

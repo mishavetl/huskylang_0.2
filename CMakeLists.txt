@@ -65,5 +65,8 @@ if(DEFINED TESTS)
   file(GLOB testfiles "tests/*.c")
 
   add_executable(husky_tests ${testfiles})
+  add_executable(husky_list_tests "src/list/test.c")
+
   target_link_libraries(husky_tests src criterion)
+  target_link_libraries(husky_list_tests src)
 endif(DEFINED TESTS)
