@@ -27,6 +27,6 @@ io:puts (number:to_string ((($ foo) # 0) + (($ foo) # 1)))
 ```
 
 ```bash
-$ husky foo.hsk
+$ husky -r foo.hsk
 3
 ```
