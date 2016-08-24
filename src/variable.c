@@ -3,6 +3,7 @@
 
 #include "variable.h"
 #include "memory.h"
+#include "list/src/list.h"
 
 int setvar(scope_t *scope, const char *name, type_t *value)
 {
@@ -13,17 +14,10 @@ int setvar(scope_t *scope, const char *name, type_t *value)
     check_mem(scope->vars[scope->vsize - 1]);
 
     scope->vars[scope->vsize - 1]->name = gc_add(scope->gc, strdup(name));
-    scope->vars[scope->vsize - 1]->value = gc_add(scope->gc, malloc(sizeof(type_t)));
-    scope->vars[scope->vsize - 1]->value->type = value->type;
-    scope->vars[scope->vsize - 1]->value->value = value->value;
+    check_mem(scope->vars[scope->vsize - 1]->name);
 
-    if (value->type == tid_atom) {
-        scope->vars[scope->vsize - 1]->value->value.atom =
-            gc_add(scope->gc, strdup(value->value.atom));
-    } else if (value->type == tid_string) {
-        scope->vars[scope->vsize - 1]->value->value.string =
-            gc_add(scope->gc, strdup(value->value.string));
-    }
+    scope->vars[scope->vsize - 1]->value = copy_type(value, scope);
+    check_mem(scope->vars[scope->vsize - 1]->value);
 
     return 0;
 

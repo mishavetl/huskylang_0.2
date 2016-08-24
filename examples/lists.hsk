@@ -1,0 +1,7 @@
+-- lists usage example --
+
+var:list list, ([] 'foo', ([] 1, 2, 3), 'bar', baz)
+var:list emptyList, ([])
+
+io:puts (number:to_string (hd (hd (tl ([] 'foo', ([] 1, 2, 3), 'bar', baz)))))
+io:puts (hd ($ emptyList))

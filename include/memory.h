@@ -2,6 +2,7 @@
 #define __memory_h__
 
 #include <stdlib.h>
+#include "../src/list/src/list.h"
 
 /**
  * MACRO Free ptr if it is not NULL
@@ -24,7 +25,9 @@
  */
 typedef struct garbage_collector {
     void **ptrs;
+    list_t **lists;
     size_t size;
+    size_t lists_size;
 } gc_t;
 
 /**
@@ -46,7 +49,7 @@ extern inline gc_t gc_init();
 void gc_clean(gc_t *gc);
 
 /**
- * Allocates memory
+ * Adds memory to the garbage collector
  *
  * @author mishavetl
  *
@@ -57,6 +60,19 @@ void gc_clean(gc_t *gc);
  *
  */
 void *gc_add(gc_t *gc, void *ptr);
+
+/**
+ * Adds list memory to the garbage collector
+ *
+ * @author mishavetl
+ *
+ * @param gc (garbage collector struct ptr)
+ * @param ptr (ptr to add to gc)
+ *
+ * @return added ptr
+ *
+ */
+list_t *gc_add_list(gc_t *gc, list_t *ptr);
 
 /**
  * Count 2d array length

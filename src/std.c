@@ -9,23 +9,25 @@
 #include "dbg.h"
 #include "function.h"
 #include "huserr.h"
+#include "list/src/list.h"
 
 /**
- * Collection
+ * Collect
  */
 
 #include "std/arithm.c"
 #include "std/tuple.c"
+#include "std/list.c"
 #include "std/var.c"
 #include "std/io.c"
 #include "std/atom.c"
 #include "std/number.c"
 
 /**
- * Registration
+ * Register
  */
 
-STDFUNCTIONS(13,
+STDFUNCTIONS(17,
     REGSTDFUNCTION("+",
         create_function(
             plus, INFINITY_ARGS,
@@ -80,6 +82,11 @@ STDFUNCTIONS(13,
             var__set, 2,
             (const int []) {tid_atom, tid_string}, 2,
             scope->gc));
+    REGSTDFUNCTION("var:list",
+        create_function(
+            var__set, 2,
+            (const int []) {tid_atom, tid_list}, 2,
+            scope->gc));
 
     REGSTDFUNCTION("$",
         create_function(
@@ -96,5 +103,21 @@ STDFUNCTIONS(13,
         create_function(
             tuple__get, 2,
             (const int []) {tid_tuple, tid_num}, 2,
+            scope->gc));
+
+    REGSTDFUNCTION("[]",
+        create_function(
+            list__construct, INFINITY_ARGS,
+            (const int []) {}, 0,
+            scope->gc));
+    REGSTDFUNCTION("hd",
+        create_function(
+            list__head, 1,
+            (const int []) {tid_list}, 1,
+            scope->gc));
+    REGSTDFUNCTION("tl",
+        create_function(
+            list__tail, 1,
+            (const int []) {tid_list}, 1,
             scope->gc));
 );

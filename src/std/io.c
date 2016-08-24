@@ -9,7 +9,7 @@ int io__puts(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
     ret->type = tid_atom;
 
     for (i = 0; args[i]; i++) {
-        printf("%s", args[i]->value.atom);
+        printf("%s", args[i]->value.string);
     }
 
     puts("");
