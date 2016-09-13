@@ -10,7 +10,7 @@
 #include "performer.h"
 #include "main_utils.h"
 #include "argconfig.h"
-#include "non_posix.h"
+#include "query.h"
 
 int main(int argc, char *argv[])
 {
@@ -20,6 +20,8 @@ int main(int argc, char *argv[])
     scope_t scope;
     type_t ret;
     int line;
+    int line_saved;
+    int status;
 
     FILE *f = NULL;
     char *buffer = NULL;
@@ -69,7 +71,9 @@ int main(int argc, char *argv[])
     scope.error = NULL;
     tree.map = NULL;
 
-    check(tokenizer__generate_config(&token_config) >= 0, "Token config generation failed.");
+    check(tokenizer__generate_config(&token_config) >= 0,
+        "Token config generation failed."
+    );
 
     if (interactive) {
         puts("Not implemented.");
@@ -82,20 +86,21 @@ int main(int argc, char *argv[])
 
     /* Interpretation process. */
 
-    for (line = 1; ; line++) {
-        if (interactive) {
-
-        } else {
-            if (getline(&buffer, &size, f) == -1) {
-                break;
-            }
+    for (line = 1, line_saved = 1; ;) {
+        status = get_query(interactive, &line, &buffer, &size, f);
+        if (status == -1) {
+            break;
         }
 
         if (strlen(buffer) > 1) {
-            check((tokens = tokenizer__string(&token_config, buffer, line)), "Tokenization failed.");
+            check((tokens = tokenizer__string(&token_config, buffer, &line_saved)),
+                "Tokenization failed."
+            );
 
             if (tokens[0]) {
-                check(parser__funcall(&tree, tokens) >= 0, "Function call parsing failed.");
+                check(parser__funcall(&tree, tokens) >= 0,
+                    "Function call parsing failed."
+                );
                 performer__execute(&tree, &scope, &ret);
 
                 if (scope.error) {
@@ -109,9 +114,17 @@ int main(int argc, char *argv[])
                     );
                     scope.error = NULL;
                 }
+            } else {
+                line_saved++;
             }
 
             clean(&tree, tokens);
+        } else {
+            line_saved++;
+        }
+
+        if (status == EOF) {
+            break;
         }
     }
 

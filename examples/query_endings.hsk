@@ -1,0 +1,12 @@
+-- query endings --
+
+io:puts (hd ([]
+    'foo',
+    'bar'
+))
+
+io:putln
+
+io:puts     \
+    'foo',  \
+    'bar'

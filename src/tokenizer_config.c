@@ -5,7 +5,7 @@
 #include "tokenizer_config.h"
 
 #define DELIMITERS ",()"
-#define SPACES " \t\n"
+#define SPACES " \t\n\r"
 
 TOKENS(
     TOKEN(num,

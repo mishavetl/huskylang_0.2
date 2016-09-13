@@ -5,13 +5,15 @@
 token_t **tokens;
 extern token_config_t token_config;
 
+int line = 1;
+
 void teardown(void)
 {
     tokenizer__clean_tokens(tokens);
 }
 
 Test(tokenizer, string__tokenizes_numbers, .fini = teardown) {
-    tokens = tokenizer__string(&token_config, "1 2 3 4 5", 1);
+    tokens = tokenizer__string(&token_config, "1 2 3 4 5", &line);
 
     cr_assert_str_eq(tokens[0]->value, "1");
     cr_assert_eq(tokens[0]->type, tok_num);
@@ -30,7 +32,7 @@ Test(tokenizer, string__tokenizes_numbers, .fini = teardown) {
 }
 
 Test(tokenizer, string__tokenizes_numbers_with_commas, .fini = teardown) {
-    tokens = tokenizer__string(&token_config, "1, 2, 3", 1);
+    tokens = tokenizer__string(&token_config, "1, 2, 3", &line);
 
     cr_assert_str_eq(tokens[0]->value, "1");
     cr_assert_eq(tokens[0]->type, tok_num);
@@ -47,7 +49,7 @@ Test(tokenizer, string__tokenizes_numbers_with_commas, .fini = teardown) {
 }
 
 Test(tokenizer, string__tokenizes_atoms_with_numbers_and_commas, .fini = teardown) {
-    tokens = tokenizer__string(&token_config, "1, foo, 3, bar, baz", 1);
+    tokens = tokenizer__string(&token_config, "1, foo, 3, bar, baz", &line);
 
     cr_assert_str_eq(tokens[0]->value, "1");
     cr_assert_eq(tokens[0]->type, tok_num);
@@ -74,7 +76,7 @@ Test(tokenizer, string__tokenizes_atoms_with_numbers_and_commas, .fini = teardow
 }
 
 Test(tokenizer, string__atoms_with_special_characters, .fini = teardown) {
-    tokens = tokenizer__string(&token_config, "`\\tfoo \\`bar\\` baz\\\\\\n`", 1);
+    tokens = tokenizer__string(&token_config, "`\\tfoo \\`bar\\` baz\\\\\\n`", &line);
 
     cr_assert_str_eq(tokens[0]->value, "\tfoo `bar` baz\\\n");
     cr_assert_eq(tokens[0]->type, tok_atom);
@@ -83,7 +85,7 @@ Test(tokenizer, string__atoms_with_special_characters, .fini = teardown) {
 }
 
 Test(tokenizer, string__atoms_with_special_characters_as_an_arg, .fini = teardown) {
-    tokens = tokenizer__string(&token_config, "`\\tfoo \\`bar\\` baz\\\\\\n` foo bar", 1);
+    tokens = tokenizer__string(&token_config, "`\\tfoo \\`bar\\` baz\\\\\\n` foo bar", &line);
 
     cr_assert_str_eq(tokens[0]->value, "\tfoo `bar` baz\\\n");
     cr_assert_eq(tokens[0]->type, tok_atom);
@@ -98,7 +100,7 @@ Test(tokenizer, string__atoms_with_special_characters_as_an_arg, .fini = teardow
 }
 
 Test(tokenizer, string__assigns_last_token_to_null, .fini = teardown) {
-    tokens = tokenizer__string(&token_config, "1,", 1);
+    tokens = tokenizer__string(&token_config, "1,", &line);
 
     cr_assert_str_eq(tokens[0]->value, "1");
     cr_assert_eq(tokens[0]->type, tok_num);
@@ -109,7 +111,7 @@ Test(tokenizer, string__assigns_last_token_to_null, .fini = teardown) {
 }
 
 Test(tokenizer, string__works_without_spaces, .fini = teardown) {
-    tokens = tokenizer__string(&token_config, "1,2,foo,bar", 1);
+    tokens = tokenizer__string(&token_config, "1,2,foo,bar", &line);
 
     cr_assert_str_eq(tokens[0]->value, "1");
     cr_assert_eq(tokens[0]->type, tok_num);
@@ -131,7 +133,7 @@ Test(tokenizer, string__works_without_spaces, .fini = teardown) {
 }
 
 Test(tokenizer, string__tokenizes_brackets_as_delimeters, .fini = teardown) {
-    tokens = tokenizer__string(&token_config, "1, (2, 3), 5", 1);
+    tokens = tokenizer__string(&token_config, "1, (2, 3), 5", &line);
 
     cr_assert_str_eq(tokens[0]->value, "1");
     cr_assert_eq(tokens[0]->type, tok_num);
@@ -160,13 +162,13 @@ Test(tokenizer, string__tokenizes_brackets_as_delimeters, .fini = teardown) {
 }
 
 Test(tokenizer, string__comments_at_the_start_of_the_line, .fini = teardown) {
-    tokens = tokenizer__string(&token_config, "-- 1, (2, 3), 5", 1);
+    tokens = tokenizer__string(&token_config, "-- 1, (2, 3), 5", &line);
 
     cr_assert_null(tokens[0]);
 }
 
 Test(tokenizer, string__comments_at_the_end_of_the_line, .fini = teardown) {
-    tokens = tokenizer__string(&token_config, "1, (2, 3), 5 -- just a comment", 1);
+    tokens = tokenizer__string(&token_config, "1, (2, 3), 5 -- just a comment", &line);
 
     cr_assert_str_eq(tokens[0]->value, "1");
     cr_assert_eq(tokens[0]->type, tok_num);
@@ -197,7 +199,7 @@ Test(tokenizer, string__comments_at_the_end_of_the_line, .fini = teardown) {
 }
 
 Test(tokenizer, string__basic_string, .fini = teardown) {
-    tokens = tokenizer__string(&token_config, "'foo bar'", 1);
+    tokens = tokenizer__string(&token_config, "'foo bar'", &line);
 
     cr_assert_str_eq(tokens[0]->value, "foo bar");
     cr_assert_eq(tokens[0]->type, tok_string);
@@ -206,7 +208,7 @@ Test(tokenizer, string__basic_string, .fini = teardown) {
 }
 
 Test(tokenizer, string__strings_as_arguments, .fini = teardown) {
-    tokens = tokenizer__string(&token_config, "foo 'foo bar', (bar 'foo bar')", 1);
+    tokens = tokenizer__string(&token_config, "foo 'foo bar', (bar 'foo bar')", &line);
 
     cr_assert_str_eq(tokens[0]->value, "foo");
     cr_assert_eq(tokens[0]->type, tok_atom);
@@ -233,7 +235,7 @@ Test(tokenizer, string__strings_as_arguments, .fini = teardown) {
 }
 
 Test(tokenizer, string__strings_escape_characters, .fini = teardown) {
-    tokens = tokenizer__string(&token_config, "'\\tfoo\\\\ \\'bar\\n'", 1);
+    tokens = tokenizer__string(&token_config, "'\\tfoo\\\\ \\'bar\\n'", &line);
 
     cr_assert_str_eq(tokens[0]->value, "\tfoo\\ 'bar\n");
     cr_assert_eq(tokens[0]->type, tok_string);
