@@ -2,12 +2,12 @@
 ## @author: mishavetl
 #
 
-BUILD_DIR=build
-TESTS_EXE=husky_tests
-TESTS_EXE_Lists=husky_list_tests
+BUILD_DIR?=build
+TESTS_EXE?=husky_tests
+TESTS_EXE_Lists?=husky_list_tests
 
-WIN32_BUILD_DIR=win32build
-WIN64_BUILD_DIR=win64build
+WIN32_BUILD_DIR?=win32build
+WIN64_BUILD_DIR?=win64build
 
 all: configure
 	cd ${BUILD_DIR}; make
@@ -16,7 +16,7 @@ configure:
 	mkdir -p ${BUILD_DIR}
 	cd ${BUILD_DIR}; cmake ${CMAKE_ARGS} -DCMAKE_BUILD_TYPE=Debug ..
 
-test: configure all
+test: $(eval CMAKE_ARGS+=-DTESTS=1) configure all
 	${BUILD_DIR}/${TESTS_EXE}
 	${BUILD_DIR}/${TESTS_EXE_Lists}
 
