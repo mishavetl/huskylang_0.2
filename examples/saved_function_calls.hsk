@@ -1,0 +1,3 @@
+var:saved foo, ; io:puts 'foobar'.
+
+saved:call ($ foo)

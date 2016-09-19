@@ -37,6 +37,14 @@ performer__funcall(
     type_t **args;
     gc_t gc = gc_init();
 
+    if (tree->is_saved[i]) {
+        ret->type = tid_saved;
+        ret->value.tree = call_tree__duplicate(tree, scope->gc);
+        ret->value.tree->start = i;
+        debug("%d", i);
+        return 0;
+    }
+
     check_mem(type = gc_add(&gc, malloc(sizeof(type_t))));
     check_mem(args = (type_t **)
         gc_add(&gc,

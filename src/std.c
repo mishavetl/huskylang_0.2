@@ -10,6 +10,7 @@
 #include "function.h"
 #include "huserr.h"
 #include "list/src/list.h"
+#include "performer.h"
 
 /**
  * Collect
@@ -22,12 +23,13 @@
 #include "std/io.c"
 #include "std/atom.c"
 #include "std/number.c"
+#include "std/saved.c"
 
 /**
  * Register
  */
 
-STDFUNCTIONS(17,
+STDFUNCTIONS(19,
     REGSTDFUNCTION("+",
         create_function(
             plus, INFINITY_ARGS,
@@ -87,6 +89,11 @@ STDFUNCTIONS(17,
             var__set, 2,
             (const int []) {tid_atom, tid_list}, 2,
             scope->gc));
+    REGSTDFUNCTION("var:saved",
+        create_function(
+            var__set, 2,
+            (const int []) {tid_atom, tid_saved}, 2,
+            scope->gc));
 
     REGSTDFUNCTION("$",
         create_function(
@@ -119,5 +126,11 @@ STDFUNCTIONS(17,
         create_function(
             list__tail, 1,
             (const int []) {tid_list}, 1,
+            scope->gc));
+
+    REGSTDFUNCTION("saved:call",
+        create_function(
+            saved__call, 1,
+            (const int []) {tid_saved}, 1,
             scope->gc));
 );

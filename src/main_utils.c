@@ -36,6 +36,8 @@ void clean(call_tree_t *tree, token_t **tokens)
             }
             FREE(tree->map);
         }
+
+        FREE(tree->is_saved);
     }
 
     tokenizer__clean_tokens(tokens);
