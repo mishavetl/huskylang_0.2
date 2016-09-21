@@ -18,15 +18,6 @@ int find_variable(const var_t **vars, const char *name)
     return -1;
 }
 
-size_t count_mapv(mapv_t *ar)
-{
-    size_t len;
-
-    for (len = 0; ar[len] != TERMINATE_MAPV; len++);
-
-    return len;
-}
-
 int
 performer__funcall(
     call_tree_t *tree, scope_t *scope, type_t *ret, mapv_t i)
@@ -41,7 +32,7 @@ performer__funcall(
         ret->type = tid_saved;
         ret->value.tree = call_tree__duplicate(tree, scope->gc);
         ret->value.tree->start = i;
-        debug("%d", i);
+        ret->value.tree->is_saved[i] = false;
         return 0;
     }
 

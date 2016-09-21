@@ -39,7 +39,20 @@ typedef struct call_tree {
  * @param call_tree (call tree)
  * @param gc (garbage collector)
  *
+ * @return call tree
  */
 call_tree_t *call_tree_duplicate(call_tree_t *call_tree, gc_t *gc);
+
+/**
+ * FUNCTION Counts map values in an array
+ *
+ * @author mishavetl
+ *
+ * @param ar (array of map values)
+ *
+ * @return size of an array
+ */
+size_t count_mapv(mapv_t *ar);
+
 
 #endif

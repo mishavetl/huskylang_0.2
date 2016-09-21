@@ -69,7 +69,9 @@ int main(int argc, char *argv[])
 
     scope.vars = NULL;
     scope.error = NULL;
+    
     tree.map = NULL;
+    tree.is_saved = NULL;
 
     check(tokenizer__generate_config(&token_config) >= 0,
         "Token config generation failed."

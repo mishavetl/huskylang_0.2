@@ -82,6 +82,18 @@ int get_query(int interactive, int *line, char **buffer, size_t *size, FILE *f)
 
                     stack_pop(&stack, &stack_last);
                     break;
+
+                case ';':
+                    stack_push(&stack, c, &stack_size, &stack_last);
+                    break;
+
+                case '.':
+                    if (stack[stack_last] != ';') {
+                        sentinel("syntaxErr at %ld:%ld", *line, i);
+                    }
+
+                    stack_pop(&stack, &stack_last);
+                    break;
             }
 
             if (c == '\n') {
