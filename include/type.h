@@ -4,6 +4,7 @@
 #include "list.h"
 #include "tokenizer.h"
 #include "function.h"
+#include "call_tree.h"
 #include "../src/list/src/list.h"
 
 typedef struct variable var_t;
@@ -24,7 +25,8 @@ typedef struct type {
         tid_fn, // function
         tid_string, // string
         tid_tuple, // tuple (immutable array)
-        tid_list // list
+        tid_list, // list
+        tid_saved // saved
     } type;
     union {
         fn_t *fn;
@@ -33,6 +35,7 @@ typedef struct type {
         const char *string;
         type_t **tuple;
         list_t *list;
+        call_tree_t *tree;
     } value;
 } type_t;
 

@@ -34,6 +34,7 @@
  * @member tok_num (number)
  * @member tok_del (delimiter)
  * @member tok_prior_start (priority start character)
+ * @member tok_prior_start_saved (saved priority start character)
  * @member tok_prior_end (priority end character)
  * @member tok_atom (atom)
  *
@@ -42,6 +43,7 @@ enum token_type {
     tok_num,
     tok_prior_start,
     tok_prior_end,
+    tok_prior_start_saved,
     tok_del,
     tok_string,
     tok_atom,

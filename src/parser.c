@@ -16,6 +16,10 @@ mapv_t parser__funcall(call_tree_t *call_tree, token_t **tokens)
     check_mem(call_tree->map);
     memset(call_tree->map, 0, tree_size);
 
+    call_tree->is_saved = (mapv_t *) malloc(sizeof(int) * size);
+    check_mem(call_tree->is_saved);
+    memset(call_tree->is_saved, 0, sizeof(int) * size);
+
     call_tree->tokens = tokens;
 
     return parser__funcall_(call_tree, tokens, &i);
@@ -35,6 +39,7 @@ mapv_t parser__funcall_(call_tree_t *call_tree, token_t **tokens, mapv_t *i_)
     mapv_t saved, fname_pos;
     mapv_t i_start = i, fname_i = EMPTY_MAPV, fname_arg_i;
     int possible_fname = 1;
+    int is_saved = 0;
 
     check_mem(args = (mapv_t *) malloc(sizeof(mapv_t)));
 
@@ -47,10 +52,20 @@ mapv_t parser__funcall_(call_tree_t *call_tree, token_t **tokens, mapv_t *i_)
             saved = i;
             fname_pos = i;
 
-            if (tokens[i]->type == tok_prior_start) {
+            if (false
+                || tokens[i]->type == tok_prior_start
+                || tokens[i]->type == tok_prior_start_saved
+            ) {
+                if (tokens[i]->type == tok_prior_start_saved) {
+                    is_saved = 1;
+                } else {
+                    is_saved = 0;
+                }
+
                 i++;
                 fname_pos = parser__funcall_(call_tree, tokens, &i);
                 check(fname_pos >= 0, "Nested function call parsing failed.");
+                call_tree->is_saved[fname_pos] = is_saved;
             }
 
             if (tokens[i + 1]) {

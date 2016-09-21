@@ -69,7 +69,9 @@ int main(int argc, char *argv[])
 
     scope.vars = NULL;
     scope.error = NULL;
+    
     tree.map = NULL;
+    tree.is_saved = NULL;
 
     check(tokenizer__generate_config(&token_config) >= 0,
         "Token config generation failed."
@@ -93,9 +95,8 @@ int main(int argc, char *argv[])
         }
 
         if (strlen(buffer) > 1) {
-            check((tokens = tokenizer__string(&token_config, buffer, &line_saved)),
-                "Tokenization failed."
-            );
+            tokens = tokenizer__string(&token_config, buffer, &line_saved);
+            check(tokens, "Tokenization failed.");
 
             if (tokens[0]) {
                 check(parser__funcall(&tree, tokens) >= 0,

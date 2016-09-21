@@ -15,7 +15,10 @@ TOKENS(
         return pos == 0 && ch == '(';
     );
     TOKEN(prior_end,
-        return pos == 0 && ch == ')';
+        return pos == 0 && (ch == ')' || ch == '.');
+    );
+    TOKEN(prior_start_saved,
+        return pos == 0 && ch == ';';
     );
     TOKEN(del,
         return pos == 0 && strchr(DELIMITERS, ch);

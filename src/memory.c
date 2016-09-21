@@ -5,6 +5,7 @@
 #include "variable.h"
 #include "dbg.h"
 #include "list/src/list.h"
+#include "call_tree.h"
 
 size_t count_2d(void **ar)
 {
@@ -64,7 +65,7 @@ type_t *copy_type(type_t *src, scope_t *scope)
     type_t *type = gc_add(scope->gc, malloc(sizeof(type_t)));
 
     check_mem(type);
-    
+
     type->type = src->type;
     type->value = src->value;
 
@@ -87,6 +88,9 @@ type_t *copy_type(type_t *src, scope_t *scope)
 
         type->value.list = copy;
         list_iterator_destroy(it);
+    } else if (src->type == tid_saved) {
+        type->value.tree = call_tree__duplicate(src->value.tree, scope->gc);
+        check_mem(type->value.tree);
     }
 
     return type;

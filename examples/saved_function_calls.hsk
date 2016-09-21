@@ -1,0 +1,10 @@
+var:saved foo, ; io:puts 'foobar'.
+var:saved bar, ;
+    io:puts 'foobarbaz'
+.
+
+saved:call ($ bar)
+
+io:putln
+
+saved:call ($ foo)
