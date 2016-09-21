@@ -1,7 +1,6 @@
 #ifndef __type_h__
 #define __type_h__
 
-#include "list.h"
 #include "tokenizer.h"
 #include "function.h"
 #include "call_tree.h"

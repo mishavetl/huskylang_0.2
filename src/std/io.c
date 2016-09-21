@@ -2,8 +2,7 @@
  * IO API
  */
 
-int io__puts(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
-{
+STDFUNCTION(io__puts,
     size_t i;
 
     ret->type = tid_atom;
@@ -17,14 +16,13 @@ int io__puts(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
     ret->value.atom = "good";
 
     return 0;
-}
+)
 
-int io__putln(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
-{
+STDFUNCTION(io__putln,
     puts("");
 
     ret->type = tid_atom;
     ret->value.atom = "good";
 
     return 0;
-}
+)

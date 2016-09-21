@@ -2,8 +2,7 @@
  * Tuples API
  */
 
-int list__construct(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
-{
+STDFUNCTION(list__construct,
     argc_t i;
     type_t *type;
 
@@ -25,10 +24,9 @@ int list__construct(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
 
     error:
     return -1;
-}
+)
 
-int list__head(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
-{
+STDFUNCTION(list__head,
     if (args[0]->value.list->len == 0) {
         scope->error = gc_add(scope->gc, malloc(sizeof(huserr_t)));
         scope->error->name = "listErr";
@@ -43,11 +41,9 @@ int list__head(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
 
     error:
     return -1;
-}
+)
 
-
-int list__tail(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
-{
+STDFUNCTION(list__tail,
     list_node_t *node;
     list_iterator_t *it = list_iterator_new(args[0]->value.list, LIST_HEAD);
     check_mem(it);
@@ -68,4 +64,4 @@ int list__tail(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
     error:
     if (it) list_iterator_destroy(it);
     return -1;
-}
+)

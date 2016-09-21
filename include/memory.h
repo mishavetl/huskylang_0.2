@@ -4,6 +4,9 @@
 #include <stdlib.h>
 #include "../src/list/src/list.h"
 
+typedef struct type type_t;
+typedef struct scope scope_t;
+
 /**
  * MACRO Free ptr if it is not NULL
  *
@@ -31,15 +34,15 @@ typedef struct garbage_collector {
 } gc_t;
 
 /**
- * Initiates garbage collector struct
+ * FUNCTION Initiates garbage collector struct
  *
  * @param gc (garbage collector struct ptr)
  *
  */
-extern inline gc_t gc_init();
+gc_t gc_init();
 
 /**
- * Collects garbage_collector memory
+ * FUNCTION Collects garbage_collector memory
  *
  * @author mishavetl
  *
@@ -49,7 +52,7 @@ extern inline gc_t gc_init();
 void gc_clean(gc_t *gc);
 
 /**
- * Adds memory to the garbage collector
+ * FUNCTION Adds memory to the garbage collector
  *
  * @author mishavetl
  *
@@ -62,7 +65,7 @@ void gc_clean(gc_t *gc);
 void *gc_add(gc_t *gc, void *ptr);
 
 /**
- * Adds list memory to the garbage collector
+ * FUNCTION Adds list memory to the garbage collector
  *
  * @author mishavetl
  *
@@ -75,15 +78,27 @@ void *gc_add(gc_t *gc, void *ptr);
 list_t *gc_add_list(gc_t *gc, list_t *ptr);
 
 /**
- * Count 2d array length
+ * FUNCTION Count 2d array length
  *
  * @author mishavetl
  *
  * @param ar (2d array)
  *
- * @ret (length of 2d array)
+ * @return (length of 2d array)
  *
  */
 size_t count_2d(void **ar);
+
+/**
+ * FUNCTION Duplicate a type
+ *
+ * @author mishavetl
+ *
+ * @param src (type to duplicate)
+ *
+ * @return (duplicated type)
+ *
+ */
+type_t *copy_type(type_t *src, scope_t *scope);
 
 #endif

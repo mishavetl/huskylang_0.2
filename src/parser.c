@@ -9,7 +9,7 @@ mapv_t parser__funcall_(call_tree_t *call_tree, token_t **tokens, mapv_t *i_);
 mapv_t parser__funcall(call_tree_t *call_tree, token_t **tokens)
 {
     mapv_t i = 0;
-    size_t size = count_2d(tokens);
+    size_t size = count_2d((void **) tokens);
     size_t tree_size = sizeof(mapv_t *) * size;
 
     call_tree->map = (mapv_t **) malloc(tree_size);

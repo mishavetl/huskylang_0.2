@@ -2,9 +2,8 @@
  * Arithmetic API
  */
 
-int plus(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
-{
-    size_t i;
+STDFUNCTION(plus,
+    int i;
 
     ret->type = tid_num;
     ret->value.num = 0;
@@ -14,15 +13,10 @@ int plus(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
     }
 
     return 0;
+)
 
-    error:
-
-    return -1;
-}
-
-int minus(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
-{
-    size_t i;
+STDFUNCTION(minus,
+    int i;
 
     ret->type = tid_num;
     ret->value.num = 0;
@@ -32,8 +26,4 @@ int minus(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
     }
 
     return 0;
-
-    error:
-
-    return -1;
-}
+)

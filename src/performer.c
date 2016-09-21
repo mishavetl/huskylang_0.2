@@ -6,6 +6,7 @@
 #include "variable.h"
 #include "call_tree.h"
 #include "huserr.h"
+#include "dbg.h"
 
 int find_variable(const var_t **vars, const char *name)
 {
@@ -20,10 +21,10 @@ int find_variable(const var_t **vars, const char *name)
 
 int
 performer__funcall(
-    call_tree_t *tree, scope_t *scope, type_t *ret, mapv_t i)
-{
+    call_tree_t *tree, scope_t *scope, type_t *ret, mapv_t i
+) {
     mapv_t j;
-    size_t size = 0;
+    int size = 0;
     type_t *fn, *type;
     type_t **args;
     gc_t gc = gc_init();
@@ -60,7 +61,7 @@ performer__funcall(
         goto error;
     }
 
-    j = find_variable(scope->vars, type->value.atom);
+    j = find_variable((const var_t **) scope->vars, type->value.atom);
 
     if (j < 0) {
         scope->error = gc_add(scope->gc, malloc(sizeof(huserr_t)));
@@ -119,8 +120,7 @@ performer__funcall(
 
     args[size] = NULL;
 
-    if (size !=
-        fn->value.fn->argc && fn->value.fn->argc != INFINITY_ARGS)
+    if (size != fn->value.fn->argc && fn->value.fn->argc != INFINITY_ARGS)
     {
         scope->error = gc_add(scope->gc, malloc(sizeof(huserr_t)));
         scope->error->name = "argumentErr";

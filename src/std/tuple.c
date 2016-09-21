@@ -2,8 +2,7 @@
  * Tuples API
  */
 
-int tuple__construct(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
-{
+STDFUNCTION(tuple__construct,
     argc_t i;
 
     ret->type = tid_tuple;
@@ -24,14 +23,13 @@ int tuple__construct(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
 
     error:
     return -1;
-}
+)
 
-int tuple__get(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
-{
-    auto i = args[1]->value.num;
+STDFUNCTION(tuple__get,
+    int i = args[1]->value.num;
 
     ret->type = args[0]->value.tuple[i]->type;
     ret->value = args[0]->value.tuple[i]->value;
 
     return 0;
-}
+)

@@ -2,8 +2,7 @@
  * Number API
  */
 
-int number__to_string(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
-{
+STDFUNCTION(number__to_string,
     char *string = gc_add(scope->gc, malloc(sizeof(char) * (log10(args[0]->value.num) + 2)));
 
     check_mem(string);
@@ -18,4 +17,4 @@ int number__to_string(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
     error:
 
     return -1;
-}
+)

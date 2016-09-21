@@ -6,9 +6,9 @@
 #include "dbg.h"
 #include "memory.h"
 
-int stack_push(char **stack, char c, size_t *size, size_t *last)
+int stack_push(char **stack, char c, size_t *size, ssize_t *last)
 {
-    if (*size <= *last + 1) {
+    if ((ssize_t) *size <= *last + 1) {
         *size += 2;
         *stack = realloc(*stack, sizeof(char) * (*size));
         check_mem(*stack);
@@ -23,9 +23,9 @@ error:
     return -1;
 }
 
-int stack_pop(char **stack, size_t *last)
+int stack_pop(char **stack, ssize_t *last)
 {
-    if (*last <= 0) {
+    if (*last < 0) {
         return -1;
     }
 
@@ -39,7 +39,8 @@ int get_query(int interactive, int *line, char **buffer, size_t *size, FILE *f)
     int ret = 0;
     int c, prev = '\0';
     char *stack = NULL;
-    size_t stack_size = 0, stack_last = 0, i;
+    size_t stack_size = 0, i;
+    ssize_t stack_last = -1;
 
     for (i = 0; ; i++) {
         if (interactive) {
@@ -61,11 +62,17 @@ int get_query(int interactive, int *line, char **buffer, size_t *size, FILE *f)
         (*buffer)[i] = c;
         (*buffer)[i + 1] = '\0';
 
-        if (stack && stack[stack_last] == '\'') {
-            if (c == '\'') {
-                stack_pop(&stack, &stack_last);
+        if (stack && stack_last < (ssize_t) stack_size && stack_last >= 0) {
+            if (stack[stack_last] == '\'') {
+                if (c == '\'') {
+                    stack_pop(&stack, &stack_last);
+                }
+            } else {
+                goto not_stack;
             }
         } else {
+            not_stack:
+
             switch (c) {
                 case '\'':
                     stack_push(&stack, c, &stack_size, &stack_last);
@@ -77,7 +84,7 @@ int get_query(int interactive, int *line, char **buffer, size_t *size, FILE *f)
 
                 case ')':
                     if (stack[stack_last] != '(') {
-                        sentinel("syntaxErr at %ld:%ld", *line, i);
+                        sentinel("syntaxErr at %d:%ld", *line, i);
                     }
 
                     stack_pop(&stack, &stack_last);
@@ -89,7 +96,7 @@ int get_query(int interactive, int *line, char **buffer, size_t *size, FILE *f)
 
                 case '.':
                     if (stack[stack_last] != ';') {
-                        sentinel("syntaxErr at %ld:%ld", *line, i);
+                        sentinel("syntaxErr at %d:%ld", *line, i);
                     }
 
                     stack_pop(&stack, &stack_last);
@@ -97,12 +104,12 @@ int get_query(int interactive, int *line, char **buffer, size_t *size, FILE *f)
             }
 
             if (c == '\n') {
-                *line++;
+                *line += 1;
 
                 if (prev == '\\') {
                     (*buffer)[i] = '\0';
                     (*buffer)[--i] = '\n';
-                } else if (stack_last == 0) {
+                } else if (stack_last == -1) {
                     break;
                 }
             }
@@ -111,8 +118,8 @@ int get_query(int interactive, int *line, char **buffer, size_t *size, FILE *f)
         }
     }
 
-    if (stack_last != 0) {
-        sentinel("syntaxErr at %ld:%ld", *line, i);
+    if (stack_last != -1) {
+        sentinel("syntaxErr at %d:%ld", *line, i);
         goto error;
     }
 

@@ -16,7 +16,7 @@ size_t count_2d(void **ar)
     return len;
 }
 
-inline gc_t gc_init()
+gc_t gc_init()
 {
     return (gc_t) {
         .ptrs = NULL,
@@ -82,7 +82,7 @@ type_t *copy_type(type_t *src, scope_t *scope)
         list_node_t *node;
         list_iterator_t *it = list_iterator_new(src->value.list, LIST_HEAD);
 
-        while (node = list_iterator_next(it)) {
+        while ((node = list_iterator_next(it))) {
             list_rpush(copy, list_node_new(copy_type(node->val, scope)));
         }
 

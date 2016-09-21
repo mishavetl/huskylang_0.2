@@ -16,7 +16,7 @@ configure:
 	mkdir -p ${BUILD_DIR}
 	cd ${BUILD_DIR}; cmake ${CMAKE_ARGS} -DCMAKE_BUILD_TYPE=Debug ..
 
-test: $(eval CMAKE_ARGS+=-DTESTS=1) configure all
+test: configure all
 	${BUILD_DIR}/${TESTS_EXE}
 	${BUILD_DIR}/${TESTS_EXE_Lists}
 

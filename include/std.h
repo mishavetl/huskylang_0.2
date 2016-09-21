@@ -28,6 +28,16 @@
     scope->vars[count++]->value = fn;                                           \
     scope->vars[count] = NULL;
 
+#define STDFUNCTION(fname, ...)                                                 \
+    int fname(type_t **args, argc_t argc, type_t *ret, scope_t *scope)          \
+    {                                                                           \
+        (void) argc;                                                            \
+        (void) args;                                                            \
+        (void) scope;                                                           \
+                                                                                \
+        __VA_ARGS__                                                             \
+    }
+
 /**
  * Get standard library functions array
  *

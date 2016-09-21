@@ -33,7 +33,7 @@ typedef struct token {
  * @ret (token array if success, NULL if error)
  *
  */
-token_t **tokenizer__string(const token_config_t *config, const char *str, size_t *line);
+token_t **tokenizer__string(const token_config_t *config, const char *str, int *line);
 
 /**
  * Free token array memory

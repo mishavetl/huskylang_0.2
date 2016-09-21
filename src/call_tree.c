@@ -16,8 +16,8 @@ size_t count_mapv(mapv_t *ar)
 
 call_tree_t *call_tree__duplicate(call_tree_t *call_tree, gc_t *gc)
 {
-    int i, j;
-    size_t size = count_2d(call_tree->tokens);
+    unsigned int i, j;
+    size_t size = count_2d((void **) call_tree->tokens);
 
     call_tree_t *copy = (call_tree_t *) gc_add(gc, malloc(sizeof(call_tree_t)));
     check_mem(copy);
@@ -38,7 +38,7 @@ call_tree_t *call_tree__duplicate(call_tree_t *call_tree, gc_t *gc)
         if (call_tree->map[i]) {
             j = count_mapv(call_tree->map[i]) + 1;
 
-            copy->map[i] = (mapv_t **) gc_add(gc, malloc(sizeof(mapv_t) * j));
+            copy->map[i] = (mapv_t *) gc_add(gc, malloc(sizeof(mapv_t) * j));
             check_mem(copy->map[i]);
             memcpy(copy->map[i], call_tree->map[i], sizeof(mapv_t) * j);
         } else {

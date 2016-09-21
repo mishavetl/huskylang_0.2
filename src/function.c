@@ -7,7 +7,7 @@
 fn_t*
 create_function(
     fn_callback_t fptr, int argc,
-    const int argtypes[], int argtypes_size,
+    const unsigned argtypes[], int argtypes_size,
     gc_t *gc)
 {
     fn_t *fn = (fn_t *) gc_add(gc, malloc(sizeof(fn_t)));
@@ -15,8 +15,8 @@ create_function(
     fn->argc = argc;
 
     fn->argtypes_size = argtypes_size;
-    fn->argtypes = (int *) gc_add(gc, malloc(sizeof(argtypes)));
-    memcpy(fn->argtypes, argtypes, sizeof(argtypes));
+    fn->argtypes = (unsigned *) gc_add(gc, malloc(sizeof(unsigned) * argtypes_size));
+    memcpy(fn->argtypes, argtypes, sizeof(unsigned) * argtypes_size);
 
     fn->callback = fptr;
 

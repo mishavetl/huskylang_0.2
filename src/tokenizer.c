@@ -5,7 +5,7 @@
 #include "dbg.h"
 #include "memory.h"
 
-token_t **tokenizer__string(const token_config_t *config, const char *str, size_t *line)
+token_t **tokenizer__string(const token_config_t *config, const char *str, int *line)
 {
     token_t **tokens = NULL;
     token_t *token;

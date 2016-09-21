@@ -2,8 +2,7 @@
  * Variables API
  */
 
-int var__set(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
-{
+STDFUNCTION(var__set,
     ret->type = tid_atom;
 
     /* Check that variable does not exist. */
@@ -24,10 +23,9 @@ int var__set(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
     error:
 
     return -1;
-}
+)
 
-int var__get(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
-{
+STDFUNCTION(var__get,
     int i;
 
     /* Check that variable exists. */
@@ -46,4 +44,4 @@ int var__get(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
     error:
 
     return -1;
-}
+)

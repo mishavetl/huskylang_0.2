@@ -7,6 +7,11 @@
 #define TOKEN_CHAR_SKIP 2
 #define TOKEN_CHAR_SKIP_AND_END 3
 
+#define REGTOKEN(name)                                                          \
+    do {                                                                        \
+        config->check_functions[tok_##name] = is_tok_##name;                    \
+    } while (0);
+
 #define TOKENS(...) int tokenizer__generate_config(token_config_t *config) {    \
     size_t i;                                                                   \
     for (i = 0; i <= __tok_amount; i++) {                                       \
@@ -19,10 +24,14 @@
 }
 
 #define TOKEN(name, ...)                                                        \
-    do {                                                                        \
-        int is_tok_##name(size_t pos, char ch, int started) {__VA_ARGS__}       \
-        config->check_functions[tok_##name] = is_tok_##name;                    \
-    } while (0);
+    int is_tok_##name(size_t pos, char ch, int started) {                       \
+        (void) pos;                                                             \
+        (void) ch;                                                              \
+        (void) started;                                                         \
+                                                                                \
+        __VA_ARGS__                                                             \
+    }
+
 
 /**
  * Token Types enumerable

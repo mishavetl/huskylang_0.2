@@ -30,8 +30,11 @@ endif(DEFINED TESTS)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
-add_definitions(--std=c11)
+add_definitions(--std=gnu11)
 add_definitions(-Wall -Wextra)
+
+# Segmentation fault debug`
+add_definitions(-g -O0)
 
 if(DEFINED TESTS)
   ExternalProject_Get_Property(Criterion BINARY_DIR SOURCE_DIR)

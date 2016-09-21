@@ -1,7 +1,6 @@
 #include <criterion/criterion.h>
 #include "tokenizer_config.h"
 
-
 Test(tokenizer, generate_config__generates_all_token_check_functions) {
     token_config_t token_config;
     size_t i;

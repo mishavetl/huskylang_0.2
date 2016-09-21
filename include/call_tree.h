@@ -41,7 +41,7 @@ typedef struct call_tree {
  *
  * @return call tree
  */
-call_tree_t *call_tree_duplicate(call_tree_t *call_tree, gc_t *gc);
+call_tree_t *call_tree__duplicate(call_tree_t *call_tree, gc_t *gc);
 
 /**
  * FUNCTION Counts map values in an array
