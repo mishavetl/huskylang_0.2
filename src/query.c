@@ -1,6 +1,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 #include "query.h"
 #include "dbg.h"
@@ -36,7 +37,7 @@ int stack_pop(char **stack, ssize_t *last)
 
 int get_query(int interactive, int *line, char **buffer, size_t *size, FILE *f)
 {
-    int ret = 0;
+    int ret = 0, is_comment = false;
     int c, prev = '\0';
     char *stack = NULL;
     size_t stack_size = 0, i;
@@ -62,60 +63,66 @@ int get_query(int interactive, int *line, char **buffer, size_t *size, FILE *f)
         (*buffer)[i] = c;
         (*buffer)[i + 1] = '\0';
 
-        if (stack && stack_last < (ssize_t) stack_size && stack_last >= 0) {
-            if (stack[stack_last] == '\'') {
-                if (c == '\'') {
-                    stack_pop(&stack, &stack_last);
+        if (!is_comment) {
+            if (c == '-' && prev == '-') {
+                is_comment = true;
+            } else if (stack && stack_last < (ssize_t) stack_size && stack_last >= 0) {
+                if (stack[stack_last] == '\'') {
+                    if (c == '\'') {
+                        stack_pop(&stack, &stack_last);
+                    }
+                } else {
+                    goto not_stack;
                 }
             } else {
-                goto not_stack;
-            }
-        } else {
-            not_stack:
+                not_stack:
 
-            switch (c) {
-                case '\'':
-                    stack_push(&stack, c, &stack_size, &stack_last);
-                    break;
+                switch (c) {
+                    case '\'':
+                        stack_push(&stack, c, &stack_size, &stack_last);
+                        break;
 
-                case '(':
-                    stack_push(&stack, c, &stack_size, &stack_last);
-                    break;
+                    case '(':
+                        stack_push(&stack, c, &stack_size, &stack_last);
+                        break;
 
-                case ')':
-                    if (stack[stack_last] != '(') {
-                        sentinel("syntaxErr at %d:%ld", *line, i);
-                    }
+                    case ')':
+                        if (stack[stack_last] != '(') {
+                            sentinel("syntaxErr at %d:%ld", *line, i);
+                        }
 
-                    stack_pop(&stack, &stack_last);
-                    break;
+                        stack_pop(&stack, &stack_last);
+                        break;
 
-                case ';':
-                    stack_push(&stack, c, &stack_size, &stack_last);
-                    break;
+                    case ';':
+                        stack_push(&stack, c, &stack_size, &stack_last);
+                        break;
 
-                case '.':
-                    if (stack[stack_last] != ';') {
-                        sentinel("syntaxErr at %d:%ld", *line, i);
-                    }
+                    case '.':
+                        if (stack[stack_last] != ';') {
+                            sentinel("syntaxErr at %d:%ld", *line, i);
+                        }
 
-                    stack_pop(&stack, &stack_last);
-                    break;
-            }
-
-            if (c == '\n') {
-                *line += 1;
-
-                if (prev == '\\') {
-                    (*buffer)[i] = '\0';
-                    (*buffer)[--i] = '\n';
-                } else if (stack_last == -1) {
-                    break;
+                        stack_pop(&stack, &stack_last);
+                        break;
                 }
             }
-
-            prev = c;
         }
+
+        if (c == '\n') {
+            *line += 1;
+
+            if (prev == '\\') {
+                (*buffer)[i] = '\0';
+                (*buffer)[--i] = '\n';
+            } else if (stack_last == -1) {
+                break;
+            } else {
+                is_comment = false;
+            }
+        }
+
+        prev = c;
     }
 
     if (stack_last != -1) {

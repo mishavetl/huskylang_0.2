@@ -3,8 +3,15 @@ var:saved bar, ;
     io:puts 'foobarbaz'
 .
 
+var:saved baz, ; [] foo, bar, baz.
+var:saved quux, ; r 'good'.
+
 saved:call ($ bar)
 
 io:putln
 
-saved:call ($ foo)
+io:puts (atom:to_string (saved:call ($ foo)))
+
+io:puts (atom:to_string (hd (saved:call ($ baz))))
+
+io:puts (saved:call ($ quux))

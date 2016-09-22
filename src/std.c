@@ -24,12 +24,13 @@
 #include "std/atom.c"
 #include "std/number.c"
 #include "std/saved.c"
+#include "std/function.c"
 
 /**
  * Register
  */
 
-STDFUNCTIONS(19,
+STDFUNCTIONS(20,
     REGSTDFUNCTION("+",
         create_function(
             plus, INFINITY_ARGS,
@@ -132,5 +133,11 @@ STDFUNCTIONS(19,
         create_function(
             saved__call, 1,
             (const unsigned []) {tid_saved}, 1,
+            scope->gc));
+
+    REGSTDFUNCTION("r",
+        create_function(
+            function__return, 1,
+            (const unsigned []) {}, 0,
             scope->gc));
 );

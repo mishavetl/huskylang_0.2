@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
 
     scope.vars = NULL;
     scope.error = NULL;
-    
+
     tree.map = NULL;
     tree.is_saved = NULL;
 
