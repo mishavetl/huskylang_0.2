@@ -34,7 +34,6 @@ int setvar(scope_t *scope, const char *name, type_t *value)
     return 0;
 
     error:
-
     return -1;
 }
 
@@ -49,5 +48,9 @@ int getvar(const scope_t *scope, const char *name)
         }
     }
 
-    return -1;
+    if (scope->parent) {
+        return getvar(scope->parent, name);
+    } else {
+        return -1;
+    }
 }
