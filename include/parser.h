@@ -1,3 +1,7 @@
+/**
+ * @file
+ * @brief Collection of functions for tokens parsing
+ */
 #ifndef __parser_h__
 #define __parser_h__
 
@@ -5,17 +9,13 @@
 #include "call_tree.h"
 
 /**
- * Constructs a call tree
+ * @brief Constructs a call tree
  *
- * @author mishavetl
+ * @param[out] call_tree Pointer to an instance of the call_tree
+ * @param[in] tokens Array of tokens
  *
- * @param call_tree (pointer to an instance of the call_tree)
- * @param tokens (an array of tokens)
- *
- * @ret (status of the parse -1 for error, >= 0 for success)
- *
+ * @return Status of the parse: -1 for error, >= 0 for success
  */
 mapv_t parser__funcall(call_tree_t *call_tree, token_t **tokens);
-// call_tree_t *parser__parse(token_t **tokens);
 
 #endif

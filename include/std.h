@@ -1,3 +1,7 @@
+/**
+ * @file
+ * @brief Standard husky programming language library
+ */
 #ifndef __std_h__
 #define __std_h__
 
@@ -5,6 +9,12 @@
 #include "function.h"
 #include "type.h"
 
+/**
+ * @brief Macro for creation of `get_stdlib_variables` function
+ *
+ * @param n Number of std functions
+ * @param ... Std functions
+ */
 #define STDFUNCTIONS(n, ...)                                                    \
     int get_stdlib_variables(scope_t *scope)                                    \
     {                                                                           \
@@ -18,6 +28,12 @@
         return 0;                                                               \
     }
 
+/**
+ * @brief Macro for registration of std functions
+ *
+ * @param fname Name of the function
+ * @param fn_ Function pointer
+ */
 #define REGSTDFUNCTION(fname, fn_)                                              \
     fn = (type_t *) gc_add(scope->gc, malloc(sizeof(type_t)));                  \
     fn->type = tid_fn;                                                          \
@@ -28,6 +44,12 @@
     scope->vars[count++]->value = fn;                                           \
     scope->vars[count] = NULL;
 
+/**
+ * @brief Macro for creation of std functions
+ *
+ * @param fname Name of the function
+ * @param ... Function body
+ */
 #define STDFUNCTION(fname, ...)                                                 \
     int fname(type_t **args, argc_t argc, type_t *ret, scope_t *scope)          \
     {                                                                           \
@@ -39,12 +61,11 @@
     }
 
 /**
- * Get standard library functions array
+ * @brief Populates scope with standard library functions
  *
- * @author mishavetl
+ * @param[out] scope Scope to populate
  *
- * @return (variables array)
- *
+ * @return Status: -1 if error else 0
  */
 int get_stdlib_variables(scope_t *scope);
 

@@ -1,3 +1,7 @@
+/**
+ * @file
+ * @brief Function structure and functions to handle it
+ */
 #ifndef __function_h__
 #define __function_h__
 
@@ -14,34 +18,29 @@ typedef int (*fn_callback_t)(
     type_t **args, argc_t argc, type_t *ret, scope_t *scope);
 
 /**
- * STRUCT function
- *
- * @author mishavetl
- *
- * @member argc (number of arguments)
- * @member argtypes (types of arguments)
- * @member argtypes_size (size of `argtypes`)
- * @member callback (function callback)
+ * @brief Function structure
  */
 typedef struct function {
+    /** Number of arguments */
     int argc;
+    /** Size of `argtypes` */
     int argtypes_size;
+    /** Types of arguments */
     unsigned *argtypes;
+    /** Function callback */
     fn_callback_t callback;
 } fn_t;
 
 /**
- * FUNCTION Creates a function
+ * @brief Creates a function
  *
- * @author mishavetl
+ * @param[in] fptr Pointer to a function
+ * @param[in] argc Number of arguments
+ * @param[in] argtypes Types of arguments
+ * @param[in] argtypes_size Size of `argtypes`
+ * @param[in] gc Garbage collector
  *
- * @param fptr (pointer to a function)
- * @param argc (number of arguments)
- * @param argtypes (types of arguments)
- * @param argtypes_size (size of `argtypes`)
- * @param gc (garbage collector)
- *
- * @return fn_t (function)
+ * @return Function
  */
 fn_t *
 create_function(

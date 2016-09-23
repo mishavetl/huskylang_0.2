@@ -1,3 +1,7 @@
+/**
+ * @file
+ * @brief Variable and scope structures and functions to manage them
+ */
 #ifndef __variable_h__
 #define __variable_h__
 
@@ -7,69 +11,56 @@
 #include "memory.h"
 
 /**
- * STRUCT variable
- *
- * @author mishavetl
- *
- * @member name (name of a variable)
- * @member value (value of a variable)
+ * @brief Variable
  */
 typedef struct variable {
+    /** Name of a variable */
     const char *name;
+    /** Value of a variable */
     type_t *value;
 } var_t;
 
 /**
- * STRUCT scope
- *
- * @author mishavetl
- *
- * @member parent (parent scope)
- * @member error (error of a scope)
- * @member vsize (size of the `vars` array)
- * @member vars (array of variables)
- * @member gc (garbage collector)
+ * @brief Scope
  */
 typedef struct scope {
+    /** Parent scope */
     struct scope *parent;
+    /** Error of a scope */
     huserr_t *error;
+    /** Size of the `vars` array */
     size_t vsize;
+    /** Array of variables */
     var_t **vars;
+    /** Garbage collector */
     gc_t *gc;
 } scope_t;
 
 /**
- * FUNCTION sets variable of a scope
+ * @brief Sets variable of a scope
  *
- * @author mishavetl
+ * @param[out] scope Scope where to set a variable
+ * @param[in] name Name of a variable
+ * @param[in] value Value of a variable
  *
- * @param scope (scope where to set a variable)
- * @param name (name of a variable)
- * @param value (value of a variable)
- *
- * @return int (status)
+ * @return Status: if success then 0 else -1
  */
 int setvar(scope_t *scope, const char *name, type_t *value);
 
 /**
- * FUNCTION gets a variable from a scope
+ * @brief Gets a variable from a scope
  *
- * @author mishavetl
+ * @param[in] scope Scope where to set a variable
+ * @param[in] name Name of a variable
  *
- * @param scope (scope where to set a variable)
- * @param name (name of a variable)
- * @param value (value of a variable)
- *
- * @return int (index of a variable ; -1 if doesn't exist)
+ * @return Index of a variable ; -1 if doesn't exist
  */
 int getvar(const scope_t *scope, const char *name);
 
 /**
- * FUNCTION initiates a scope
+ * @brief Initiates a scope
  *
- * @author mishavetl
- *
- * @return scope
+ * @return Initiated scope
  */
 scope_t scope__init();
 

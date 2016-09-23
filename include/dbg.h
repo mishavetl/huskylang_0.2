@@ -1,3 +1,7 @@
+/**
+ * @file
+ * @brief Collection of debug macroses from Zed Shaw
+ */
 #ifndef __dbg_h__
 #define __dbg_h__
 

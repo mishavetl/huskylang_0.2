@@ -1,3 +1,7 @@
+/**
+ * @file
+ * @brief Collection of functions for memory managment
+ */
 #ifndef __memory_h__
 #define __memory_h__
 
@@ -8,96 +12,78 @@ typedef struct type type_t;
 typedef struct scope scope_t;
 
 /**
- * MACRO Free ptr if it is not NULL
+ * @brief Frees ptr if it is not NULL
  *
- * @author mishavetl
- *
- * @param ptr (just a pointer)
- *
+ * @param ptr Pointer
  */
 #define FREE(ptr) if (ptr) { free(ptr); ptr = NULL; }
 
 /**
- * STRUCT Garbage Collector
- *
- * @author mishavetl
- *
- * @member ptrs (pointers to the memory blocks to clean)
- * @member size (size of an array ptrs)
- *
+ * @brief Garbage Collector
  */
 typedef struct garbage_collector {
+    /** Pointers to the memory blocks to clean */
     void **ptrs;
+    /** Pointers to the memory blocks containing lists to clean */
     list_t **lists;
+    /** Size of the `ptrs` */
     size_t size;
+    /** Size of `lists` */
     size_t lists_size;
 } gc_t;
 
 /**
- * FUNCTION Initiates garbage collector struct
+ * @brief` Initiates garbage collector struct
  *
- * @param gc (garbage collector struct ptr)
+ * @param[in] gc Garbage collector struct ptr
  *
+ * @return Garbage Collector
  */
 gc_t gc_init();
 
 /**
- * FUNCTION Collects garbage_collector memory
+ * @brief Frees `garbage_collector` memory
  *
- * @author mishavetl
- *
- * @param gc (garbage collector struct ptr)
- *
+ * @param[out] gc Garbage collector
  */
 void gc_clean(gc_t *gc);
 
 /**
- * FUNCTION Adds memory to the garbage collector
+ * @brief Adds memory to the garbage collector
  *
- * @author mishavetl
+ * @param[in] gc Garbage collector struct ptr
+ * @param[in] ptr Pointer to add to gc
  *
- * @param gc (garbage collector struct ptr)
- * @param ptr (ptr to add to gc)
- *
- * @return added ptr
- *
+ * @return Added ptr
  */
 void *gc_add(gc_t *gc, void *ptr);
 
 /**
- * FUNCTION Adds list memory to the garbage collector
+ * @brief Adds list memory to the garbage collector
  *
- * @author mishavetl
+ * @param[out] gc Garbage collector struct ptr
+ * @param[in] ptr Pointer to a list to add to gc
  *
- * @param gc (garbage collector struct ptr)
- * @param ptr (ptr to add to gc)
- *
- * @return added ptr
- *
+ * @return Added ptr
  */
 list_t *gc_add_list(gc_t *gc, list_t *ptr);
 
 /**
- * FUNCTION Count 2d array length
+ * @brief Counts 2d array length
  *
- * @author mishavetl
+ * @param[in] ar 2d array
  *
- * @param ar (2d array)
- *
- * @return (length of 2d array)
- *
+ * @return Length of an array
  */
 size_t count_2d(void **ar);
 
 /**
- * FUNCTION Duplicate a type
+ * @brief Duplicates a type
  *
- * @author mishavetl
+ * @param[in] src Type to duplicate
+ * @param[in] scope
  *
- * @param src (type to duplicate)
- *
- * @return (duplicated type)
- *
+ * @return Duplicated type
  */
 type_t *copy_type(type_t *src, scope_t *scope);
 

@@ -1,3 +1,7 @@
+/**
+ * @file
+ * @brief Collection of functions for execution of a function call tree
+ */
 #ifndef __performer_h__
 #define __performer_h__
 
@@ -5,34 +9,28 @@
 #include "variable.h"
 
 /**
- * FUNCTION
+ * @brief
  * Executes a call with specific variables set (scope) on a specific position
  *
- * @author mishavetl
+ * @param[in] tree Function call tree to execute
+ * @param[in] scope Scope where to execute
+ * @param[out] ret Return pointer of a function call
+ * @param[in] i Position where to start performing
  *
- * @param tree (function call tree to execute)
- * @param scope (scope where to execute)
- * @param ret (return pointer of a function call)
- * @param i (position where to start performing)
- *
- * @return int (status)
+ * @return Status of the execution: -1 for error, >= 0 for success
  */
-
-int
-performer__funcall(
+int performer__funcall(
     call_tree_t *tree, scope_t *scope, type_t *ret, mapv_t i
 );
 
 /**
- * FUNCTION Executes a call with specific variables set (scope)
+ * @brief Executes a call with specific variables set (scope)
  *
- * @author mishavetl
+ * @param[in] tree Function call tree to execute
+ * @param[in] scope Scope where to execute
+ * @param[out] ret Return pointer of a function call
  *
- * @param tree (function call tree to execute)
- * @param scope (scope where to execute)
- * @param ret (return pointer of a function call)
- *
- * @return int (status)
+ * @return Status of the execution: -1 for error, >= 0 for success
  */
 int performer__execute(call_tree_t *tree, scope_t *scope, type_t *ret);
 

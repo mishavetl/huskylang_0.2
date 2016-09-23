@@ -1,3 +1,7 @@
+/**
+ * @file
+ * @brief Function call tree structure and functions to handle it
+ */
 #ifndef __call_tree_h__
 #define __call_tree_h__
 
@@ -8,57 +12,48 @@
 #include "memory.h"
 
 /**
- * Type of map values
- *
+ * @brief Map value
  */
 typedef int mapv_t;
 
 /**
- * STRUCT function call tree
- *
- * @author mishavetl
- *
- * @member tokens (an array of tokens)
- * @member meta (array for meta programming features)
- * @member map ({{1, 2}, NULL, {3}, NULL})
+ * @brief Function call tree
  */
 typedef struct call_tree {
+    /** Start index of token of function in map */
     mapv_t start;
+    /** Size of the map */
     int size;
+    /** Array of tokens */
     token_t **tokens;
+    /** Tree map {{1, 2}, NULL, {3}, NULL} */
     mapv_t **map;
+    /** Array of saved function calls */
     int *is_saved;
 } call_tree_t;
 
 /**
- * FUNCTION duplicates call tree
+ * @brief Duplicates call tree
  *
- * @author mishavetl
+ * @param call_tree Call tree
+ * @param gc Garbage collector
  *
- * @param call_tree (call tree)
- * @param gc (garbage collector)
- *
- * @return call tree
+ * @return Call tree
  */
 call_tree_t *call_tree__duplicate(call_tree_t *call_tree, gc_t *gc);
 
 /**
- * FUNCTION initiates a call tree
- *
- * @author mishavetl
- *
- * @return call tree
+ * @brief Initiates a call tree
+ * @return Call tree
  */
 call_tree_t call_tree__init();
 
 /**
- * FUNCTION counts map values in an array
+ * @brief Counts map values in an array
  *
- * @author mishavetl
+ * @param[in] ar Array of map values
  *
- * @param ar (array of map values)
- *
- * @return size of an array
+ * @return Size of an array
  */
 size_t count_mapv(mapv_t *ar);
 

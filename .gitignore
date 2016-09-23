@@ -2,7 +2,10 @@
 .vscode
 
 # vim autocomplete
-.ycm_extra_conf.py*
+.ycm_extra_conf.p*
+
+# doxygen documentation
+/docs
 
 # build files.
 /build

@@ -20,6 +20,11 @@ test: configure all
 	${BUILD_DIR}/${TESTS_EXE}
 	${BUILD_DIR}/${TESTS_EXE_Lists}
 
+## Documentation
+
+doc:
+	doxygen Doxyfile
+
 ## Windows 32 bit.
 
 win32_configure:

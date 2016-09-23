@@ -1,3 +1,7 @@
+/**
+ * @file
+ * @brief Type struct and functions to manage it
+ */
 #ifndef __type_h__
 #define __type_h__
 
@@ -9,45 +13,49 @@
 typedef struct variable var_t;
 
 /**
- * STRUCT type
- *
- * @author mishavetl
- *
- * @member type (type enumerable of the type entry)
- * @member value (value of the type entry
- *
+ * @brief Value of a type
+ */
+union type_value {
+    fn_t *fn; ///< Function value
+    int num; ///< Number value
+    const char *atom; ///< Atom value
+    const char *string; ///< String value
+    type_t **tuple; ///< Tuple value
+    list_t *list; ///< List value
+    call_tree_t *tree; ///< Function call tree value (saved function call)
+};
+
+/**
+ * @brief Type of a type
+ */
+enum tid {
+    tid_num, ///< Number
+    tid_atom, ///< Atom
+    tid_fn, ///< Function
+    tid_string, ///< String
+    tid_tuple, ///< Tuple (immutable array)
+    tid_list, ///< List
+    tid_saved ///< Saved
+};
+
+/**
+ * @brief Type structure
+ * @details Use it for all data in the language
  */
 typedef struct type {
-    enum tid {
-        tid_num, // number
-        tid_atom, // atom
-        tid_fn, // function
-        tid_string, // string
-        tid_tuple, // tuple (immutable array)
-        tid_list, // list
-        tid_saved // saved
-    } type;
-    union {
-        fn_t *fn;
-        int num;
-        const char *atom;
-        const char *string;
-        type_t **tuple;
-        list_t *list;
-        call_tree_t *tree;
-    } value;
+    /** Type enumerable of the type entry */
+    enum tid type;
+    /** Value of the type entry */
+    union type_value value;
 } type_t;
 
 /**
- * Constructs type from the token
+ * @brief Constructs type from the token
  *
- * @author mishavetl
+ * @param[in] token Token to construct from
+ * @param[out] type Type to write to
  *
- * @param token (token to construct from)
- * @param type (type to write to)
- *
- * @return (status: if success then 0 else -1)
- *
+ * @return Status: if success then 0 else -1
  */
 int type_from_token(token_t *token, type_t *type);
 

@@ -1,3 +1,8 @@
+/**
+ * @file
+ * @brief Collection of functions for non posix systems
+ * @warning Deprecated
+ */
 #ifndef __non_posix_h__
 #define __non_posix_h__
 

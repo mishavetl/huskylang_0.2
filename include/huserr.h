@@ -1,27 +1,30 @@
+/**
+ * @file
+ * @brief Husky error structure and functions to handle it
+ */
 #ifndef __huserr_h__
 #define __huserr_h__
 
 #include "type.h"
 
 /**
- * STRUCT husky error
- *
- * @member token (token where this error occured)
- * @member name (name of an error)
- * @member msg (msg of an error)
+ * @brief Husky error
  */
 typedef struct huserr {
+    /** Token on top of which, error occured */
     token_t *token;
+    /** Error name */
     const char *name;
+    /** Error message */
     const char *msg;
 } huserr_t;
 
 /**
- * FUNCTION convert `huserr` to string
+ * @brief Converts `huserr` to string
  *
- * @param scope
+ * @param[in] scope Scope
  *
- * @return char (error string)
+ * @return Error string
  */
 char *huserr__to_string(scope_t *scope);
 
