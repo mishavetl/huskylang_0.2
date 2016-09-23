@@ -11,13 +11,14 @@
 #include "main_utils.h"
 #include "argconfig.h"
 #include "query.h"
+#include "call_tree.h"
 
 int main(int argc, char *argv[])
 {
-    call_tree_t tree;
+    call_tree_t tree = call_tree__init();
     token_t **tokens = NULL;
     token_config_t token_config;
-    scope_t scope;
+    scope_t scope = scope__init();
     type_t ret;
     int line;
     int line_saved;
@@ -66,12 +67,6 @@ int main(int argc, char *argv[])
     gc_t gc_scope = gc_init();
 
     scope.gc = &gc_scope;
-
-    scope.vars = NULL;
-    scope.error = NULL;
-
-    tree.map = NULL;
-    tree.is_saved = NULL;
 
     check(tokenizer__generate_config(&token_config) >= 0,
         "Token config generation failed."

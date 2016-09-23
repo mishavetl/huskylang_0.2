@@ -11,6 +11,7 @@
 #include "huserr.h"
 #include "list/src/list.h"
 #include "performer.h"
+#include "huserr.h"
 
 /**
  * Collect
@@ -25,12 +26,13 @@
 #include "std/number.c"
 #include "std/saved.c"
 #include "std/function.c"
+#include "std/error.c"
 
 /**
  * Register
  */
 
-STDFUNCTIONS(20,
+STDFUNCTIONS(21,
     REGSTDFUNCTION("+",
         create_function(
             plus, INFINITY_ARGS,
@@ -139,5 +141,11 @@ STDFUNCTIONS(20,
         create_function(
             function__return, 1,
             (const unsigned []) {}, 0,
+            scope->gc));
+
+    REGSTDFUNCTION("error:except_string",
+        create_function(
+            error__except_string, 1,
+            (const unsigned []) {tid_saved}, 1,
             scope->gc));
 );

@@ -30,11 +30,26 @@ endif(DEFINED TESTS)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
+# Version
+set(VERSION_POSTFIX pre-alpha)
+set(VERSION_MAJOR 0)
+set(VERSION_MINOR 1)
+
+string(TIMESTAMP BUILD_VERSION "%y%m%d.%H%M%S")
+
+set(PROGRAM_VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${BUILD_VERSION}-${VERSION_POSTFIX}")
+
+file(WRITE ${CMAKE_BINARY_DIR}/vsn "${PROGRAM_VERSION}")
+configure_file(config.h.in config.h @ONLY)
+
+# Standart
 add_definitions(--std=gnu11)
+
+# Warnings
 add_definitions(-Wall -Wextra)
 
-# Segmentation fault debug`
-add_definitions(-g -O0)
+# Debug
+add_definitions(-g)
 
 if(DEFINED TESTS)
   ExternalProject_Get_Property(Criterion BINARY_DIR SOURCE_DIR)
@@ -49,6 +64,7 @@ endif(DEFINED TESTS)
 include_directories(
   ${CMAKE_SOURCE_DIR}/include
   ${Criterion_SRC_DIR}/include
+  ${CMAKE_BINARY_DIR}
 )
 
 ##

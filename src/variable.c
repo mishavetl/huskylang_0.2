@@ -6,6 +6,17 @@
 #include "memory.h"
 #include "list/src/list.h"
 
+scope_t scope__init()
+{
+    return (scope_t) {
+        .parent = NULL,
+        .error = NULL,
+        .vsize = 0,
+        .vars = NULL,
+        .gc = NULL
+    };
+}
+
 int setvar(scope_t *scope, const char *name, type_t *value)
 {
     scope->vars = realloc(scope->vars, sizeof(var_t *) * ++scope->vsize);

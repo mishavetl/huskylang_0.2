@@ -8,17 +8,6 @@
 #include "huserr.h"
 #include "dbg.h"
 
-int find_variable(const var_t **vars, const char *name)
-{
-    int i;
-
-    for (i = 0; vars[i]; i++)
-        if (strcmp(vars[i]->name, name) == 0)
-            return i;
-
-    return -1;
-}
-
 int
 performer__funcall(
     call_tree_t *tree, scope_t *scope, type_t *ret, mapv_t i
@@ -61,7 +50,7 @@ performer__funcall(
         goto error;
     }
 
-    j = find_variable((const var_t **) scope->vars, type->value.atom);
+    j = getvar((const scope_t *) scope, type->value.atom);
 
     if (j < 0) {
         scope->error = gc_add(scope->gc, malloc(sizeof(huserr_t)));

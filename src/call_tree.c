@@ -14,6 +14,17 @@ size_t count_mapv(mapv_t *ar)
     return len;
 }
 
+call_tree_t call_tree__init()
+{
+    return (call_tree_t) {
+        .start = -1,
+        .size = 0,
+        .tokens = NULL,
+        .map = NULL,
+        .is_saved = NULL
+    };
+}
+
 call_tree_t *call_tree__duplicate(call_tree_t *call_tree, gc_t *gc)
 {
     unsigned int i, j;

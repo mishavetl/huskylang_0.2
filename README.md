@@ -13,7 +13,7 @@ Husky Programming Language
 ### Features
 
  * purely functional programming
- * nelisp minimal syntax
+ * unpositioned lisp syntax
  * no statements
 
 ### Examples

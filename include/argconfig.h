@@ -2,11 +2,10 @@
 #define __argconfig_h__
 
 #include <stdio.h>
+#include <config.h>
 
 /* Program title. */
-#define PROGRAM_TITLE "Husky Programming Language -- purely functional programming language with nelisp syntax style"
-/* Program version. */
-#define PROGRAM_VERSION "husky 0.0.1-alpha-01 ; hsk-std 0.0.1-alpha-01"
+#define PROGRAM_TITLE "Husky Programming Language\n-- purely functional programming language with unpositioned lisp syntax"
 /* Program bug sumbit address. */
 #define PROGRAM_BUG_ADDRESS "<mishavetl@gmail.com>"
 /* Program usage. */

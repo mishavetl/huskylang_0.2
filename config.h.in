@@ -1,0 +1,6 @@
+#ifndef __config_h__
+#define __config_h__
+
+#define PROGRAM_VERSION "@PROGRAM_VERSION@"
+
+#endif

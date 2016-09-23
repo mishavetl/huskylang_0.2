@@ -14,14 +14,13 @@
 typedef int mapv_t;
 
 /**
- * STRUCT Function Call Tree
+ * STRUCT function call tree
  *
  * @author mishavetl
  *
  * @member tokens (an array of tokens)
  * @member meta (array for meta programming features)
  * @member map ({{1, 2}, NULL, {3}, NULL})
- *
  */
 typedef struct call_tree {
     mapv_t start;
@@ -32,7 +31,7 @@ typedef struct call_tree {
 } call_tree_t;
 
 /**
- * FUNCTION Duplicates call tree
+ * FUNCTION duplicates call tree
  *
  * @author mishavetl
  *
@@ -44,7 +43,16 @@ typedef struct call_tree {
 call_tree_t *call_tree__duplicate(call_tree_t *call_tree, gc_t *gc);
 
 /**
- * FUNCTION Counts map values in an array
+ * FUNCTION initiates a call tree
+ *
+ * @author mishavetl
+ *
+ * @return call tree
+ */
+call_tree_t call_tree__init();
+
+/**
+ * FUNCTION counts map values in an array
  *
  * @author mishavetl
  *
