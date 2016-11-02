@@ -8,6 +8,7 @@
 #define INFINITY_ARGS -1
 
 #include "memory.h"
+#include "call_tree.h"
 
 typedef struct scope scope_t;
 typedef struct type type_t;
@@ -29,12 +30,15 @@ typedef struct function {
     unsigned *argtypes;
     /** Function callback */
     fn_callback_t callback;
+    /** Function call tree */
+    call_tree_t *tree;
 } fn_t;
 
 /**
  * @brief Creates a function
  *
  * @param[in] fptr Pointer to a function
+ * @param[in] tree Function call tree
  * @param[in] argc Number of arguments
  * @param[in] argtypes Types of arguments
  * @param[in] argtypes_size Size of `argtypes`
@@ -42,10 +46,10 @@ typedef struct function {
  *
  * @return Function
  */
-fn_t *
-create_function(
-    fn_callback_t fptr, int argc,
+fn_t * create_function(
+    fn_callback_t fptr, call_tree_t *tree, int argc,
     const unsigned argtypes[], int argtypes_size,
-    gc_t *gc);
+    gc_t *gc
+);
 
 #endif

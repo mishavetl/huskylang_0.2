@@ -14,6 +14,21 @@ STDFUNCTION(function__return,
 
     ret->type = copy->type;
     ret->value = copy->value;
+    
+    return 0;
+
+    error:
+    return -1;
+)
+
+/** @todo */
+STDFUNCTION(function__create,
+    ret->type = tid_fn;
+    ret->value.fn = create_function(
+        NULL, args[0]->value.tree, 0, (const unsigned []) {}, 0, scope->gc
+    );
+
+    check_mem(ret->value.fn);
 
     return 0;
 

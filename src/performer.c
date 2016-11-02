@@ -16,6 +16,7 @@ performer__funcall(
     int size = 0;
     type_t *fn, *type;
     type_t **args;
+    const var_t *var_fn;
     gc_t gc = gc_init();
 
     if (tree->is_saved[i]) {
@@ -50,9 +51,9 @@ performer__funcall(
         goto error;
     }
 
-    j = getvar((const scope_t *) scope, type->value.atom);
+    var_fn = getvar((const scope_t *) scope, type->value.atom);
 
-    if (j < 0) {
+    if (!var_fn) {
         scope->error = gc_add(scope->gc, malloc(sizeof(huserr_t)));
         scope->error->name = "nameErr";
         scope->error->msg = "function undefined";
@@ -61,7 +62,7 @@ performer__funcall(
         goto error;
     }
 
-    fn = scope->vars[j]->value;
+    fn = var_fn->value;
 
     if (fn->type != tid_fn) {
         scope->error = gc_add(scope->gc, malloc(sizeof(huserr_t)));
@@ -118,7 +119,20 @@ performer__funcall(
         goto error;
     }
 
-    if (fn->value.fn->callback(args, size, ret, scope) <= 0 && scope->error) {
+    if (fn->value.fn->tree) {
+        scope_t scope_ = scope__init();
+        gc_t gc_ = gc_init();
+        scope_.gc = &gc_;
+        scope_.parent = scope;
+
+        performer__execute(fn->value.fn->tree, &scope_, ret);
+        
+        type_t *copy = copy_type(ret, scope_.parent);
+
+        ret->value = copy->value;
+
+        gc_clean(&gc_);
+    } else if (fn->value.fn->callback(args, size, ret, scope) <= 0 && scope->error) {
         scope->error->token = tree->tokens[i];
         goto error;
     }

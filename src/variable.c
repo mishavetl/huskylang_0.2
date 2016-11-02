@@ -37,20 +37,20 @@ int setvar(scope_t *scope, const char *name, type_t *value)
     return -1;
 }
 
-int getvar(const scope_t *scope, const char *name)
+const var_t *getvar(const scope_t *scope, const char *name)
 {
-    unsigned int i;
+    unsigned i;
     const var_t **vars = (const var_t **) scope->vars;
 
     for (i = 0; i < scope->vsize; i++) {
         if (strcmp(vars[i]->name, name) == 0) {
-            return i;
+            return vars[i];
         }
     }
 
     if (scope->parent) {
         return getvar(scope->parent, name);
-    } else {
-        return -1;
     }
+    
+    return NULL;
 }

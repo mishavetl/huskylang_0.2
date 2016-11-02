@@ -38,6 +38,8 @@ enum tid {
     tid_saved ///< Saved
 };
 
+#define TYPE_NAMES_MAP {"number", "atom", "fn", "string", "tuple", "list", "saved"}
+
 /**
  * @brief Type structure
  * @details Use it for all data in the language

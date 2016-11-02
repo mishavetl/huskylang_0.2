@@ -1,0 +1,11 @@
+-- functions usage example --
+
+var:fn bar, (& ; r 'hello'.)
+var:fn foo, (& ; {} (1 + 1), (2 + 2), (bar).)
+var:fn baz, (& ; 1 + 1.)
+
+io:puts (atom:to_string ((type (foo)) # 1))
+
+io:puts (bar)
+io:puts (number:to_string ((foo) # 1))
+io:puts ((foo) # 2)

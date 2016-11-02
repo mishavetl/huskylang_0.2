@@ -53,9 +53,9 @@ int setvar(scope_t *scope, const char *name, type_t *value);
  * @param[in] scope Scope where to set a variable
  * @param[in] name Name of a variable
  *
- * @return Index of a variable ; -1 if doesn't exist
+ * @return Variable found or NULL if not found
  */
-int getvar(const scope_t *scope, const char *name);
+const var_t *getvar(const scope_t *scope, const char *name);
 
 /**
  * @brief Initiates a scope

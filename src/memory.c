@@ -74,7 +74,10 @@ type_t *copy_type(type_t *src, scope_t *scope)
     } else if (src->type == tid_atom) {
         type->value.atom = gc_add(scope->gc, strdup(src->value.atom));
     } else if (src->type == tid_tuple) {
-        for (i = 0; type->value.tuple[i]; i++) {
+        for (i = 0; src->value.tuple[i]; i++);
+        type->value.tuple = gc_add(scope->gc, malloc(sizeof(type_t *) * i));
+        
+        for (i = 0; src->value.tuple[i]; i++) {
             type->value.tuple[i] = copy_type(src->value.tuple[i], scope);
         }
     } else if (src->type == tid_list) {

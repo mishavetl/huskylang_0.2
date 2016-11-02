@@ -27,125 +27,143 @@
 #include "std/saved.c"
 #include "std/function.c"
 #include "std/error.c"
+#include "std/type.c"
 
 /**
  * Register
  */
 
-STDFUNCTIONS(21,
+STDFUNCTIONS(24,
     REGSTDFUNCTION("+",
         create_function(
-            plus, INFINITY_ARGS,
+            plus, NULL, INFINITY_ARGS,
             (const unsigned []) {tid_num}, 1,
             scope->gc));
     REGSTDFUNCTION("-",
         create_function(
-            minus, INFINITY_ARGS,
+            minus, NULL, INFINITY_ARGS,
             (const unsigned []) {tid_num}, 1,
             scope->gc));
 
     REGSTDFUNCTION("io:puts",
         create_function(
-            io__puts, INFINITY_ARGS,
+            io__puts, NULL, INFINITY_ARGS,
             (const unsigned []) {tid_string}, 1,
             scope->gc));
     REGSTDFUNCTION("io:putln",
         create_function(
-            io__puts, 0,
+            io__puts, NULL, 0,
             (const unsigned []) {}, 0,
             scope->gc));
 
     REGSTDFUNCTION("number:to_string",
         create_function(
-            number__to_string, 1,
+            number__to_string, NULL, 1,
             (const unsigned []) {tid_num}, 1,
             scope->gc));
 
     REGSTDFUNCTION("atom:to_string",
         create_function(
-            atom__to_string, 1,
+            atom__to_string, NULL, 1,
             (const unsigned []) {tid_atom}, 1,
             scope->gc));
 
     REGSTDFUNCTION("var:atom",
         create_function(
-            var__set, 2,
+            var__set, NULL, 2,
             (const unsigned []) {tid_atom}, 1,
             scope->gc));
     REGSTDFUNCTION("var:number",
         create_function(
-            var__set, 2,
+            var__set, NULL, 2,
             (const unsigned []) {tid_atom, tid_num}, 2,
             scope->gc));
     REGSTDFUNCTION("var:tuple",
         create_function(
-            var__set, 2,
+            var__set, NULL, 2,
             (const unsigned []) {tid_atom, tid_tuple}, 2,
             scope->gc));
     REGSTDFUNCTION("var:string",
         create_function(
-            var__set, 2,
+            var__set, NULL, 2,
             (const unsigned []) {tid_atom, tid_string}, 2,
             scope->gc));
     REGSTDFUNCTION("var:list",
         create_function(
-            var__set, 2,
+            var__set, NULL, 2,
             (const unsigned []) {tid_atom, tid_list}, 2,
             scope->gc));
     REGSTDFUNCTION("var:saved",
         create_function(
-            var__set, 2,
+            var__set, NULL, 2,
             (const unsigned []) {tid_atom, tid_saved}, 2,
+            scope->gc));
+    REGSTDFUNCTION("var:fn",
+        create_function(
+            var__set, NULL, 2,
+            (const unsigned []) {tid_atom, tid_fn}, 2,
             scope->gc));
 
     REGSTDFUNCTION("$",
         create_function(
-            var__get, 1,
+            var__get, NULL, 1,
             (const unsigned []) {tid_atom}, 1,
             scope->gc));
 
     REGSTDFUNCTION("{}",
         create_function(
-            tuple__construct, INFINITY_ARGS,
+            tuple__construct, NULL, INFINITY_ARGS,
             (const unsigned []) {}, 0,
             scope->gc));
     REGSTDFUNCTION("#",
         create_function(
-            tuple__get, 2,
+            tuple__get, NULL, 2,
             (const unsigned []) {tid_tuple, tid_num}, 2,
             scope->gc));
 
     REGSTDFUNCTION("[]",
         create_function(
-            list__construct, INFINITY_ARGS,
+            list__construct, NULL, INFINITY_ARGS,
             (const unsigned []) {}, 0,
             scope->gc));
     REGSTDFUNCTION("hd",
         create_function(
-            list__head, 1,
+            list__head, NULL, 1,
             (const unsigned []) {tid_list}, 1,
             scope->gc));
     REGSTDFUNCTION("tl",
         create_function(
-            list__tail, 1,
+            list__tail, NULL, 1,
             (const unsigned []) {tid_list}, 1,
             scope->gc));
 
     REGSTDFUNCTION("saved:call",
         create_function(
-            saved__call, 1,
+            saved__call, NULL, 1,
             (const unsigned []) {tid_saved}, 1,
             scope->gc));
 
     REGSTDFUNCTION("r",
         create_function(
-            function__return, 1,
+            function__return, NULL, 1,
             (const unsigned []) {}, 0,
             scope->gc));
 
     REGSTDFUNCTION("error:except_string",
         create_function(
-            error__except_string, 1,
+            error__except_string, NULL, 1,
             (const unsigned []) {tid_saved}, 1,
+            scope->gc));
+
+    REGSTDFUNCTION("&",
+        create_function(
+            function__create, NULL, 1,
+            (const unsigned []) {tid_saved}, 1,
+            scope->gc));
+    
+    REGSTDFUNCTION("type",
+        create_function(
+            typename, NULL, 1,
+            (const unsigned []) {}, 0,
             scope->gc));
 );
