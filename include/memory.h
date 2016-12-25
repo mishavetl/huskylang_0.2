@@ -87,4 +87,14 @@ size_t count_2d(void **ar);
  */
 type_t *copy_type(type_t *src, scope_t *scope);
 
+/**
+ * @brief Duplicates string array
+ * 
+ * @param[in] src String array to duplicate
+ * @param[in] scope
+ *
+ * @return Duplicated array
+ */
+char **str_array_dup(char **src, int n, gc_t *gc);
+
 #endif

@@ -28,3 +28,20 @@ int type_from_token(token_t *token, type_t *type)
 
     return -1;
 }
+
+int typename_to_tid(const char *typename)
+{
+    if (strcmp(typename, "atom") == 0) {
+        return tid_atom;
+    } else if (strcmp(typename, "string") == 0) {
+        return tid_string;
+    } else if (strcmp(typename, "num") == 0) {
+        return tid_num;
+    } else if (strcmp(typename, "tuple") == 0) {
+        return tid_tuple;
+    } else if (strcmp(typename, "list") == 0) {
+        return tid_list;
+    } else {
+        return -1;
+    }
+}

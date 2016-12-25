@@ -101,3 +101,23 @@ type_t *copy_type(type_t *src, scope_t *scope)
     error:
     return NULL;
 }
+
+char **str_array_dup(char **src, int n, gc_t *gc)
+{
+    if (!src) {
+        return NULL;
+    }
+
+    char **dest = gc_add(gc, malloc(sizeof(char *) * n));
+
+    check_mem(dest);
+
+    for (int i = 0; i < n; ++i) {
+        dest[i] = gc_add(gc, strdup(src[i]));
+    }
+
+    return dest;
+
+error:
+    return NULL;
+}

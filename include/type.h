@@ -61,4 +61,13 @@ typedef struct type {
  */
 int type_from_token(token_t *token, type_t *type);
 
+/**
+ * @brief Converts typename to type id
+ *
+ * @param[in] typename Typename to convert
+ *
+ * @return int tid
+ */
+int typename_to_tid(const char *typename);
+
 #endif

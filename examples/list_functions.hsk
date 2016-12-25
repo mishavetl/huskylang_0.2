@@ -1,0 +1,9 @@
+-- list functions example --
+
+var:tuple unzipped, (list:unzip ([] ({} 1, 'a'), ({} 2, 'b')))
+
+io:puts ((($ unzipped) # 1) # 0) --> a
+io:puts ((($ unzipped) # 1) # 1) --> b
+
+io:puts (number:to_string ((($ unzipped) # 0) # 0)) --> 1
+io:puts (number:to_string ((($ unzipped) # 0) # 1)) --> 2

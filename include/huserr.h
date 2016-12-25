@@ -7,6 +7,8 @@
 
 #include "type.h"
 
+#define ERROR_MSG_BUFFER_MAX 1024
+
 /**
  * @brief Husky error
  */

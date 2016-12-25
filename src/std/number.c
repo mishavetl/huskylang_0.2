@@ -3,6 +3,7 @@
  */
 
 STDFUNCTION(number__to_string,
+    /* debug("%d", log10(args[0]->value.num)); */
     char *string = gc_add(scope->gc, malloc(sizeof(char) * (log10(args[0]->value.num) + 2)));
 
     check_mem(string);

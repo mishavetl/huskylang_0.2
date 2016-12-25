@@ -1,0 +1,4 @@
+-- anomality examples --
+
+io:puts (number:to_string (+ 0)) -- 0
+io:puts (number:to_string (- 0)) -- 0

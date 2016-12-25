@@ -22,7 +22,7 @@ STDFUNCTION(list__construct,
 
     return 0;
 
-    error:
+error:
     return -1;
 )
 
@@ -39,7 +39,7 @@ STDFUNCTION(list__head,
 
     return 0;
 
-    error:
+error:
     return -1;
 )
 
@@ -61,7 +61,91 @@ STDFUNCTION(list__tail,
 
     return 0;
 
-    error:
+error:
+    if (it) list_iterator_destroy(it);
+    return -1;
+)
+
+STDFUNCTION(list__length,
+    list_node_t *node;
+    list_iterator_t *it = list_iterator_new(args[0]->value.list, LIST_HEAD);
+
+    check_mem(it);
+
+    int length = 0;
+
+    while ((node = list_iterator_next(it))) {
+        ++length;
+    }
+    
+    ret->type = tid_num;
+    ret->value.num = length;
+
+    if (it) list_iterator_destroy(it);
+
+    return 0;
+
+error:
+    if (it) list_iterator_destroy(it);
+    return -1;
+)
+
+STDFUNCTION(list__unzip,
+    type_t length_in_lang;
+    list__length(args, 1, &length_in_lang, scope);
+
+    int length = length_in_lang.value.num;
+
+    ret->type = tid_tuple;
+    ret->value.tuple = gc_add(scope->gc, malloc(sizeof(type_t *) * 3));
+    check_mem(ret->value.tuple);
+
+    ret->value.tuple[0] = gc_add(scope->gc, malloc(sizeof(type_t)));
+    check_mem(ret->value.tuple[0]);
+    
+    ret->value.tuple[0]->type = tid_tuple;
+    ret->value.tuple[0]->value.tuple = gc_add(scope->gc, malloc(sizeof(type_t *) * (length + 1)));
+    check_mem(ret->value.tuple[0]->value.tuple);
+
+    ret->value.tuple[1] = gc_add(scope->gc, malloc(sizeof(type_t)));
+    check_mem(ret->value.tuple[1]);
+    
+    ret->value.tuple[1]->type = tid_tuple;
+    ret->value.tuple[1]->value.tuple = gc_add(scope->gc, malloc(sizeof(type_t *) * (length + 1)));
+    check_mem(ret->value.tuple[1]->value.tuple);
+    
+    ret->value.tuple[2] = NULL;
+
+    list_node_t *node;
+    list_iterator_t *it = list_iterator_new(args[0]->value.list, LIST_HEAD);
+
+    int i = 0;
+
+    while ((node = list_iterator_next(it))) {
+        if (((type_t *) node->val)->type != tid_tuple) {
+            scope->error = gc_add(scope->gc, malloc(sizeof(huserr_t)));
+            scope->error->name = "typeErr";
+            scope->error->msg = "must be a zipped list";
+            goto error;
+        }
+
+        ret->value.tuple[0]->value.tuple[i] = copy_type(((type_t *) node->val)->value.tuple[0], scope);
+        check_mem(ret->value.tuple[0]->value.tuple[i]);
+
+        ret->value.tuple[1]->value.tuple[i] = copy_type(((type_t *) node->val)->value.tuple[1], scope);
+        check_mem(ret->value.tuple[1]->value.tuple[i]);
+
+        ++i;
+    }
+
+    ret->value.tuple[0]->value.tuple[i] = NULL;
+    ret->value.tuple[1]->value.tuple[i] = NULL;
+
+    if (it) list_iterator_destroy(it);
+
+    return 0;
+
+error:
     if (it) list_iterator_destroy(it);
     return -1;
 )

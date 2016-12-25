@@ -73,6 +73,11 @@ performer__funcall(
         goto error;
     }
 
+    scope_t scope_ = scope__init();
+    gc_t gc_ = gc_init();
+    scope_.gc = &gc_;
+    scope_.parent = scope;
+
     for (j = 1; tree->map[i][j] != TERMINATE_MAPV; j++) {
         if (tree->map[i][j] == EMPTY_MAPV) continue;
 
@@ -93,6 +98,10 @@ performer__funcall(
 
         args[size] = type;
 
+        if (fn->value.fn->argnames_size > size) {
+            setvar(&scope_, fn->value.fn->argnames[size], args[size]);
+        }
+
         if (fn->value.fn->argtypes_size != 0) {
             if (type->type !=
                 fn->value.fn->argtypes[size % fn->value.fn->argtypes_size]
@@ -110,8 +119,7 @@ performer__funcall(
 
     args[size] = NULL;
 
-    if (size != fn->value.fn->argc && fn->value.fn->argc != INFINITY_ARGS)
-    {
+    if (size != fn->value.fn->argc && fn->value.fn->argc != INFINITY_ARGS) {
         scope->error = gc_add(scope->gc, malloc(sizeof(huserr_t)));
         scope->error->name = "argumentErr";
         scope->error->msg = "invalid arguments number";
@@ -120,14 +128,16 @@ performer__funcall(
     }
 
     if (fn->value.fn->tree) {
-        scope_t scope_ = scope__init();
-        gc_t gc_ = gc_init();
-        scope_.gc = &gc_;
-        scope_.parent = scope;
-
         performer__execute(fn->value.fn->tree, &scope_, ret);
+
+        if (scope_.error) {
+            scope->error = scope_.error;
+            scope->error->msg = gc_add(scope->gc, strdup(scope->error->msg));
+
+            goto error;
+        }
         
-        type_t *copy = copy_type(ret, scope_.parent);
+        type_t *copy = copy_type(ret, scope);
 
         ret->value = copy->value;
 
