@@ -1,0 +1,8 @@
+-- boolean examples --
+
+yes -> ; io:puts 'always'.
+no -> ; io:puts 'never'.
+
+yes |-> ; io:puts 'always'., ;
+    yes -> ; io:puts 'never'.
+.

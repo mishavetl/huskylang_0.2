@@ -35,7 +35,8 @@ enum tid {
     tid_string, ///< String
     tid_tuple, ///< Tuple (immutable array)
     tid_list, ///< List
-    tid_saved ///< Saved
+    tid_saved, ///< Saved
+    __tid_size ///< Size of tid enum
 };
 
 #define TYPE_NAMES_MAP {"number", "atom", "fn", "string", "tuple", "list", "saved"}

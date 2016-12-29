@@ -28,12 +28,13 @@
 #include "std/function.c"
 #include "std/error.c"
 #include "std/type.c"
+#include "std/boolean.c"
 
 /**
  * Register
  */
 
-STDFUNCTIONS(25,
+STDFUNCTIONS(29,
     REGSTDFUNCTION("+",
         create_function(
             plus, NULL, INFINITY_ARGS,
@@ -43,6 +44,12 @@ STDFUNCTIONS(25,
     REGSTDFUNCTION("-",
         create_function(
             minus, NULL, INFINITY_ARGS,
+            (const unsigned []) {tid_num}, 1,
+            NULL, 0,
+            scope->gc));
+    REGSTDFUNCTION("*",
+        create_function(
+            multiply, NULL, INFINITY_ARGS,
             (const unsigned []) {tid_num}, 1,
             NULL, 0,
             scope->gc));
@@ -194,6 +201,27 @@ STDFUNCTIONS(25,
         create_function(
             typename, NULL, 1,
             (const unsigned []) {}, 0,
+            NULL, 0,
+            scope->gc));
+
+    REGSTDFUNCTION("->",
+        create_function(
+            boolean__if, NULL, 2,
+            (const unsigned []) {tid_atom, tid_saved}, 2,
+            NULL, 0,
+            scope->gc));
+
+    REGSTDFUNCTION("|->",
+        create_function(
+            boolean__continuous_if, NULL, 3,
+            (const unsigned []) {tid_atom, tid_saved, tid_saved}, 3,
+            NULL, 0,
+            scope->gc));
+
+    REGSTDFUNCTION("=",
+        create_function(
+            number__equal, NULL, 2,
+            (const unsigned []) {tid_num, tid_num}, 2,
             NULL, 0,
             scope->gc));
 );

@@ -9,6 +9,10 @@
 #include "function.h"
 #include "type.h"
 
+#define BOOLEAN_ERR "bad"
+#define BOOLEAN_TRUE "yes"
+#define BOOLEAN_FALSE "no"
+
 /**
  * @brief Macro for creation of `get_stdlib_variables` function
  *
