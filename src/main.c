@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
                         scope.error->name, scope.error->msg,
                         scope.error->token->value,
                         scope.error->token->linefrom,
-                        scope.error->token->linefrom,
+                        scope.error->token->lineto,
                         scope.error->token->col + 1
                     );
                     scope.error = NULL;

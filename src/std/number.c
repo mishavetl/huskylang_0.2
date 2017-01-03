@@ -6,7 +6,7 @@ int number__to_string(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
 {
     (void) argc;
 
-    int n = args[0]->value.num;
+    TYPE_NUMBER n = args[0]->value.num;
     if (n <= 0) {
         n = -n + 1;
     }

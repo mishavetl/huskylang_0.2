@@ -12,12 +12,14 @@
 
 typedef struct variable var_t;
 
+typedef int TYPE_NUMBER;
+
 /**
  * @brief Value of a type
  */
 union type_value {
     fn_t *fn; ///< Function value
-    int num; ///< Number value
+    TYPE_NUMBER num; ///< Number value
     const char *atom; ///< Atom value
     const char *string; ///< String value
     type_t **tuple; ///< Tuple value

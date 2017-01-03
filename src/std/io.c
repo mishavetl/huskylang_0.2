@@ -18,6 +18,33 @@ STDFUNCTION(io__puts,
     return 0;
 )
 
+int io__gets(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
+{
+    (void) argc;
+    (void) args;
+
+    ret->type = tid_string;
+
+    char *string = NULL;
+
+    size_t i = 0;
+    ssize_t count = getline(&string, &i, stdin);
+    check(count > 0, "Error getting input.");
+    check_mem(string);
+
+    if (string[count - 1] == '\n') {
+        string[count - 1] = '\0';
+    }
+
+    gc_add(scope->gc, string);
+    ret->value.string = string;
+
+    return 0;
+
+error:
+    return -1;
+}
+
 STDFUNCTION(io__putln,
     puts("");
 

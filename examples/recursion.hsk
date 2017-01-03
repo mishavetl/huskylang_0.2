@@ -2,21 +2,18 @@
 
 var:fn print, (([] (n {} num)) & ; []
     (io:puts (number:to_string ($ n))),
-    ((($ n) = 0) |->
+    ((($ n) = 1) |->
         ; r good.
         , ; print (($ n) - 1).
     ).
 )
 
-var:fn factorial, (([] (n {} num)) & ; []
-    (io:puts ($ n)),
+var:fn factorial, (([] (n {} num)) & ;
     ($ n) * (
-       (($ n) = 0) |-> ; 0 + 1., ; factorial (($ n) - 1).
+        (($ n) = 1) |-> ; r 1., ; factorial (($ n) - 1).
     ).
 )
 
 io:puts (number:to_string (factorial 5)) -- 120
--- print 5
-
--- io:puts (number:to_string 0)
+print 5
 

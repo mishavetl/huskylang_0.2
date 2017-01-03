@@ -19,6 +19,11 @@ performer__funcall(
     const var_t *var_fn;
     gc_t gc = gc_init();
 
+    scope_t scope_ = scope__init();
+    gc_t gc_ = gc_init();
+    scope_.gc = &gc_;
+    scope_.parent = scope;
+
     if (tree->is_saved[i]) {
         ret->type = tid_saved;
         ret->value.tree = call_tree__duplicate(tree, scope->gc);
@@ -73,10 +78,6 @@ performer__funcall(
         goto error;
     }
 
-    scope_t scope_ = scope__init();
-    gc_t gc_ = gc_init();
-    scope_.gc = &gc_;
-    scope_.parent = scope;
 
     for (j = 1; tree->map[i][j] != TERMINATE_MAPV; j++) {
         if (tree->map[i][j] == EMPTY_MAPV) continue;
@@ -131,8 +132,17 @@ performer__funcall(
         performer__execute(fn->value.fn->tree, &scope_, ret);
 
         if (scope_.error) {
-            scope->error = scope_.error;
-            scope->error->msg = gc_add(scope->gc, strdup(scope->error->msg));
+            scope->error = gc_add(scope->gc, malloc(sizeof(huserr_t)));
+            scope->error->name = gc_add(scope->gc, strdup(scope_.error->name));
+
+            scope->error->token = gc_add(scope->gc, malloc(sizeof(token_t)));
+            check_mem(scope->error->token);
+            memcpy(scope->error->token, scope_.error->token, sizeof(token_t));
+
+            scope->error->token->value = (char *) gc_add(scope->gc, strdup(scope_.error->token->value));
+
+            scope->error->msg = gc_add(scope->gc, strdup(scope_.error->msg));
+            check_mem(scope->error->msg);
 
             goto error;
         }
@@ -140,21 +150,25 @@ performer__funcall(
         type_t *copy = copy_type(ret, scope);
 
         ret->value = copy->value;
-
-        gc_clean(&gc_);
     } else if (fn->value.fn->callback(args, size, ret, scope) <= 0 && scope->error) {
-        scope->error->token = tree->tokens[i];
+        if (!scope->error->token) {
+            scope->error->token = tree->tokens[i];
+        }
+
         goto error;
     }
 
     gc_clean(&gc);
+    gc_clean(scope_.gc);
+    FREE(scope_.vars);
 
     return 0;
 
-    error:
-
+error:
     gc_clean(&gc);
-
+    gc_clean(scope_.gc);
+    FREE(scope_.vars);
+    
     return -1;
 }
 

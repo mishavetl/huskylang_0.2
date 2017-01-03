@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "type.h"
 #include "std.h"
@@ -29,12 +30,13 @@
 #include "std/error.c"
 #include "std/type.c"
 #include "std/boolean.c"
+#include "std/string.c"
 
 /**
  * Register
  */
 
-STDFUNCTIONS(29,
+STDFUNCTIONS(31,
     REGSTDFUNCTION("+",
         create_function(
             plus, NULL, INFINITY_ARGS,
@@ -54,6 +56,12 @@ STDFUNCTIONS(29,
             NULL, 0,
             scope->gc));
 
+    REGSTDFUNCTION("io:gets",
+        create_function(
+            io__gets, NULL, 0,
+            (const unsigned []) {}, 0,
+            NULL, 0,
+            scope->gc));
     REGSTDFUNCTION("io:puts",
         create_function(
             io__puts, NULL, INFINITY_ARGS,
@@ -64,6 +72,13 @@ STDFUNCTIONS(29,
         create_function(
             io__puts, NULL, 0,
             (const unsigned []) {}, 0,
+            NULL, 0,
+            scope->gc));
+
+    REGSTDFUNCTION("string:to_number",
+        create_function(
+            string__to_number, NULL, 1,
+            (const unsigned []) {tid_string}, 1,
             NULL, 0,
             scope->gc));
 
@@ -176,13 +191,6 @@ STDFUNCTIONS(29,
             NULL, 0,
             scope->gc));
 
-    REGSTDFUNCTION("r",
-        create_function(
-            function__return, NULL, 1,
-            (const unsigned []) {}, 0,
-            NULL, 0,
-            scope->gc));
-
     REGSTDFUNCTION("error:except_string",
         create_function(
             error__except_string, NULL, 1,
@@ -194,6 +202,12 @@ STDFUNCTIONS(29,
         create_function(
             function__create, NULL, 2,
             (const unsigned []) {tid_list, tid_saved}, 2,
+            NULL, 0,
+            scope->gc));
+    REGSTDFUNCTION("r",
+        create_function(
+            function__return, NULL, 1,
+            (const unsigned []) {}, 0,
             NULL, 0,
             scope->gc));
     
@@ -210,7 +224,6 @@ STDFUNCTIONS(29,
             (const unsigned []) {tid_atom, tid_saved}, 2,
             NULL, 0,
             scope->gc));
-
     REGSTDFUNCTION("|->",
         create_function(
             boolean__continuous_if, NULL, 3,
