@@ -1,6 +1,6 @@
 -- recursion example --
 
-var:fn print, (([] (n {} num)) & ; []
+def print, (([] (n {} num)) & ; []
     (io:puts (number:to_string ($ n))),
     ((($ n) = 1) |->
         ; r good.
@@ -8,7 +8,7 @@ var:fn print, (([] (n {} num)) & ; []
     ).
 )
 
-var:fn factorial, (([] (n {} num)) & ;
+def factorial, (([] (n {} num)) & ;
     ($ n) * (
         (($ n) = 1) |-> ; r 1., ; factorial (($ n) - 1).
     ).

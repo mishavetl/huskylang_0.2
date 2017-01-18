@@ -2,7 +2,8 @@
  * Tuples API
  */
 
-STDFUNCTION(list__construct,
+int list__construct(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
+{
     argc_t i;
     type_t *type;
 
@@ -24,11 +25,15 @@ STDFUNCTION(list__construct,
 
 error:
     return -1;
-)
+}
 
-STDFUNCTION(list__head,
+int list__head(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
+{
+    (void) argc;
+    
     if (args[0]->value.list->len == 0) {
         scope->error = gc_add(scope->gc, malloc(sizeof(huserr_t)));
+        scope->error->token = NULL;
         scope->error->name = "listErr";
         scope->error->msg = "empty list has no head";
         goto error;
@@ -41,9 +46,12 @@ STDFUNCTION(list__head,
 
 error:
     return -1;
-)
+}
 
-STDFUNCTION(list__tail,
+int list__tail(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
+{
+    (void) argc;
+
     list_node_t *node;
     list_iterator_t *it = list_iterator_new(args[0]->value.list, LIST_HEAD);
     check_mem(it);
@@ -64,9 +72,13 @@ STDFUNCTION(list__tail,
 error:
     if (it) list_iterator_destroy(it);
     return -1;
-)
+}
 
-STDFUNCTION(list__length,
+int list__length(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
+{
+    (void) argc;
+    (void) scope;
+
     list_node_t *node;
     list_iterator_t *it = list_iterator_new(args[0]->value.list, LIST_HEAD);
 
@@ -88,9 +100,12 @@ STDFUNCTION(list__length,
 error:
     if (it) list_iterator_destroy(it);
     return -1;
-)
+}
 
-STDFUNCTION(list__unzip,
+int list__unzip(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
+{
+    (void) argc;
+
     type_t length_in_lang;
     list__length(args, 1, &length_in_lang, scope);
 
@@ -126,6 +141,7 @@ STDFUNCTION(list__unzip,
             scope->error = gc_add(scope->gc, malloc(sizeof(huserr_t)));
             scope->error->name = "typeErr";
             scope->error->msg = "must be a zipped list";
+            scope->error->token = NULL;
             goto error;
         }
 
@@ -148,4 +164,4 @@ STDFUNCTION(list__unzip,
 error:
     if (it) list_iterator_destroy(it);
     return -1;
-)
+}

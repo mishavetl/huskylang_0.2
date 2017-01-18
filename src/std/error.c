@@ -2,7 +2,10 @@
  * Errors API
  */
 
-STDFUNCTION(error__except_string,
+int error__except_string(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
+{
+    (void) argc;
+
     call_tree_t *tree = args[0]->value.tree;
 
     performer__funcall(tree, scope, ret, tree->start);
@@ -11,6 +14,7 @@ STDFUNCTION(error__except_string,
         scope->error = gc_add(scope->gc, malloc(sizeof(huserr_t)));
         scope->error->name = "exceptError";
         scope->error->msg = "scope has no error";
+        scope->error->token = NULL;
         goto error;
     }
 
@@ -24,4 +28,4 @@ STDFUNCTION(error__except_string,
 
     error:
     return -1;
-)
+}

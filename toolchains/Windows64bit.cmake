@@ -1,6 +1,9 @@
 # the name of the target operating system
 SET(CMAKE_SYSTEM_NAME Windows)
 
+# the processor
+set(CMAKE_SYSTEM_PROCESSOR "amd64")
+
 # Choose an appropriate compiler prefix
 
 # for classical mingw32

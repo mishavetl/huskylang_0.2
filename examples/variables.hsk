@@ -1,7 +1,7 @@
 -- variables usage example --
 
-var:number one, 1
-var:number two, 2
-var:number three, (($ one) + ($ two))
+def one, 1
+def two, 2
+def three, (($ one) + ($ two))
 
 io:puts (number:to_string ($ three))

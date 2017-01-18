@@ -1,17 +1,15 @@
-var:saved foo, ; io:puts 'foobar'.
-var:saved bar, ;
+def foo, ; io:puts 'foobar'.
+def bar, ;
     io:puts 'foobarbaz'
 .
 
-var:saved baz, ; [] foo, bar, baz.
-var:saved quux, ; r 'good'.
+def baz, ; [] foo, bar, baz.
+def quux, ; r 'good'.
 
 saved:call ($ bar)
 
 io:putln
 
 io:puts (atom:to_string (saved:call ($ foo)))
-
 io:puts (atom:to_string (hd (saved:call ($ baz))))
-
 io:puts (saved:call ($ quux))

@@ -1,7 +1,7 @@
 -- functions with args example --
 
-var:fn add, (([] (foo {} num), (bar {} num)) &
-    ; ($ foo) + ($ bar).
+def add, (([] (foo {} num), (bar {} num)) & ;
+    ($ foo) + ($ bar).
 )
 
 io:puts (number:to_string (2 add 3))

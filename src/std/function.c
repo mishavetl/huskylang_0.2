@@ -2,26 +2,17 @@
  * Functions API
  */
 
-STDFUNCTION(function__return,
-    if (!scope->parent) {
-        scope->error = gc_add(scope->gc, malloc(sizeof(huserr_t)));
-        scope->error->name = "returnError";
-        scope->error->msg = "scope has no parent";
-        goto error;
-    }
+int function__return(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
+{
+    (void) argc;
+    (void) scope;
 
-    type_t *copy = copy_type(args[0], scope->parent);
-
-    ret->type = copy->type;
-    ret->value = copy->value;
+    ret->type = args[0]->type;
+    ret->value = args[0]->value;
     
     return 0;
+}
 
-error:
-    return -1;
-)
-
-/* TODO: function arguments */
 int function__create(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
 {
     (void) argc;
@@ -121,6 +112,20 @@ int function__create(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
     /* ); */
 
     check_mem(ret->value.fn);
+
+    return 0;
+
+error:
+    return -1;
+}
+
+int function__define(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
+{
+    type_t *args1[] = {args[0], ret};
+    type_t ret1;
+
+    check(function__create(args + 1, argc - 1, ret, scope) == 0, "Function creation failed.");
+    check(var__set(args1, 2, &ret1, scope) == 0, "Variable setting failed.");
 
     return 0;
 

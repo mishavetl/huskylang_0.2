@@ -1,6 +1,6 @@
 -- list functions example --
 
-var:tuple unzipped, (list:unzip ([] ({} 1, 'a'), ({} 2, 'b')))
+def unzipped, (list:unzip ([] ({} 1, 'a'), ({} 2, 'b')))
 
 io:puts ((($ unzipped) # 1) # 0) --> a
 io:puts ((($ unzipped) # 1) # 1) --> b

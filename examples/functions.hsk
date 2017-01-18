@@ -1,8 +1,8 @@
 -- functions usage example --
 
-var:fn bar, (([]) & ; r 'hello'.)
-var:fn foo, (([]) & ; {} (1 + 1), (2 + 2), (bar).)
-var:fn baz, (([]) & ; 1 + 1.)
+fn bar, ([]), ; r 'hello'.
+fn foo, ([]), ; {} (1 + 1), (2 + 2), (bar).
+fn baz, ([]), ; 1 + 1.
 
 io:puts (atom:to_string ((type (foo)) # 1))
 

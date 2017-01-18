@@ -1,4 +1,4 @@
-#ifndef _POSIX_C_SOURCE
+#ifndef __unix__
 
 #include <stdio.h>
 #include <stdlib.h>

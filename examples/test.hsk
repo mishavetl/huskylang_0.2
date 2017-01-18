@@ -1,6 +1,6 @@
 -- | test script | --
-foo var:atom bar
-bar var:number 1
+def foo, bar
+def bar, 1
 
 io:puts \
     (atom:to_string ($ foo)), \
@@ -10,4 +10,5 @@ io:puts (number:to_string \
     (1 + 1, (2 + 3), 3) \
 )
 
+io:puts 1
 io:puts (1, 2 + (- 3, 4))

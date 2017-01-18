@@ -103,9 +103,17 @@ performer__funcall(
             setvar(&scope_, fn->value.fn->argnames[size], args[size]);
         }
 
+
         if (fn->value.fn->argtypes_size != 0) {
-            if (type->type !=
-                fn->value.fn->argtypes[size % fn->value.fn->argtypes_size]
+            int argtypes_size = fn->value.fn->argtypes_size;
+            int index = (fn->value.fn->argc == INFINITY_ARGS)
+                ? size % argtypes_size
+                : size;
+            
+            if (index >= argtypes_size) {
+
+            } else if (type->type !=
+                fn->value.fn->argtypes[index]
             ) {
                 scope->error = gc_add(scope->gc, malloc(sizeof(huserr_t)));
                 scope->error->name = "typeErr";

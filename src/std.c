@@ -36,7 +36,7 @@
  * Register
  */
 
-STDFUNCTIONS(31,
+STDFUNCTIONS(26,
     REGSTDFUNCTION("+",
         create_function(
             plus, NULL, INFINITY_ARGS,
@@ -96,46 +96,53 @@ STDFUNCTIONS(31,
             NULL, 0,
             scope->gc));
 
-    REGSTDFUNCTION("var:atom",
+    /* REGSTDFUNCTION("var:atom", */
+    /*     create_function( */
+    /*         var__set, NULL, 2, */
+    /*         (const unsigned []) {tid_atom}, 1, */
+    /*         NULL, 0, */
+    /*         scope->gc)); */
+    /* REGSTDFUNCTION("var:number", */
+    /*     create_function( */
+    /*         var__set, NULL, 2, */
+    /*         (const unsigned []) {tid_atom, tid_num}, 2, */
+    /*         NULL, 0, */
+    /*         scope->gc)); */
+    /* REGSTDFUNCTION("var:tuple", */
+    /*     create_function( */
+    /*         var__set, NULL, 2, */
+    /*         (const unsigned []) {tid_atom, tid_tuple}, 2, */
+    /*         NULL, 0, */
+    /*         scope->gc)); */
+    /* REGSTDFUNCTION("var:string", */
+    /*     create_function( */
+    /*         var__set, NULL, 2, */
+    /*         (const unsigned []) {tid_atom, tid_string}, 2, */
+    /*         NULL, 0, */
+    /*         scope->gc)); */
+    /* REGSTDFUNCTION("var:list", */
+    /*     create_function( */
+    /*         var__set, NULL, 2, */
+    /*         (const unsigned []) {tid_atom, tid_list}, 2, */
+    /*         NULL, 0, */
+    /*         scope->gc)); */
+    /* REGSTDFUNCTION("var:saved", */
+    /*     create_function( */
+    /*         var__set, NULL, 2, */
+    /*         (const unsigned []) {tid_atom, tid_saved}, 2, */
+    /*         NULL, 0, */
+    /*         scope->gc)); */
+    REGSTDFUNCTION("def",
         create_function(
             var__set, NULL, 2,
             (const unsigned []) {tid_atom}, 1,
             NULL, 0,
             scope->gc));
-    REGSTDFUNCTION("var:number",
+
+    REGSTDFUNCTION("fn",
         create_function(
-            var__set, NULL, 2,
-            (const unsigned []) {tid_atom, tid_num}, 2,
-            NULL, 0,
-            scope->gc));
-    REGSTDFUNCTION("var:tuple",
-        create_function(
-            var__set, NULL, 2,
-            (const unsigned []) {tid_atom, tid_tuple}, 2,
-            NULL, 0,
-            scope->gc));
-    REGSTDFUNCTION("var:string",
-        create_function(
-            var__set, NULL, 2,
-            (const unsigned []) {tid_atom, tid_string}, 2,
-            NULL, 0,
-            scope->gc));
-    REGSTDFUNCTION("var:list",
-        create_function(
-            var__set, NULL, 2,
-            (const unsigned []) {tid_atom, tid_list}, 2,
-            NULL, 0,
-            scope->gc));
-    REGSTDFUNCTION("var:saved",
-        create_function(
-            var__set, NULL, 2,
-            (const unsigned []) {tid_atom, tid_saved}, 2,
-            NULL, 0,
-            scope->gc));
-    REGSTDFUNCTION("var:fn",
-        create_function(
-            var__set, NULL, 2,
-            (const unsigned []) {tid_atom, tid_fn}, 2,
+            function__define, NULL, 3,
+            (const unsigned []) {tid_atom, tid_list, tid_saved}, 3,
             NULL, 0,
             scope->gc));
 

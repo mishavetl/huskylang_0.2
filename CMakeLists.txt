@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
+
 project(huskylang)
 
 include(ExternalProject)
@@ -31,7 +32,7 @@ endif(DEFINED TESTS)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 # Version
-set(VERSION_POSTFIX pre-alpha)
+set(VERSION_POSTFIX alpha)
 set(VERSION_MAJOR 0)
 set(VERSION_MINOR 1)
 
