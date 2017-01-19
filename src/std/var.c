@@ -10,6 +10,7 @@ STDFUNCTION(var__set,
         scope->error = gc_add(scope->gc, malloc(sizeof(huserr_t)));
         scope->error->name = "nameErr";
         scope->error->msg = "variable already defined";
+        scope->error->token = NULL;
         goto error;
     }
 
@@ -33,6 +34,7 @@ STDFUNCTION(var__get,
         scope->error = gc_add(scope->gc, malloc(sizeof(huserr_t)));
         scope->error->name = "nameErr";
         scope->error->msg = "undefined variable";
+        scope->error->token = NULL;
         goto error;
     }
 

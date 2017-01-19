@@ -7,7 +7,6 @@ def print, (([] (n {} num)) & ; []
         , ; print (($ n) - 1).
     ).
 )
-
 def factorial, (([] (n {} num)) & ;
     ($ n) * (
         (($ n) = 1) |-> ; r 1., ; factorial (($ n) - 1).
