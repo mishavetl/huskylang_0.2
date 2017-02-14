@@ -2,10 +2,10 @@ fn fibonacci_, ([] (n {} num), (prev {} num), (beforePrev {} num)), ;
     (($ n) = 1) |-> ;
         $ beforePrev.
     , ;
-        fibonacci_ (($ n) - 1), (($ prev) + ($ beforePrev)), ($ prev)..
+        fibonacci_ (($ n) - 1), (($ prev) + ($ beforePrev)), ($ prev).
+    .
 
 fn fibonacci, ([] (n {} num)), ;
     fibonacci_ ($ n), 1, 0.
 
--- io:puts (number:to_string (string:to_number (io:gets)))
 io:puts (number:to_string (fibonacci (string:to_number (io:gets))))

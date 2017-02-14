@@ -23,6 +23,7 @@ int string__to_number(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
             scope->error = gc_add(scope->gc, malloc(sizeof(huserr_t)));
             scope->error->name = "convertionErr";
             scope->error->msg = "string format is not correct";
+            scope->error->token = NULL;
             goto error;
         }
 
