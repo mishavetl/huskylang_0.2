@@ -7,7 +7,7 @@ int atom_is_true(const char *atom)
     return strcmp(atom, BOOLEAN_FALSE) != 0 && strcmp(atom, BOOLEAN_ERR) != 0;
 }
 
-int boolean__if(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
+int boolean__if(data_t **args, argc_t argc, data_t *ret, scope_t *scope)
 {
     (void) argc;
 
@@ -25,7 +25,7 @@ error:
     return -1;
 }
 
-int boolean__continuous_if(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
+int boolean__continuous_if(data_t **args, argc_t argc, data_t *ret, scope_t *scope)
 {
     (void) argc;
 

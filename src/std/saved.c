@@ -2,7 +2,7 @@
  * Saved Function Calls API
  */
 
-int saved__call(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
+int saved__call(data_t **args, argc_t argc, data_t *ret, scope_t *scope)
 {
     (void) argc;
 

@@ -47,7 +47,7 @@ configure_file(config.h.in config.h @ONLY)
 add_definitions(--std=gnu11)
 
 # Warnings
-add_definitions(-Wall -Wextra)
+add_definitions(-Wall -Wextra -pedantic -std=gnu11)
 
 # Debug
 add_definitions(-g)

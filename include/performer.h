@@ -20,7 +20,7 @@
  * @return Status of the execution: -1 for error, >= 0 for success
  */
 int performer__funcall(
-    call_tree_t *tree, scope_t *scope, type_t *ret, mapv_t i
+    call_tree_t *tree, scope_t *scope, data_t *ret, mapv_t i
 );
 
 /**
@@ -32,6 +32,6 @@ int performer__funcall(
  *
  * @return Status of the execution: -1 for error, >= 0 for success
  */
-int performer__execute(call_tree_t *tree, scope_t *scope, type_t *ret);
+int performer__execute(call_tree_t *tree, scope_t *scope, data_t *ret);
 
 #endif

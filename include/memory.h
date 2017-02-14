@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include "../src/list/src/list.h"
 
-typedef struct type type_t;
+typedef struct data data_t;
 typedef struct scope scope_t;
 
 /**
@@ -78,14 +78,14 @@ list_t *gc_add_list(gc_t *gc, list_t *ptr);
 size_t count_2d(void **ar);
 
 /**
- * @brief Duplicates a type
+ * @brief Duplicates a data
  *
- * @param[in] src Type to duplicate
+ * @param[in] src Data to duplicate
  * @param[in] scope
  *
- * @return Duplicated type
+ * @return Duplicated data
  */
-type_t *copy_type(type_t *src, scope_t *scope);
+data_t *copy_data(data_t *src, scope_t *scope);
 
 /**
  * @brief Duplicates string array

@@ -2,15 +2,15 @@
  * String API
  */
 
-int string__to_number(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
+int string__to_number(data_t **args, argc_t argc, data_t *ret, scope_t *scope)
 {
     (void) argc;
     (void) scope;
 
-    ret->type = tid_num;
+    ret->type = tid_integral;
 
     unsigned i = 0;
-    TYPE_NUMBER number = 0;
+    INTEGRAL_TYPE number = 0;
 
     const char *string = args[0]->value.string;
 

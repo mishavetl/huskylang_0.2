@@ -5,7 +5,7 @@
 #ifndef __variable_h__
 #define __variable_h__
 
-#include "type.h"
+#include "data.h"
 #include "huserr.h"
 #include "tokenizer.h"
 #include "memory.h"
@@ -17,7 +17,7 @@ typedef struct variable {
     /** Name of a variable */
     const char *name;
     /** Value of a variable */
-    type_t *value;
+    data_t *value;
 } var_t;
 
 /**
@@ -45,7 +45,7 @@ typedef struct scope {
  *
  * @return Status: if success then 0 else -1
  */
-int setvar(scope_t *scope, const char *name, type_t *value);
+int setvar(scope_t *scope, const char *name, data_t *value);
 
 /**
  * @brief Gets a variable from a scope

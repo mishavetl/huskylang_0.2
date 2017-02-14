@@ -5,7 +5,7 @@
 #ifndef __huserr_h__
 #define __huserr_h__
 
-#include "type.h"
+#include "data.h"
 
 #define ERROR_MSG_BUFFER_MAX 1024
 

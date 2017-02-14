@@ -2,7 +2,7 @@
  * Functions API
  */
 
-int function__return(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
+int function__return(data_t **args, argc_t argc, data_t *ret, scope_t *scope)
 {
     (void) argc;
     (void) scope;
@@ -13,7 +13,7 @@ int function__return(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
     return 0;
 }
 
-int function__create(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
+int function__create(data_t **args, argc_t argc, data_t *ret, scope_t *scope)
 {
     (void) argc;
 
@@ -24,7 +24,7 @@ int function__create(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
 
     int args_size = 0;
 
-    type_t length;
+    data_t length;
 
     list__length(args, 1, &length, scope);
 
@@ -33,12 +33,12 @@ int function__create(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
     }
 
     if (length.value.num > 0) {
-        type_t unzipped;
+        data_t unzipped;
         
         list__unzip(args, 1, &unzipped, scope); 
 
-        type_t **argnames_in_lang = unzipped.value.tuple[0]->value.tuple;
-        type_t **argtypes_in_lang = unzipped.value.tuple[1]->value.tuple;
+        data_t **argnames_in_lang = unzipped.value.tuple[0]->value.tuple;
+        data_t **argtypes_in_lang = unzipped.value.tuple[1]->value.tuple;
         
         for (; argnames_in_lang[args_size]; ++args_size);
 
@@ -46,8 +46,8 @@ int function__create(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
         argtypes = gc_add(scope->gc, malloc(sizeof(unsigned) * args_size));
 
         for (int i = 0; i < args_size; ++i) {
-            type_t *argname_in_lang = argnames_in_lang[i];
-            type_t *argtype_in_lang = argtypes_in_lang[i];
+            data_t *argname_in_lang = argnames_in_lang[i];
+            data_t *argtype_in_lang = argtypes_in_lang[i];
             
             if (argname_in_lang->type != tid_atom) {
                 char msg[ERROR_MSG_BUFFER_MAX];
@@ -119,10 +119,10 @@ error:
     return -1;
 }
 
-int function__define(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
+int function__define(data_t **args, argc_t argc, data_t *ret, scope_t *scope)
 {
-    type_t *args1[] = {args[0], ret};
-    type_t ret1;
+    data_t *args1[] = {args[0], ret};
+    data_t ret1;
 
     check(function__create(args + 1, argc - 1, ret, scope) == 0, "Function creation failed.");
     check(var__set(args1, 2, &ret1, scope) == 0, "Variable setting failed.");

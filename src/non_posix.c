@@ -1,3 +1,5 @@
+#include "iso_hacks.c"
+
 #ifndef __unix__
 
 #include <stdio.h>

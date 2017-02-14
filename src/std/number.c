@@ -2,7 +2,7 @@
  * Number API
  */
 
-int number__to_string(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
+int number__to_string(data_t **args, argc_t argc, data_t *ret, scope_t *scope)
 {
     (void) argc;
 
@@ -26,7 +26,7 @@ error:
     return -1;
 }
 
-int number__equal(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
+int number__equal(data_t **args, argc_t argc, data_t *ret, scope_t *scope)
 {
     (void) argc;
 

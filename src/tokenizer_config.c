@@ -9,23 +9,23 @@
 
 TOKEN(num,
     return isdigit(ch);
-);
+)
 
 TOKEN(prior_start,
     return pos == 0 && ch == '(';
-);
+)
 
 TOKEN(prior_end,
     return pos == 0 && (ch == ')' || ch == '.');
-);
+)
 
 TOKEN(prior_start_saved,
     return pos == 0 && ch == ';';
-);
+)
 
 TOKEN(del,
     return pos == 0 && strchr(DELIMITERS, ch);
-);
+)
 
 TOKEN(string,
     if (pos == 0 && ch == '\'') {
@@ -37,7 +37,7 @@ TOKEN(string,
     } else {
         return 0;
     }
-);
+)
 
 TOKEN(atom,
     if (pos == 0 && ch == '`') {
@@ -49,7 +49,7 @@ TOKEN(atom,
     } else {
         return !strchr(DELIMITERS, ch) && !strchr(SPACES, ch);
     }
-);
+)
 
 TOKENS(
     REGTOKEN(num);
@@ -58,5 +58,5 @@ TOKENS(
     REGTOKEN(prior_start_saved);
     REGTOKEN(del);
     REGTOKEN(string);
-    REGTOKEN(atom);
+    REGTOKEN(atom)
 )

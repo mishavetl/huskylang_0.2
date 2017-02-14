@@ -18,7 +18,7 @@ STDFUNCTION(io__puts,
     return 0;
 )
 
-int io__gets(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
+int io__gets(data_t **args, argc_t argc, data_t *ret, scope_t *scope)
 {
     (void) argc;
     (void) args;

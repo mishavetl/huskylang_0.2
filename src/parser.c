@@ -64,7 +64,7 @@ mapv_t parser__funcall_(call_tree_t *call_tree, token_t **tokens, mapv_t *i_)
 
                 i++;
                 fname_pos = parser__funcall_(call_tree, tokens, &i);
-                check(fname_pos >= 0, "Nested function call parsing failed.");
+                checkf(fname_pos >= 0, "Nested function call parsing failed.");
                 call_tree->is_saved[fname_pos] = is_saved;
             }
 

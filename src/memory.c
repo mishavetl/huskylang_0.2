@@ -1,7 +1,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "memory.h"
-#include "type.h"
+#include "data.h"
 #include "variable.h"
 #include "dbg.h"
 #include "list/src/list.h"
@@ -59,44 +59,44 @@ list_t *gc_add_list(gc_t *gc, list_t *ptr)
     return gc->lists[gc->lists_size - 1] = ptr;
 }
 
-type_t *copy_type(type_t *src, scope_t *scope)
+data_t *copy_data(data_t *src, scope_t *scope)
 {
     int i;
-    type_t *type = gc_add(scope->gc, malloc(sizeof(type_t)));
+    data_t *data = gc_add(scope->gc, malloc(sizeof(data_t)));
 
-    check_mem(type);
+    check_mem(data);
 
-    type->type = src->type;
-    type->value = src->value;
+    data->type = src->type;
+    data->value = src->value;
 
-    if (src->type == tid_string) {
-        type->value.string = gc_add(scope->gc, strdup(src->value.string));
-    } else if (src->type == tid_atom) {
-        type->value.atom = gc_add(scope->gc, strdup(src->value.atom));
-    } else if (src->type == tid_tuple) {
+    if (src->type->single == tid_string) {
+        data->value.string = gc_add(scope->gc, strdup(src->value.string));
+    } else if (src->type->single == tid_atom) {
+        data->value.atom = gc_add(scope->gc, strdup(src->value.atom));
+    } else if (src->type->single == tid_tuple) {
         for (i = 0; src->value.tuple[i]; i++);
-        type->value.tuple = gc_add(scope->gc, malloc(sizeof(type_t *) * i));
+        data->value.tuple = gc_add(scope->gc, malloc(sizeof(data_t *) * i));
         
         for (i = 0; src->value.tuple[i]; i++) {
-            type->value.tuple[i] = copy_type(src->value.tuple[i], scope);
+            data->value.tuple[i] = copy_data(src->value.tuple[i], scope);
         }
-    } else if (src->type == tid_list) {
+    } else if (src->type->single == tid_list) {
         list_t *copy = gc_add_list(scope->gc, list_new());
         list_node_t *node;
         list_iterator_t *it = list_iterator_new(src->value.list, LIST_HEAD);
 
         while ((node = list_iterator_next(it))) {
-            list_rpush(copy, list_node_new(copy_type(node->val, scope)));
+            list_rpush(copy, list_node_new(copy_data(node->val, scope)));
         }
 
-        type->value.list = copy;
+        data->value.list = copy;
         list_iterator_destroy(it);
-    } else if (src->type == tid_saved) {
-        type->value.tree = call_tree__duplicate(src->value.tree, scope->gc);
-        check_mem(type->value.tree);
+    } else if (src->type->single == tid_saved) {
+        data->value.tree = call_tree__duplicate(src->value.tree, scope->gc);
+        check_mem(data->value.tree);
     }
 
-    return type;
+    return data;
 
     error:
     return NULL;

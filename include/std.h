@@ -7,7 +7,7 @@
 
 #include "variable.h"
 #include "function.h"
-#include "type.h"
+#include "data.h"
 
 #define BOOLEAN_ERR "bad"
 #define BOOLEAN_TRUE "yes"
@@ -23,7 +23,7 @@
     int get_stdlib_variables(scope_t *scope)                                    \
     {                                                                           \
         int count = 0;                                                          \
-        type_t *fn;                                                             \
+        data_t *fn;                                                             \
         scope->vars = (var_t **) malloc(sizeof(var_t *) * (n + 1));             \
                                                                                 \
         scope->vsize = n;                                                       \
@@ -39,8 +39,8 @@
  * @param fn_ Function pointer
  */
 #define REGSTDFUNCTION(fname, fn_)                                              \
-    fn = (type_t *) gc_add(scope->gc, malloc(sizeof(type_t)));                  \
-    fn->type = tid_fn;                                                          \
+    fn = (data_t *) gc_add(scope->gc, malloc(sizeof(data_t)));                  \
+    fn->type = construct_type(tid_fn, NULL, scope->gc);                         \
     fn->value.fn = fn_;                                                         \
                                                                                 \
     scope->vars[count] = (var_t *) gc_add(scope->gc, malloc(sizeof(var_t)));    \
@@ -55,7 +55,7 @@
  * @param ... Function body
  */
 #define STDFUNCTION(fname, ...)                                                 \
-    int fname(type_t **args, argc_t argc, type_t *ret, scope_t *scope)          \
+    int fname(data_t **args, argc_t argc, data_t *ret, scope_t *scope)          \
     {                                                                           \
         (void) argc;                                                            \
         (void) args;                                                            \

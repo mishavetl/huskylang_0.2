@@ -1,7 +1,7 @@
 #include <string.h>
 #include "performer.h"
 #include "function.h"
-#include "type.h"
+#include "data.h"
 #include "memory.h"
 #include "variable.h"
 #include "call_tree.h"
@@ -10,12 +10,12 @@
 
 int
 performer__funcall(
-    call_tree_t *tree, scope_t *scope, type_t *ret, mapv_t i
+    call_tree_t *tree, scope_t *scope, data_t *ret, mapv_t i
 ) {
     mapv_t j;
     int size = 0;
-    type_t *fn, *type;
-    type_t **args;
+    data_t *fn, *data;
+    data_t **args;
     const var_t *var_fn;
     gc_t gc = gc_init();
 
@@ -25,29 +25,29 @@ performer__funcall(
     scope_.parent = scope;
 
     if (tree->is_saved[i]) {
-        ret->type = tid_saved;
+        ret->type = construct_type(tid_saved, NULL, &gc);
         ret->value.tree = call_tree__duplicate(tree, scope->gc);
         ret->value.tree->start = i;
         ret->value.tree->is_saved[i] = false;
         return 0;
     }
 
-    check_mem(type = gc_add(&gc, malloc(sizeof(type_t))));
-    check_mem(args = (type_t **)
+    check_mem(data = gc_add(&gc, malloc(sizeof(data_t))));
+    check_mem(args = (data_t **)
         gc_add(&gc,
-            malloc(sizeof(type_t *) * (count_mapv(tree->map[i]) + 1))
+            malloc(sizeof(data_t *) * (count_mapv(tree->map[i]) + 1))
         )
     );
 
     if (tree->map[tree->map[i][0]] && tree->map[i][0] != i) {
-        performer__funcall(tree, scope, type, tree->map[i][0]);
+        performer__funcall(tree, scope, data, tree->map[i][0]);
     } else {
-        check(type_from_token(tree->tokens[i], type) >= 0,
-            "Failed to construct type."
+        checkf(data_from_token(tree->tokens[i], data, &gc) >= 0,
+            "Failed to construct data."
         );
     }
 
-    if (type->type != tid_atom) {
+    if (data->type != tid_atom) {
         scope->error = gc_add(scope->gc, malloc(sizeof(huserr_t)));
         scope->error->name = "typeErr";
         scope->error->msg = "is not atom";
@@ -56,7 +56,7 @@ performer__funcall(
         goto error;
     }
 
-    var_fn = getvar((const scope_t *) scope, type->value.atom);
+    var_fn = getvar((const scope_t *) scope, data->value.atom);
 
     if (!var_fn) {
         scope->error = gc_add(scope->gc, malloc(sizeof(huserr_t)));
@@ -69,7 +69,7 @@ performer__funcall(
 
     fn = var_fn->value;
 
-    if (fn->type != tid_fn) {
+    if (fn->type->single != tid_fn) {
         scope->error = gc_add(scope->gc, malloc(sizeof(huserr_t)));
         scope->error->name = "typeErr";
         scope->error->msg = "is not function";
@@ -82,22 +82,22 @@ performer__funcall(
     for (j = 1; tree->map[i][j] != TERMINATE_MAPV; j++) {
         if (tree->map[i][j] == EMPTY_MAPV) continue;
 
-        check_mem(type = gc_add(&gc, malloc(sizeof(type_t))));
+        check_mem(data = gc_add(&gc, malloc(sizeof(data_t))));
 
         if (!tree->map[tree->map[i][j]]) {
-            check(
-                type_from_token(tree->tokens[tree->map[i][j]], type) >= 0,
-                "Failed to construct type."
+            checkf(
+                data_from_token(tree->tokens[tree->map[i][j]], data, &gc) >= 0,
+                "Failed to construct data."
             );
         } else {
-            performer__funcall(tree, scope, type, tree->map[i][j]);
+            performer__funcall(tree, scope, data, tree->map[i][j]);
 
             if (scope->error) {
                 goto error;
             }
         }
 
-        args[size] = type;
+        args[size] = data;
 
         if (fn->value.fn->argnames_size > size) {
             setvar(&scope_, fn->value.fn->argnames[size], args[size]);
@@ -112,7 +112,7 @@ performer__funcall(
             
             if (index >= argtypes_size) {
 
-            } else if (type->type !=
+            } else if (data->type->single !=
                 fn->value.fn->argtypes[index]
             ) {
                 scope->error = gc_add(scope->gc, malloc(sizeof(huserr_t)));
@@ -155,7 +155,7 @@ performer__funcall(
             goto error;
         }
         
-        type_t *copy = copy_type(ret, scope);
+        data_t *copy = copy_data(ret, scope);
 
         ret->value = copy->value;
     } else if (fn->value.fn->callback(args, size, ret, scope) <= 0 && scope->error) {
@@ -180,7 +180,7 @@ error:
     return -1;
 }
 
-int performer__execute(call_tree_t *tree, scope_t *scope, type_t *ret)
+int performer__execute(call_tree_t *tree, scope_t *scope, data_t *ret)
 {
     performer__funcall(tree, scope, ret, tree->start);
 

@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
     token_t **tokens = NULL;
     token_config_t token_config;
     scope_t scope = scope__init();
-    type_t ret;
+    data_t ret;
     int line;
     int line_saved;
     int status;
@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
 
     scope.gc = &gc_scope;
 
-    check(tokenizer__generate_config(&token_config) >= 0,
+    checkf(tokenizer__generate_config(&token_config) >= 0,
         "Token config generation failed."
     );
 
@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
         puts("Not implemented.");
         exit(EXIT_FAILURE);
     } else {
-        check((f = fopen(script_path, "rb")), "Error opening file.");
+        checkf((f = fopen(script_path, "rb")), "Error opening file.");
     }
 
     get_stdlib_variables(&scope);
@@ -91,10 +91,10 @@ int main(int argc, char *argv[])
 
         if (strlen(buffer) > 1) {
             tokens = tokenizer__string(&token_config, buffer, &line_saved);
-            check(tokens, "Tokenization failed.");
+            checkf(tokens, "Tokenization failed.");
 
             if (tokens[0]) {
-                check(parser__funcall(&tree, tokens) >= 0,
+                checkf(parser__funcall(&tree, tokens) >= 0,
                     "Function call parsing failed."
                 );
                 performer__execute(&tree, &scope, &ret);

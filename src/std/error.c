@@ -2,7 +2,7 @@
  * Errors API
  */
 
-int error__except_string(type_t **args, argc_t argc, type_t *ret, scope_t *scope)
+int error__except_string(data_t **args, argc_t argc, data_t *ret, scope_t *scope)
 {
     (void) argc;
 

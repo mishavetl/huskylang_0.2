@@ -11,12 +11,12 @@
 #include "call_tree.h"
 
 typedef struct scope scope_t;
-typedef struct type type_t;
+typedef struct data data_t;
 
 typedef int argc_t;
 
 typedef int (*fn_callback_t)(
-    type_t **args, argc_t argc, type_t *ret, scope_t *scope);
+    data_t **args, argc_t argc, data_t *ret, scope_t *scope);
 
 /**
  * @brief Function structure
