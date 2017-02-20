@@ -72,3 +72,14 @@ int typename_to_tid(const char *typename)
         return -1;
     }
 }
+
+struct type **initializer_type_to_array(struct type *types[], int n, gc_t *gc)
+{
+    struct type **types_ = gc_add(gc, malloc(sizeof(struct type *) * (n + 1)));
+    for (int i = 0; i < n; ++i) {
+        types_[i] = malloc(sizeof(struct type));
+        memcpy(types_[i], types[i], sizeof(struct type));
+    }
+    types_[n] = NULL;
+    return types_;
+}

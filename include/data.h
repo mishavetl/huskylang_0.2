@@ -69,8 +69,14 @@ typedef struct data {
 } data_t;
 
 struct type init_type();
+
 int types_identical(struct type *type1, struct type *type2);
+
 struct type *construct_type(enum tid single, struct type **multiple, gc_t *gc);
+
+struct type **initializer_type_to_array(struct type *types[], int n, gc_t *gc);
+#define itta initializer_type_to_array
+#define stt (struct type *[])
 
 /**
  * @brief Constructs data from the token

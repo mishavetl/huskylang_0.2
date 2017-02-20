@@ -103,3 +103,38 @@ Test(data, construct_type_basic)
 
     gc_clean(&gc);
 }
+
+Test(data, initializer_type_to_array) {
+    struct type **types;
+    gc_t gc = gc_init();
+    cr_assert_eq(initializer_type_to_array, itta);
+
+    types = itta(stt{
+        construct_type(tid_integral, NULL, &gc),
+        construct_type(tid_real, NULL, &gc),
+    }, 2, &gc);
+    cr_assert_eq(types[0]->single, tid_integral);
+    cr_assert_null(types[0]->multiple); 
+    cr_assert_eq(types[1]->single, tid_real);
+    cr_assert_null(types[1]->multiple);
+    cr_assert_null(types[2]);
+
+    types = itta(stt{
+        construct_type(tid_real, NULL, &gc),
+        construct_type(tid_integral, NULL, &gc),
+        construct_type(tid_tuple, itta(
+            stt{construct_type(tid_string, NULL, &gc)}, 1, &gc
+        ), &gc),
+    }, 3, &gc);
+    cr_assert_eq(types[0]->single, tid_real);
+    cr_assert_null(types[0]->multiple); 
+    cr_assert_eq(types[1]->single, tid_integral);
+    cr_assert_null(types[1]->multiple);
+    cr_assert_eq(types[2]->single, tid_tuple);
+    cr_assert_eq(types[2]->multiple[0]->single, tid_string);
+    cr_assert_null(types[2]->multiple[0]->multiple);
+    cr_assert_null(types[2]->multiple[1]);
+    cr_assert_null(types[3]);
+
+    gc_clean(&gc);
+}
