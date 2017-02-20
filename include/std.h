@@ -23,6 +23,7 @@
     int get_stdlib_variables(scope_t *scope)                                    \
     {                                                                           \
         int count = 0;                                                          \
+        gc_t *gc;                                                               \
         data_t *fn;                                                             \
         scope->vars = (var_t **) malloc(sizeof(var_t *) * (n + 1));             \
                                                                                 \
@@ -38,12 +39,13 @@
  * @param fname Name of the function
  * @param fn_ Function pointer
  */
-#define REGSTDFUNCTION(fname, fn_)                                              \
+#define REGSTDFUNCTION(fname, multiple, fn_)                                    \
+    gc = scope->gc;                                                             \
     fn = (data_t *) gc_add(scope->gc, malloc(sizeof(data_t)));                  \
-    fn->type = construct_type(tid_fn, NULL, scope->gc);                         \
+    fn->type = construct_type(tid_fn, multiple, gc);                            \
     fn->value.fn = fn_;                                                         \
                                                                                 \
-    scope->vars[count] = (var_t *) gc_add(scope->gc, malloc(sizeof(var_t)));    \
+    scope->vars[count] = (var_t *) gc_add(gc, malloc(sizeof(var_t)));           \
     scope->vars[count]->name = fname;                                           \
     scope->vars[count++]->value = fn;                                           \
     scope->vars[count] = NULL;

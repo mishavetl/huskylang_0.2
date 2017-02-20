@@ -24,10 +24,6 @@ typedef int (*fn_callback_t)(
 typedef struct function {
     /** Number of arguments */
     int argc;
-    /** Size of `argtypes` */
-    int argtypes_size;
-    /** Types of arguments */
-    unsigned *argtypes;
     /** Size of `argnames` */
     int argnames_size;
     /** Names of arguments */
@@ -44,8 +40,6 @@ typedef struct function {
  * @param[in] fptr Pointer to a function
  * @param[in] tree Function call tree
  * @param[in] argc Number of arguments
- * @param[in] argtypes Types of arguments
- * @param[in] argtypes_size Size of `argtypes`
  * @param[in] argnames Names of arguments
  * @param[in] argnames_size Size of `argnames`
  * @param[in] gc Garbage collector
@@ -54,14 +48,8 @@ typedef struct function {
  */
 fn_t * create_function(
     fn_callback_t fptr, call_tree_t *tree, int argc,
-    const unsigned argtypes[], int argtypes_size,
     char *argnames[], int argnames_size,
     gc_t *gc
 );
-
-/* fn_t *duplicate_function( */
-/*     fn_t *src, */
-/*     s */
-/* ); */
 
 #endif

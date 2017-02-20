@@ -43,6 +43,8 @@ struct type init_type()
 
 int types_identical(struct type *type1, struct type *type2)
 {
+    if (!type1 && !type2) return true;
+    if (!type1 || !type2) return false;
     int i;
     struct type **mult1 = type1->multiple;
     struct type **mult2 = type2->multiple;    
@@ -77,7 +79,7 @@ struct type **initializer_type_to_array(struct type *types[], int n, gc_t *gc)
 {
     struct type **types_ = gc_add(gc, malloc(sizeof(struct type *) * (n + 1)));
     for (int i = 0; i < n; ++i) {
-        types_[i] = malloc(sizeof(struct type));
+        types_[i] = gc_add(gc, malloc(sizeof(struct type)));
         memcpy(types_[i], types[i], sizeof(struct type));
     }
     types_[n] = NULL;

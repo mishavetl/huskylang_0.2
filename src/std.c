@@ -18,11 +18,11 @@
  * Collect
  */
 
-#include "std/arithm.c"
+// #include "std/arithm.c"
 // #include "std/tuple.c"
 // #include "std/list.c"
 // #include "std/var.c"
-// #include "std/io.c"
+#include "std/io.c"
 // #include "std/atom.c"
 // #include "std/number.c"
 // #include "std/saved.c"
@@ -30,19 +30,28 @@
 // #include "std/error.c"
 // #include "std/type.c"
 // #include "std/boolean.c"
-// #include "std/string.c"
+#include "std/string.c"
+#include "std/integral.c"
 
 /**
  * Register
  */
 
-STDFUNCTIONS(26,
+STDFUNCTIONS(5,
     REGSTDFUNCTION("+",
-        create_function(
-            plus, NULL, INFINITY_ARGS,
-            (const unsigned []) {tid_integral}, 1,
-            NULL, 0,
-            scope->gc))
+        itta(stt{
+            construct_type(tid_integral, NULL, gc),
+            construct_type(tid_integral, NULL, gc),
+            construct_type(tid_integral, NULL, gc)
+        }, 3, gc),
+        create_function(integral__plus, NULL, 2, NULL, 0, gc));
+    REGSTDFUNCTION("+",
+        itta(stt{
+            construct_type(tid_string, NULL, gc),
+            construct_type(tid_string, NULL, gc),
+            construct_type(tid_string, NULL, gc)
+        }, 3, gc),
+        create_function(string__add, NULL, 2, NULL, 0, gc));
     // REGSTDFUNCTION("-",
     //     create_function(
     //         minus, NULL, INFINITY_ARGS,
@@ -62,12 +71,12 @@ STDFUNCTIONS(26,
     //         (const unsigned []) {}, 0,
     //         NULL, 0,
     //         scope->gc));
-    // REGSTDFUNCTION("io:puts",
-    //     create_function(
-    //         io__puts, NULL, INFINITY_ARGS,
-    //         (const unsigned []) {tid_string}, 1,
-    //         NULL, 0,
-    //         scope->gc));
+    REGSTDFUNCTION("io:puts",
+        itta(stt{
+            construct_type(tid_atom, NULL, gc),
+            construct_type(tid_string, NULL, gc)
+        }, 2, gc),
+        create_function(io__puts, NULL, 1, NULL, 0, gc));
     // REGSTDFUNCTION("io:putln",
     //     create_function(
     //         io__puts, NULL, 0,
@@ -75,12 +84,18 @@ STDFUNCTIONS(26,
     //         NULL, 0,
     //         scope->gc));
 
-    // REGSTDFUNCTION("string:to_number",
-    //     create_function(
-    //         string__to_number, NULL, 1,
-    //         (const unsigned []) {tid_string}, 1,
-    //         NULL, 0,
-    //         scope->gc));
+    REGSTDFUNCTION("to-string",
+        itta(stt{
+            construct_type(tid_string, NULL, gc),
+            construct_type(tid_integral, NULL, gc)
+        }, 2, gc),
+        create_function(integral__to_string, NULL, 1, NULL, 0, gc));
+    REGSTDFUNCTION("to-integral",
+        itta(stt{
+            construct_type(tid_integral, NULL, gc),
+            construct_type(tid_string, NULL, gc)
+        }, 2, gc),
+        create_function(string__to_integral, NULL, 1, NULL, 0, gc));
 
     // REGSTDFUNCTION("number:to_string",
     //     create_function(

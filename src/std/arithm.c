@@ -2,7 +2,7 @@
  * Arithmetic API
  */
 
-STDFUNCTION(plus,
+STDFUNCTION(plus_integral,
     int i;
 
     ret->type = construct_type(tid_integral, NULL, scope->gc);

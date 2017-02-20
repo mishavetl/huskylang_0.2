@@ -22,6 +22,11 @@ Test(data, types_identical_with_single_types) {
     type1.single = tid_integral;
     type2.single = tid_real;
     cr_assert_not(types_identical(&type1, &type2));
+
+    type1.single = tid_integral;
+    cr_assert(types_identical(NULL, NULL));
+    cr_assert_not(types_identical(&type1, NULL));
+    cr_assert_not(types_identical(NULL, &type1));
 }
 
 Test(data, types_identical_with_multiple_types) {

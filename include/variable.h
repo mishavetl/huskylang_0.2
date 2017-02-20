@@ -55,7 +55,7 @@ int setvar(scope_t *scope, const char *name, data_t *value);
  *
  * @return Variable found or NULL if not found
  */
-const var_t *getvar(const scope_t *scope, const char *name);
+unsigned getvar(const scope_t *scope, unsigned start, const char *name, const var_t **var);
 
 /**
  * @brief Initiates a scope

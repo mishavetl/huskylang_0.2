@@ -2,12 +2,12 @@
  * String API
  */
 
-int string__to_number(data_t **args, argc_t argc, data_t *ret, scope_t *scope)
+int string__to_integral(data_t **args, argc_t argc, data_t *ret, scope_t *scope)
 {
     (void) argc;
     (void) scope;
 
-    ret->type = tid_integral;
+    ret->type = construct_type(tid_integral, NULL, scope->gc);
 
     unsigned i = 0;
     INTEGRAL_TYPE number = 0;
@@ -35,7 +35,7 @@ int string__to_number(data_t **args, argc_t argc, data_t *ret, scope_t *scope)
         number *= -1;
     }
 
-    ret->value.num = number;
+    ret->value.integral = number;
 
     return 0;
 
@@ -43,3 +43,13 @@ error:
     return -1;
 }
 
+int string__add(data_t **args, argc_t argc, data_t *ret, scope_t *scope)
+{
+    (void) argc;
+    ret->type = construct_type(tid_string, NULL, scope->gc);
+    const char *src1 = args[0]->value.string, *src2 = args[1]->value.string;
+    char *str1 = gc_add(scope->gc, malloc(sizeof(src1) + sizeof(src2) + 1));
+    strcpy(str1, src1);
+    ret->value.string = strcat(str1, src2);
+    return 0;
+}
