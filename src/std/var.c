@@ -2,32 +2,39 @@
  * Variables API
  */
 
-STDFUNCTION(var__set,
-    ret->type = tid_atom;
+int var__set(data_t **args, argc_t argc, data_t *ret, scope_t *scope)
+{
+    (void) argc;
+    ret->type = construct_type(tid_atom, NULL, scope->gc);
 
-    /* Check that variable does not exist. */
-    if (getvar(scope, args[0]->value.atom)) {
-        scope->error = gc_add(scope->gc, malloc(sizeof(huserr_t)));
-        scope->error->name = "nameErr";
-        scope->error->msg = "variable already defined";
-        scope->error->token = NULL;
-        goto error;
-    }
+    const var_t *var;
+    getvar(scope, args[0]->value.atom, &var);
+
+    // /* Check that variable does not exist. */
+    // if (var) {
+    //     scope->error = gc_add(scope->gc, malloc(sizeof(huserr_t)));
+    //     scope->error->name = "nameErr";
+    //     scope->error->msg = "variable already defined";
+    //     scope->error->token = NULL;
+    //     goto error;
+    // }
 
     /* Set variable. */
-    check(setvar(scope, args[0]->value.atom, args[1]) >= 0, "");
+    checkf(setvar(scope, args[0]->value.atom, args[1]) >= 0, "Can't set a variable.");
 
     ret->value.atom = "good";
 
     return 0;
 
-    error:
-
+error:
     return -1;
-)
+}
 
-STDFUNCTION(var__get,
-    const var_t *var = getvar(scope, args[0]->value.atom);
+int var__get(data_t **args, argc_t argc, data_t *ret, scope_t *scope)
+{
+    (void) argc;
+    const var_t *var;
+    getvar(scope, args[0]->value.atom, &var);
 
     /* Check that variable exists. */
     if (!var) {
@@ -38,12 +45,13 @@ STDFUNCTION(var__get,
         goto error;
     }
 
-    ret->type = var->value->type;
-    ret->value = var->value->value;
+    data_t *data = copy_data(var->value, scope);
+
+    ret->type = data->type;
+    ret->value = data->value;
 
     return 0;
 
-    error:
-
+error:
     return -1;
-)
+}

@@ -37,23 +37,27 @@ int setvar(scope_t *scope, const char *name, data_t *value)
     return -1;
 }
 
-unsigned getvar(const scope_t *scope, unsigned start, const char *name, const var_t **var)
+unsigned getvar_start(const scope_t *scope, unsigned start, const char *name, const var_t **var)
 {
-    unsigned i;
+    int i, i_start = scope->vsize - start - 1;
     var_t **vars = (var_t **) scope->vars;
 
-    for (i = start; i < scope->vsize; i++) {
+    for (i = i_start; i >= 0; --i) {
         if (strcmp(vars[i]->name, name) == 0) {
             *var = vars[i];
-            return i;
+            return scope->vsize - i - 1;
         }
     }
 
     if (scope->parent) {
-        return i + getvar(scope->parent, i - scope->vsize, name, var);
-    } else {
-        *var = NULL;
+        return scope->vsize + getvar_start(scope->parent, -i - 1, name, var);
     }
     
-    return i;
+    *var = NULL;
+    return scope->vsize;
+}
+
+unsigned getvar(const scope_t *scope, const char *name, const var_t **var)
+{
+    return getvar_start(scope, 0, name, var);
 }

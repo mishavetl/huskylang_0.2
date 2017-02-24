@@ -21,7 +21,7 @@
 // #include "std/arithm.c"
 #include "std/tuple.c"
 // #include "std/list.c"
-// #include "std/var.c"
+#include "std/var.c"
 #include "std/io.c"
 #include "std/atom.c"
 // #include "std/number.c"
@@ -37,7 +37,7 @@
  * Register
  */
 
-STDFUNCTIONS(8,
+STDFUNCTIONS(10,
     REGSTDFUNCTION("+",
         itta(stt{
             construct_type(tid_integral, NULL, gc),
@@ -173,12 +173,13 @@ STDFUNCTIONS(8,
     // /*         (const unsigned []) {tid_atom, tid_saved}, 2, */
     // /*         NULL, 0, */
     // /*         scope->gc)); */
-    // REGSTDFUNCTION("def",
-    //     create_function(
-    //         var__set, NULL, 2,
-    //         (const unsigned []) {tid_atom}, 1,
-    //         NULL, 0,
-    //         scope->gc));
+    REGSTDFUNCTION("set",
+        itta(stt{
+            construct_type(tid_atom, NULL, gc),
+            construct_type(tid_atom, NULL, gc),
+            construct_type(tid_alpha, NULL, gc)
+        }, 3, gc),
+        create_function(var__set, NULL, 2, NULL, 0, gc));
 
     // REGSTDFUNCTION("fn",
     //     create_function(
@@ -187,12 +188,12 @@ STDFUNCTIONS(8,
     //         NULL, 0,
     //         scope->gc));
 
-    // REGSTDFUNCTION("$",
-    //     create_function(
-    //         var__get, NULL, 1,
-    //         (const unsigned []) {tid_atom}, 1,
-    //         NULL, 0,
-    //         scope->gc));
+    REGSTDFUNCTION("$",
+        itta(stt{
+            construct_type(tid_alpha, NULL, gc),
+            construct_type(tid_atom, NULL, gc),
+        }, 2, gc),
+        create_function(var__get, NULL, 1, NULL, 0, gc));
 
     // REGSTDFUNCTION("#",
     //     create_function(

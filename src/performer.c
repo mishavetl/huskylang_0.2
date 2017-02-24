@@ -81,7 +81,7 @@ performer__funcall(
     args[size] = NULL;
 
     while (!fn_found) {
-        var_fn_index = getvar((const scope_t *) scope, var_fn_index + 1, fnname, &var_fn);
+        var_fn_index = getvar_start((const scope_t *) scope, var_fn_index + 1, fnname, &var_fn);
         if (!var_fn) break;
         fn = var_fn->value;
         if (fn->type->single != tid_fn) continue;
