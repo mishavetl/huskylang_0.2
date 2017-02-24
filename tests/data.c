@@ -1,4 +1,5 @@
 #include <criterion/criterion.h>
+#include <math.h>
 #include "data.h"
 #include "dbg.h"
 #include "memory.h"
@@ -27,6 +28,16 @@ Test(data, types_identical_with_single_types) {
     cr_assert(types_identical(NULL, NULL));
     cr_assert_not(types_identical(&type1, NULL));
     cr_assert_not(types_identical(NULL, &type1));
+
+    type1.single = tid_alpha;
+    type2.single = tid_tuple;
+    cr_assert(types_identical(&type1, &type2));
+    type2.single = tid_real;
+    cr_assert(types_identical(&type1, &type2));
+    type2.single = tid_integral;
+    cr_assert(types_identical(&type2, &type1));
+    type2.single = tid_alpha;
+    cr_assert(types_identical(&type1, &type2));
 }
 
 Test(data, types_identical_with_multiple_types) {
@@ -70,6 +81,33 @@ Test(data, types_identical_with_multiple_types) {
     type5.multiple = mult5;
     type6.multiple = NULL;
     cr_assert(types_identical(&type2, &type3));
+}
+
+Test(data, types_identical_with_infinity_multsize) {
+    struct type type1 = init_type(),
+                type2 = init_type(),
+                type3 = init_type(),
+                type4 = init_type();
+
+    type1.single = tid_tuple;
+    type2.single = tid_tuple;
+    type3.single = tid_real;
+    type4.single = tid_atom;
+    struct type *mult1[3] = {&type3, &type4, NULL};
+    struct type *mult2[9] = {
+        &type3, &type4,
+        &type3, &type4,
+        &type3, &type4,
+        &type3, &type4,
+        NULL
+    };
+    type1.multsize = INFINITY;
+    type2.multsize = 8;
+    type1.multiple = mult1;
+    type2.multiple = mult2;
+    type3.multiple = NULL;
+    type4.multiple = NULL;
+    cr_assert(types_identical(&type1, &type2));
 }
 
 Test(data, construct_type_basic)

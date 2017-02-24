@@ -5,15 +5,16 @@
 #ifndef __function_h__
 #define __function_h__
 
-#define INFINITY_ARGS -1
-
+#include <limits.h>
 #include "memory.h"
 #include "call_tree.h"
+
+#define INFINITY_ARGS UINT_MAX
 
 typedef struct scope scope_t;
 typedef struct data data_t;
 
-typedef int argc_t;
+typedef unsigned argc_t;
 
 typedef int (*fn_callback_t)(
     data_t **args, argc_t argc, data_t *ret, scope_t *scope);
@@ -23,7 +24,7 @@ typedef int (*fn_callback_t)(
  */
 typedef struct function {
     /** Number of arguments */
-    int argc;
+    argc_t argc;
     /** Size of `argnames` */
     int argnames_size;
     /** Names of arguments */
@@ -47,7 +48,7 @@ typedef struct function {
  * @return Function
  */
 fn_t * create_function(
-    fn_callback_t fptr, call_tree_t *tree, int argc,
+    fn_callback_t fptr, call_tree_t *tree, argc_t argc,
     char *argnames[], int argnames_size,
     gc_t *gc
 );

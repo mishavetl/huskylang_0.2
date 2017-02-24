@@ -5,6 +5,7 @@
 #ifndef __data_h__
 #define __data_h__
 
+#include <limits.h>
 #include "tokenizer.h"
 #include "function.h"
 #include "call_tree.h"
@@ -41,6 +42,7 @@ enum tid {
     tid_saved, ///< Saved
     tid_integral, ///< Integral
     tid_real, ///< Real
+    tid_alpha,
     __tid_size ///< Size of tid enum
 };
 
@@ -55,7 +57,10 @@ struct type {
     enum tid single;
     /** Multiple type. Use it for additional type information. */
     struct type **multiple;
+    int multsize;
 };
+
+// #define INFINITY INT_MAX
 
 /**
  * @brief Data structure
@@ -73,6 +78,9 @@ struct type init_type();
 int types_identical(struct type *type1, struct type *type2);
 
 struct type *construct_type(enum tid single, struct type **multiple, gc_t *gc);
+struct type *construct_type_sized(enum tid single, struct type **multiple, int multsize, gc_t *gc);
+
+struct type *typedup(struct type *type, gc_t *gc);
 
 struct type **initializer_type_to_array(struct type *types[], int n, gc_t *gc);
 #define itta initializer_type_to_array

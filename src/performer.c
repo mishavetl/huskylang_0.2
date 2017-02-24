@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdbool.h>
+#include <math.h>
 #include "performer.h"
 #include "function.h"
 #include "data.h"
@@ -89,10 +90,10 @@ performer__funcall(
             fn_found = true;
             struct type **types = fn->type->multiple;
             int index = (fn->value.fn->argc == INFINITY_ARGS)
-                    ? x % (count_2d(types) - 1)
-                    : x;
+                    ? x % (count_2d((void **) types) - 1)
+                    : (unsigned) x;
 
-            if (!types_identical(data->type, fn->type->multiple[index + 1])) {
+            if (!types_identical(args[x]->type, types[index + 1])) {
                 fn_found = false;
                 break;
             }
@@ -145,20 +146,17 @@ performer__funcall(
     gc_clean(&gc);
     gc_clean(scope_.gc);
     FREE(scope_.vars);
-
     return 0;
 
 error:
     gc_clean(&gc);
     gc_clean(scope_.gc);
     FREE(scope_.vars);
-    
     return -1;
 }
 
 int performer__execute(call_tree_t *tree, scope_t *scope, data_t *ret)
 {
     performer__funcall(tree, scope, ret, tree->start);
-
     return 0;
 }

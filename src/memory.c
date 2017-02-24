@@ -9,10 +9,9 @@
 
 size_t count_2d(void **ar)
 {
+    if (!ar) return 0;
     size_t len;
-
     for (len = 0; ar[len]; len++);
-
     return len;
 }
 
@@ -66,7 +65,7 @@ data_t *copy_data(data_t *src, scope_t *scope)
 
     check_mem(data);
 
-    data->type = src->type;
+    data->type = typedup(src->type, scope->gc);
     data->value = src->value;
 
     if (src->type->single == tid_string) {

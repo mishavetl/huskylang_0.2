@@ -6,7 +6,7 @@
 #include "call_tree.h"
 
 fn_t * create_function(
-    fn_callback_t fptr, call_tree_t *tree, int argc,
+    fn_callback_t fptr, call_tree_t *tree, argc_t argc,
     char *argnames[], int argnames_size,
     gc_t *gc
 ) {

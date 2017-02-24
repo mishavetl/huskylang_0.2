@@ -19,11 +19,11 @@
  */
 
 // #include "std/arithm.c"
-// #include "std/tuple.c"
+#include "std/tuple.c"
 // #include "std/list.c"
 // #include "std/var.c"
 #include "std/io.c"
-// #include "std/atom.c"
+#include "std/atom.c"
 // #include "std/number.c"
 // #include "std/saved.c"
 // #include "std/function.c"
@@ -37,7 +37,7 @@
  * Register
  */
 
-STDFUNCTIONS(5,
+STDFUNCTIONS(8,
     REGSTDFUNCTION("+",
         itta(stt{
             construct_type(tid_integral, NULL, gc),
@@ -90,12 +90,38 @@ STDFUNCTIONS(5,
             construct_type(tid_integral, NULL, gc)
         }, 2, gc),
         create_function(integral__to_string, NULL, 1, NULL, 0, gc));
+    REGSTDFUNCTION("to-string",
+        itta(stt{
+            construct_type(tid_string, NULL, gc),
+            construct_type(tid_atom, NULL, gc)
+        }, 2, gc),
+        create_function(atom__to_string, NULL, 1, NULL, 0, gc));
+
     REGSTDFUNCTION("to-integral",
         itta(stt{
             construct_type(tid_integral, NULL, gc),
             construct_type(tid_string, NULL, gc)
         }, 2, gc),
         create_function(string__to_integral, NULL, 1, NULL, 0, gc));
+
+    REGSTDFUNCTION("{}",
+        itta(stt{
+            construct_type_sized(tid_tuple, itta(stt{
+                construct_type(tid_alpha, NULL, gc)
+            }, 1, gc), INFINITY, gc),
+            construct_type(tid_alpha, NULL, gc)
+        }, 2, gc),
+        create_function(tuple__construct, NULL, INFINITY, NULL, 0, gc));
+
+    REGSTDFUNCTION("#",
+        itta(stt{
+            construct_type(tid_alpha, NULL, gc),
+            construct_type(tid_tuple, itta(stt{
+                construct_type(tid_alpha, NULL, gc)
+            }, 1, gc), gc),
+            construct_type(tid_integral, NULL, gc)
+        }, 3, gc),
+        create_function(tuple__get, NULL, 2, NULL, 0, gc));
 
     // REGSTDFUNCTION("number:to_string",
     //     create_function(
@@ -168,12 +194,6 @@ STDFUNCTIONS(5,
     //         NULL, 0,
     //         scope->gc));
 
-    // REGSTDFUNCTION("{}",
-    //     create_function(
-    //         tuple__construct, NULL, INFINITY_ARGS,
-    //         (const unsigned []) {}, 0,
-    //         NULL, 0,
-    //         scope->gc));
     // REGSTDFUNCTION("#",
     //     create_function(
     //         tuple__get, NULL, 2,

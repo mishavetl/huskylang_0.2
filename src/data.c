@@ -1,3 +1,4 @@
+#include <math.h>
 #include "dbg.h"
 #include "data.h"
 #include "memory.h"
@@ -6,9 +7,15 @@
 
 struct type *construct_type(enum tid single, struct type **multiple, gc_t *gc)
 {
+    return construct_type_sized(single, multiple, count_2d((void **) multiple), gc);
+}
+
+struct type *construct_type_sized(enum tid single, struct type **multiple, int multsize, gc_t *gc)
+{
     struct type *type = (struct type *) gc_add(gc, malloc(sizeof(struct type)));
     type->single = single;
     type->multiple = multiple;
+    type->multsize = multsize;
     return type;
 }
 
@@ -38,23 +45,31 @@ error:
 
 struct type init_type()
 {
-    return (struct type) {__tid_size, NULL};
+    return (struct type) {__tid_size, NULL, 0};
 }
 
 int types_identical(struct type *type1, struct type *type2)
 {
     if (!type1 && !type2) return true;
     if (!type1 || !type2) return false;
-    int i;
+    if (type1->single == tid_alpha || type2->single == tid_alpha)
+        return true;
+
+    int i, j;
     struct type **mult1 = type1->multiple;
     struct type **mult2 = type2->multiple;    
+    
     if (type1->single != type2->single) return false;
-    if (!type1->multiple != !type2->multiple) return false;
-    else if (!type1->multiple || !type2->multiple) return true;
-    for (i = 0; mult1[i] && mult2[i]; ++i) {
-        if (!types_identical(mult1[i], mult2[i])) return false;
+    if (!mult1 != !mult2) return false;
+    else if (!mult1 || !mult2) return true;
+    for (i = 0, j = 0; mult1[i] && mult2[j]; ++i, ++j) {
+        if (!types_identical(mult1[i], mult2[j])) return false;
+        if (type1->multsize != INFINITY || type2->multsize != INFINITY) {
+            if (type1->multsize == INFINITY && !mult1[i + 1]) i = -1;
+            if (type2->multsize == INFINITY && !mult2[j + 1]) j = -1;
+        }
     }
-    if (mult1[i] != mult2[i]) return false;
+    // if (mult1[i] != mult2[j]) return false;
     return true;
 }
 
@@ -84,4 +99,16 @@ struct type **initializer_type_to_array(struct type *types[], int n, gc_t *gc)
     }
     types_[n] = NULL;
     return types_;
+}
+
+struct type *typedup(struct type *type, gc_t *gc)
+{
+    return construct_type(
+        type->single,
+        ((type->multiple)
+            ? initializer_type_to_array(type->multiple, type->multsize, gc)
+            : NULL
+        ),
+        gc
+    );
 }
