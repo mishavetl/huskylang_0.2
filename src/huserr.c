@@ -43,3 +43,11 @@ char *huserr__to_string(scope_t *scope)
     error:
     return NULL;
 }
+
+void huserr__raise(const char *name, const char *msg, token_t *token, scope_t *scope)
+{
+    scope->error = (huserr_t *) gc_add(scope->gc, malloc(sizeof(huserr_t)));
+    scope->error->name = name;
+    scope->error->msg = msg;
+    scope->error->token = token;
+}

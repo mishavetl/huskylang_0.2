@@ -30,4 +30,6 @@ typedef struct huserr {
  */
 char *huserr__to_string(scope_t *scope);
 
+void huserr__raise(const char *name, const char *msg, token_t *token, scope_t *scope);
+
 #endif

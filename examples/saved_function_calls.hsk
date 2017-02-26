@@ -1,15 +1,19 @@
-def foo, ; io:puts 'foobar'.
-def bar, ;
-    io:puts 'foobarbaz'
-.
+-- saved function calls example --
+set foo, : puts 'foobar'.
+set bar, :
+    puts 'foobarbaz'.
 
-def baz, ; [] foo, bar, baz.
-def quux, ; r 'good'.
+set baz, : [] foo, bar, baz.
+set quux, : r 'good'.
 
-saved:call ($ bar)
+call ($ bar)
+puts '\n'
 
-io:putln
+puts (to-string (call ($ foo)))
+puts '\n'
 
-io:puts (atom:to_string (saved:call ($ foo)))
-io:puts (atom:to_string (hd (saved:call ($ baz))))
-io:puts (saved:call ($ quux))
+puts (to-string (hd (call ($ baz))))
+puts '\n'
+
+puts (call ($ quux))
+puts '\n'

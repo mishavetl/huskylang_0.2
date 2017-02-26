@@ -3,4 +3,4 @@
 set foo, 1
 set foo, 2
 
-io:puts ((to-string ($ foo)) + '\n') --> 2
+puts ((to-string ($ foo)) + '\n') --> 2

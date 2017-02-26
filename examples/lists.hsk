@@ -1,9 +1,15 @@
 -- lists usage example --
 
-def do_things, (([] (list {} list), (emptyList {} list)) & ; {}
-    (io:puts (number:to_string (hd (hd (tl ($ list)))))),
-    (io:puts (hd ($ emptyList))).
-)
+-- def do_things, (([] (list {} list), (emptyList {} list)) & : {}
+--    (puts (number:to_string (hd (hd (tl ($ list)))))),
+--    (puts (hd ($ emptyList))).
+-- )
 
-do_things ([] 'foo', ([] 1, 2, 3), 'bar', baz), ([])
+  -- do_things ([] 'foo', 'buzz', 'bar', baz), ([])
 
+set list, ([] -- 'string'
+    'foo', 'bar')
+set empty-list, (tl ([] 'string'))
+
+puts ((hd (tl ($ list))) + '\n') --> bar
+puts (hd ($ empty-list)) --> error

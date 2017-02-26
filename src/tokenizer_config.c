@@ -20,7 +20,7 @@ TOKEN(prior_end,
 )
 
 TOKEN(prior_start_saved,
-    return pos == 0 && ch == ';';
+    return pos == 0 && ch == ':';
 )
 
 TOKEN(del,
