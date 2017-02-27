@@ -198,7 +198,7 @@ STDFUNCTIONS(20,
                 construct_type(tid_alpha, NULL, gc)
             }, 1, gc), gc)
         }, 2, gc),
-        create_function(list__tail, NULL, 1, NULL, 0, gc));
+        create_function(list__unzip, NULL, 1, NULL, 0, gc));
 
     REGSTDFUNCTION("length",
         itta(stt{
@@ -207,7 +207,7 @@ STDFUNCTIONS(20,
                 construct_type(tid_alpha, NULL, gc)
             }, 1, gc), gc)
         }, 2, gc),
-        create_function(list__tail, NULL, 1, NULL, 0, gc));
+        create_function(list__length, NULL, 1, NULL, 0, gc));
 
     REGSTDFUNCTION("call",
         itta(stt{

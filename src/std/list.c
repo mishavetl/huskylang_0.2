@@ -121,7 +121,7 @@ int list__unzip(data_t **args, argc_t argc, data_t *ret, scope_t *scope)
         construct_type(tid_list, itta(stt{
             typedup(((data_t *) args[0]->value.list->head->val)->value.tuple[1]->type, scope->gc)
         }, 1, scope->gc), scope->gc),
-    }, 1, scope->gc), scope->gc);
+    }, 2, scope->gc), scope->gc);
     check_mem(ret->type);
 
     ret->value.tuple = gc_add(scope->gc, malloc(sizeof(data_t *) * 3));
@@ -216,9 +216,12 @@ int list__to_tuple(data_t **args, argc_t argc, data_t *ret, scope_t *scope)
     data_t ret1;
     checkf(list__length(args, 1, &ret1, scope) == 0, "Failed to find list length.");
     int len = ret1.value.integral;
+
     struct type **multiple = gc_add(scope->gc, malloc(sizeof(struct type *) * (len + 1)));
     multiple[len] = NULL;
-    ret->type = construct_type(tid_tuple, multiple, scope->gc);
+    
+    ret->value.tuple = gc_add(scope->gc, malloc(sizeof(data_t *) * (len + 1)));
+    ret->value.tuple[len] = NULL;
 
     list_node_t *node;
     list_iterator_t *it = list_iterator_new(args[0]->value.list, LIST_HEAD);
@@ -227,13 +230,18 @@ int list__to_tuple(data_t **args, argc_t argc, data_t *ret, scope_t *scope)
 
     while ((node = list_iterator_next(it))) {
         ret->value.tuple[i] = copy_data((data_t *) node->val, scope);
+        multiple[i] = ret->value.tuple[i]->type;
         check_mem(ret->value.tuple[i]);
 
         ++i;
     }
 
+    ret->type = construct_type(tid_tuple, multiple, scope->gc);
+
+    if (it) list_iterator_destroy(it);
     return 0;
 
 error:
+    if (it) list_iterator_destroy(it);
     return -1;
 }

@@ -74,11 +74,12 @@ data_t *copy_data(data_t *src, scope_t *scope)
         data->value.atom = gc_add(scope->gc, strdup(src->value.atom));
     } else if (src->type->single == tid_tuple) {
         for (i = 0; src->value.tuple[i]; i++);
-        data->value.tuple = gc_add(scope->gc, malloc(sizeof(data_t *) * i));
+        data->value.tuple = gc_add(scope->gc, malloc(sizeof(data_t *) * (i + 1)));
         
         for (i = 0; src->value.tuple[i]; i++) {
             data->value.tuple[i] = copy_data(src->value.tuple[i], scope);
         }
+        data->value.tuple[i] = NULL;
     } else if (src->type->single == tid_list) {
         list_t *copy = gc_add_list(scope->gc, list_new());
         list_node_t *node;
