@@ -1,7 +1,7 @@
 -- functions with args example --
 
-def add, (([] (foo {} num), (bar {} num)) & ;
+fn plus, ([] (foo {} _alpha), (bar {} _alpha)), :
     ($ foo) + ($ bar).
-)
 
-io:puts (number:to_string (2 add 3))
+putsln (to-string (2 plus 3))
+putsln ('a' + 'b')

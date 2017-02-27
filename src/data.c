@@ -30,7 +30,10 @@ int data_from_token(token_t *token, data_t *data, gc_t *gc)
         data->type = construct_type(tid_integral, NULL, gc);
     } else if (token->type == tok_atom) {
         data->value.atom = token->value;
-        data->type = construct_type(tid_atom, NULL, gc);
+        if (strcmp(token->value, "_alpha") == 0) 
+            data->type = construct_type(tid_alpha, NULL, gc);
+        else
+            data->type = construct_type(tid_atom, NULL, gc);
     } else if (token->type == tok_string) {
         data->value.string = token->value;
         data->type = construct_type(tid_string, NULL, gc);

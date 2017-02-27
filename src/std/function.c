@@ -21,8 +21,6 @@ int function__create(data_t **args, argc_t argc, data_t *ret, scope_t *scope)
 
     struct type **multiple = NULL;
     char **argnames = NULL;
-    unsigned *argtypes = NULL;
-
     int args_size = 0;
 
     data_t length;
@@ -38,66 +36,35 @@ int function__create(data_t **args, argc_t argc, data_t *ret, scope_t *scope)
     }
 
     if (len > 0) {
-        // data_t unzipped;
+        data_t unzipped, argnames1, argtypes1;
         
-        // list__unzip(args, 1, &unzipped, scope); 
+        list__unzip(args, 1, &unzipped, scope); 
 
-        // data_t **argnames_in_lang = unzipped.value.tuple[0]->value.tuple;
-        // data_t **argtypes_in_lang = unzipped.value.tuple[1]->value.tuple;
+        data_t *args1[] = {unzipped.value.tuple[0]};
+        list__to_tuple(args1, 1, &argnames1, scope);
+        data_t **argnames_in_lang = argnames1.value.tuple;
+
+        data_t *args2[] = {unzipped.value.tuple[1]};
+        list__to_tuple(args2, 1, &argtypes1, scope);        
+        data_t **argtypes_in_lang = argtypes1.value.tuple;
         
-        // for (; argnames_in_lang[args_size]; ++args_size);
+        for (; argnames_in_lang[args_size]; ++args_size);
 
-        // argnames = gc_add(scope->gc, malloc(sizeof(char *) * args_size));
+        argnames = gc_add(scope->gc, malloc(sizeof(char *) * args_size));
 
-        // for (int i = 0; i < args_size; ++i) {
-        //     data_t *argname_in_lang = argnames_in_lang[i];
-        //     data_t *argtype_in_lang = argtypes_in_lang[i];
-            
-        //     if (argname_in_lang->type != tid_atom) {
-        //         char msg[ERROR_MSG_BUFFER_MAX];
-        //         snprintf(msg, ERROR_MSG_BUFFER_MAX, "argument #%d identifier is not an atom", i + 1);
+        for (int i = 0; i < args_size; ++i) {
+            data_t *argname_in_lang = argnames_in_lang[i];
+            data_t *argtype_in_lang = argtypes_in_lang[i];
 
-        //         scope->error = gc_add(scope->gc, malloc(sizeof(huserr_t)));
-        //         scope->error->name = "typeErr";
-        //         scope->error->msg = strdup(msg);
+            argnames[i] = gc_add(scope->gc, strdup(argname_in_lang->value.atom));
+            multiple[i + 1] = typedup(argtype_in_lang->type, scope->gc);
+        }
 
-        //         goto error;
-        //     }
-
-        //     if (argtype_in_lang->type != tid_atom) {
-        //         char msg[ERROR_MSG_BUFFER_MAX];
-        //         snprintf(msg, ERROR_MSG_BUFFER_MAX, "argument #%d type indentifier is not an atom", i + 1);
-
-        //         scope->error = gc_add(scope->gc, malloc(sizeof(huserr_t)));
-        //         scope->error->name = "typeErr";
-        //         scope->error->msg = gc_add(scope->gc, strdup(msg));
-
-        //         goto error;
-        //     }
-
-        //     argnames[i] = gc_add(scope->gc, strdup(argname_in_lang->value.atom));
-
-        //     int tid = typename_to_tid(argtype_in_lang->value.atom);
-        //     if (tid < 0) {
-        //         char msg[ERROR_MSG_BUFFER_MAX];
-        //         snprintf(msg, ERROR_MSG_BUFFER_MAX, "argument #%d type is not known", i + 1);
-
-        //         scope->error = gc_add(scope->gc, malloc(sizeof(huserr_t)));
-        //         scope->error->name = "typeErr";
-        //         scope->error->msg = gc_add(scope->gc, strdup(msg));
-
-        //         goto error;
-        //     }
-
-        //     argtypes[i] = tid;
-        // }
-
-        // ret->value.fn = create_function(
-        //     NULL, args[1]->value.tree, args_size,
-        //     argtypes, args_size,
-        //     argnames, args_size,
-        //     scope->gc
-        // );
+        ret->value.fn = create_function(
+            NULL, args[1]->value.tree, args_size,
+            argnames, args_size,
+            scope->gc
+        );
     } else {
         ret->value.fn = create_function(
             NULL, args[1]->value.tree, 0, argnames, args_size, scope->gc
@@ -113,7 +80,7 @@ int function__create(data_t **args, argc_t argc, data_t *ret, scope_t *scope)
     /* ); */
 
     multiple[len + 1] = NULL;
-    ret->type = construct_type_sized(tid_fn, multiple, len + 1, scope->gc);
+    ret->type = construct_type(tid_fn, multiple, scope->gc);
 
     check_mem(ret->type);
     check_mem(ret->value.fn);

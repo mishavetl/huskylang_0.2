@@ -37,7 +37,7 @@
  * Register
  */
 
-STDFUNCTIONS(20,
+STDFUNCTIONS(21,
     REGSTDFUNCTION("+",
         itta(stt{
             construct_type(tid_integral, NULL, gc),
@@ -150,6 +150,21 @@ STDFUNCTIONS(20,
             construct_type(tid_saved, NULL, gc),
         }, 3, gc),
         create_function(function__define_without_args, NULL, 2, NULL, 0, gc));
+    REGSTDFUNCTION("fn",
+        itta(stt{
+            construct_type_sized(tid_fn, itta(stt{
+                construct_type(tid_alpha, NULL, gc)
+            }, 1, gc), INFINITY, gc),
+            construct_type(tid_atom, NULL, gc),
+            construct_type(tid_list, itta(stt{
+                construct_type(tid_tuple, itta(stt{
+                    construct_type(tid_atom, NULL, gc),
+                    construct_type(tid_alpha, NULL, gc)
+                }, 2, gc), gc)
+            }, 1, gc), gc),
+            construct_type(tid_saved, NULL, gc),
+        }, 4, gc),
+        create_function(function__define, NULL, 3, NULL, 0, gc));
 
     REGSTDFUNCTION("$",
         itta(stt{
