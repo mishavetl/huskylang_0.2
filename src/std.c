@@ -37,7 +37,7 @@
  * Register
  */
 
-STDFUNCTIONS(15,
+STDFUNCTIONS(20,
     REGSTDFUNCTION("+",
         itta(stt{
             construct_type(tid_integral, NULL, gc),
@@ -77,6 +77,12 @@ STDFUNCTIONS(15,
             construct_type(tid_string, NULL, gc)
         }, 2, gc),
         create_function(io__puts, NULL, 1, NULL, 0, gc));
+    REGSTDFUNCTION("putsln",
+        itta(stt{
+            construct_type(tid_atom, NULL, gc),
+            construct_type(tid_string, NULL, gc)
+        }, 2, gc),
+        create_function(io__putsln, NULL, 1, NULL, 0, gc));
 
     REGSTDFUNCTION("to-string",
         itta(stt{
@@ -97,6 +103,17 @@ STDFUNCTIONS(15,
             construct_type(tid_string, NULL, gc)
         }, 2, gc),
         create_function(string__to_integral, NULL, 1, NULL, 0, gc));
+
+    REGSTDFUNCTION("to-tuple",
+        itta(stt{
+            construct_type_sized(tid_tuple, itta(stt{
+                construct_type(tid_alpha, NULL, gc)
+            }, 1, gc), INFINITY, gc),
+            construct_type(tid_list, itta(stt{
+                construct_type(tid_alpha, NULL, gc)
+            }, 1, gc), gc)
+        }, 2, gc),
+        create_function(list__to_tuple, NULL, 1, NULL, 0, gc));
 
     REGSTDFUNCTION("{}",
         itta(stt{
@@ -124,12 +141,15 @@ STDFUNCTIONS(15,
         }, 3, gc),
         create_function(var__set, NULL, 2, NULL, 0, gc));
 
-    // REGSTDFUNCTION("fn",
-    //     create_function(
-    //         function__define, NULL, 3,
-    //         (const unsigned []) {tid_atom, tid_list, tid_saved}, 3,
-    //         NULL, 0,
-    //         scope->gc));
+    REGSTDFUNCTION("fn",
+        itta(stt{
+            construct_type_sized(tid_fn, itta(stt{
+                construct_type(tid_alpha, NULL, gc)
+            }, 1, gc), INFINITY, gc),
+            construct_type(tid_atom, NULL, gc),
+            construct_type(tid_saved, NULL, gc),
+        }, 3, gc),
+        create_function(function__define_without_args, NULL, 2, NULL, 0, gc));
 
     REGSTDFUNCTION("$",
         itta(stt{
@@ -164,12 +184,30 @@ STDFUNCTIONS(15,
             }, 1, gc), gc)
         }, 2, gc),
         create_function(list__tail, NULL, 1, NULL, 0, gc));
-    // REGSTDFUNCTION("list:unzip",
-    //     create_function(
-    //         list__unzip, NULL, 1,
-    //         (const unsigned []) {tid_list}, 1,
-    //         NULL, 0,
-    //         scope->gc));
+    REGSTDFUNCTION("unzip",
+        itta(stt{
+            construct_type(tid_tuple, itta(stt{
+                construct_type(tid_list, itta(stt{
+                    construct_type(tid_alpha, NULL, gc)
+                }, 1, gc), gc),
+                construct_type(tid_list, itta(stt{
+                    construct_type(tid_alpha, NULL, gc)
+                }, 1, gc), gc),
+            }, 2, gc), gc),
+            construct_type(tid_list, itta(stt{
+                construct_type(tid_alpha, NULL, gc)
+            }, 1, gc), gc)
+        }, 2, gc),
+        create_function(list__tail, NULL, 1, NULL, 0, gc));
+
+    REGSTDFUNCTION("length",
+        itta(stt{
+            construct_type(tid_integral, NULL, gc),
+            construct_type(tid_list, itta(stt{
+                construct_type(tid_alpha, NULL, gc)
+            }, 1, gc), gc)
+        }, 2, gc),
+        create_function(list__tail, NULL, 1, NULL, 0, gc));
 
     REGSTDFUNCTION("call",
         itta(stt{

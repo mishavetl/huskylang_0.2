@@ -1,11 +1,14 @@
 -- functions usage example --
 
-fn bar, ([]), ; r 'hello'.
-fn foo, ([]), ; {} (1 + 1), (2 + 2), (bar).
-fn baz, ([]), ; 1 + 1.
+fn bar, : r 'hello'.
+fn foo, : {} (1 + 1), (2 + 2), (bar).
+fn baz, : 1 + 1.
 
-io:puts (atom:to_string ((type (foo)) # 1))
+-- puts (to-string ((type (foo)) # 1))
 
-io:puts (bar)
-io:puts (number:to_string ((foo) # 1))
-io:puts ((foo) # 2)
+puts (bar)
+puts '\n'
+puts (to-string ((foo) # 1))
+puts '\n'
+puts ((foo) # 2)
+puts '\n'

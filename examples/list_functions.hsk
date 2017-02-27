@@ -1,9 +1,11 @@
 -- list functions example --
 
-def unzipped, (list:unzip ([] ({} 1, 'a'), ({} 2, 'b')))
+set unzipped, (unzip ([] ({} 1, 'a'), ({} 2, 'b')))
 
-io:puts ((($ unzipped) # 1) # 0) --> a
-io:puts ((($ unzipped) # 1) # 1) --> b
+putsln ((to-tuple (($ unzipped) # 1)) # 0) --> a
+putsln ((to-tuple (($ unzipped) # 1)) # 1) --> b
 
-io:puts (number:to_string ((($ unzipped) # 0) # 0)) --> 1
-io:puts (number:to_string ((($ unzipped) # 0) # 1)) --> 2
+putsln (to-string ((to-tuple (($ unzipped) # 0)) # 0) --> 1
+putsln (to-string ((to-tuple (($ unzipped) # 0)) # 1) --> 2
+
+putsln (to-string (length ([] 1, 2, 3, 4, 5))) --> 5

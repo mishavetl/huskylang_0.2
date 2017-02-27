@@ -28,7 +28,7 @@ performer__funcall(
     scope_.parent = scope;
 
     if (tree->is_saved[i]) {
-        ret->type = construct_type(tid_saved, NULL, &gc);
+        ret->type = construct_type(tid_saved, NULL, scope->gc);
         ret->value.tree = call_tree__duplicate(tree, scope->gc);
         ret->value.tree->start = i;
         ret->value.tree->is_saved[i] = false;
@@ -86,6 +86,13 @@ performer__funcall(
         fn = var_fn->value;
         if (fn->type->single != tid_fn) continue;
 
+        if (fn) {
+            if (size == 0 && fn->type->multsize == 1) {
+                fn_found = true;
+                break;
+            }
+        }
+
         for (x = 0; x < size; ++x) {
             fn_found = true;
             struct type **types = fn->type->multiple;
@@ -135,6 +142,7 @@ performer__funcall(
         
         data_t *copy = copy_data(ret, scope);
 
+        ret->type = copy->type;
         ret->value = copy->value;
     } else if (fn->value.fn->callback(args, size, ret, scope) <= 0 && scope->error) {
         if (!scope->error->token) {

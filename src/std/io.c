@@ -21,6 +21,17 @@ int io__puts(data_t **args, argc_t argc, data_t *ret, scope_t *scope)
     return 0;
 }
 
+int io__putsln(data_t **args, argc_t argc, data_t *ret, scope_t *scope)
+{
+    checkf(io__puts(args, argc, ret, scope) == 0, "Failed to output a string.");
+    puts("");
+
+    return 0;
+
+error:
+    return -1;
+}
+
 // int io__gets(data_t **args, argc_t argc, data_t *ret, scope_t *scope)
 // {
 //     (void) argc;
