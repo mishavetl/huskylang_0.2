@@ -24,12 +24,13 @@
 #include "std/var.c"
 #include "std/io.c"
 #include "std/atom.c"
+#include "std/real.c"
 // #include "std/number.c"
 #include "std/saved.c"
 #include "std/function.c"
 // #include "std/error.c"
 // #include "std/type.c"
-// #include "std/boolean.c"
+#include "std/boolean.c"
 #include "std/string.c"
 #include "std/integral.c"
 
@@ -37,21 +38,51 @@
  * Register
  */
 
-STDFUNCTIONS(21,
+STDFUNCTIONS(41,
     REGSTDFUNCTION("+",
         itta(stt{
             construct_type(tid_integral, NULL, gc),
             construct_type(tid_integral, NULL, gc),
-            construct_type(tid_integral, NULL, gc)
-        }, 3, gc),
-        create_function(integral__plus, NULL, 2, NULL, 0, gc));
+        }, 2, gc),
+        create_function(integral__plus, NULL, INFINITY_ARGS, NULL, 0, gc));
+    REGSTDFUNCTION("+",
+        itta(stt{
+            construct_type(tid_real, NULL, gc),
+            construct_type(tid_real, NULL, gc),
+        }, 2, gc),
+        create_function(real__plus, NULL, INFINITY_ARGS, NULL, 0, gc));
     REGSTDFUNCTION("+",
         itta(stt{
             construct_type(tid_string, NULL, gc),
             construct_type(tid_string, NULL, gc),
-            construct_type(tid_string, NULL, gc)
-        }, 3, gc),
-        create_function(string__add, NULL, 2, NULL, 0, gc));
+        }, 2, gc),
+        create_function(string__add, NULL, INFINITY_ARGS, NULL, 0, gc));
+
+    REGSTDFUNCTION("-",
+        itta(stt{
+            construct_type(tid_integral, NULL, gc),
+            construct_type(tid_integral, NULL, gc),
+        }, 2, gc),
+        create_function(integral__minus, NULL, INFINITY_ARGS, NULL, 0, gc));
+    REGSTDFUNCTION("-",
+        itta(stt{
+            construct_type(tid_real, NULL, gc),
+            construct_type(tid_real, NULL, gc),
+        }, 2, gc),
+        create_function(real__minus, NULL, INFINITY_ARGS, NULL, 0, gc));
+
+    REGSTDFUNCTION("*",
+        itta(stt{
+            construct_type(tid_integral, NULL, gc),
+            construct_type(tid_integral, NULL, gc),
+        }, 2, gc),
+        create_function(integral__multiply, NULL, INFINITY_ARGS, NULL, 0, gc));
+    REGSTDFUNCTION("*",
+        itta(stt{
+            construct_type(tid_real, NULL, gc),
+            construct_type(tid_real, NULL, gc),
+        }, 2, gc),
+        create_function(real__multiply, NULL, INFINITY_ARGS, NULL, 0, gc));
     // REGSTDFUNCTION("-",
     //     create_function(
     //         minus, NULL, INFINITY_ARGS,
@@ -65,12 +96,12 @@ STDFUNCTIONS(21,
     //         NULL, 0,
     //         scope->gc));
 
-    // REGSTDFUNCTION("io:gets",
-    //     create_function(
-    //         io__gets, NULL, 0,
-    //         (const unsigned []) {}, 0,
-    //         NULL, 0,
-    //         scope->gc));
+    REGSTDFUNCTION("gets",
+        itta(stt{
+            construct_type(tid_string, NULL, gc)
+        }, 1, gc),
+        create_function(io__gets, NULL, 0, NULL, 0, gc));
+
     REGSTDFUNCTION("puts",
         itta(stt{
             construct_type(tid_atom, NULL, gc),
@@ -93,6 +124,12 @@ STDFUNCTIONS(21,
     REGSTDFUNCTION("to-string",
         itta(stt{
             construct_type(tid_string, NULL, gc),
+            construct_type(tid_real, NULL, gc)
+        }, 2, gc),
+        create_function(real__to_string, NULL, 1, NULL, 0, gc));
+    REGSTDFUNCTION("to-string",
+        itta(stt{
+            construct_type(tid_string, NULL, gc),
             construct_type(tid_atom, NULL, gc)
         }, 2, gc),
         create_function(atom__to_string, NULL, 1, NULL, 0, gc));
@@ -103,6 +140,19 @@ STDFUNCTIONS(21,
             construct_type(tid_string, NULL, gc)
         }, 2, gc),
         create_function(string__to_integral, NULL, 1, NULL, 0, gc));
+    REGSTDFUNCTION("to-integral",
+        itta(stt{
+            construct_type(tid_integral, NULL, gc),
+            construct_type(tid_real, NULL, gc)
+        }, 2, gc),
+        create_function(real__to_integral, NULL, 1, NULL, 0, gc));
+
+    REGSTDFUNCTION("to-real",
+        itta(stt{
+            construct_type(tid_real, NULL, gc),
+            construct_type(tid_integral, NULL, gc)
+        }, 2, gc),
+        create_function(integral__to_real, NULL, 1, NULL, 0, gc));
 
     REGSTDFUNCTION("to-tuple",
         itta(stt{
@@ -115,7 +165,7 @@ STDFUNCTIONS(21,
         }, 2, gc),
         create_function(list__to_tuple, NULL, 1, NULL, 0, gc));
 
-    REGSTDFUNCTION("{}",
+    REGSTDFUNCTION("|",
         itta(stt{
             construct_type_sized(tid_tuple, itta(stt{
                 construct_type(tid_alpha, NULL, gc)
@@ -165,6 +215,29 @@ STDFUNCTIONS(21,
             construct_type(tid_saved, NULL, gc),
         }, 4, gc),
         create_function(function__define, NULL, 3, NULL, 0, gc));
+
+    REGSTDFUNCTION("&",
+        itta(stt{
+            construct_type_sized(tid_fn, itta(stt{
+                construct_type(tid_alpha, NULL, gc)
+            }, 1, gc), INFINITY, gc),
+            construct_type(tid_saved, NULL, gc),
+        }, 2, gc),
+        create_function(function__create, NULL, 1, NULL, 0, gc));
+    REGSTDFUNCTION("&",
+        itta(stt{
+            construct_type_sized(tid_fn, itta(stt{
+                construct_type(tid_alpha, NULL, gc)
+            }, 1, gc), INFINITY, gc),
+            construct_type(tid_list, itta(stt{
+                construct_type(tid_tuple, itta(stt{
+                    construct_type(tid_atom, NULL, gc),
+                    construct_type(tid_alpha, NULL, gc)
+                }, 2, gc), gc)
+            }, 1, gc), gc),
+            construct_type(tid_saved, NULL, gc),
+        }, 3, gc),
+        create_function(function__create, NULL, 2, NULL, 0, gc));
 
     REGSTDFUNCTION("$",
         itta(stt{
@@ -259,23 +332,71 @@ STDFUNCTIONS(21,
     //         NULL, 0,
     //         scope->gc));
 
-    // REGSTDFUNCTION("->",
-    //     create_function(
-    //         boolean__if, NULL, 2,
-    //         (const unsigned []) {tid_atom, tid_saved}, 2,
-    //         NULL, 0,
-    //         scope->gc));
-    // REGSTDFUNCTION("|->",
-    //     create_function(
-    //         boolean__continuous_if, NULL, 3,
-    //         (const unsigned []) {tid_atom, tid_saved, tid_saved}, 3,
-    //         NULL, 0,
-    //         scope->gc));
+    REGSTDFUNCTION("->",
+        itta(stt{
+            construct_type(tid_alpha, NULL, gc),
+            construct_type(tid_atom, NULL, gc),
+            construct_type(tid_saved, NULL, gc),
+            construct_type(tid_saved, NULL, gc)
+        }, 4, gc),
+        create_function(boolean__continuous_if, NULL, 3, NULL, 0, gc));
+    REGSTDFUNCTION("->",
+        itta(stt{
+            construct_type(tid_alpha, NULL, gc),
+            construct_type(tid_atom, NULL, gc),
+            construct_type(tid_saved, NULL, gc)
+        }, 3, gc),
+        create_function(boolean__if, NULL, 2, NULL, 0, gc));
 
-    // REGSTDFUNCTION("=",
-    //     create_function(
-    //         number__equal, NULL, 2,
-    //         (const unsigned []) {tid_integral, tid_integral}, 2,
-    //         NULL, 0,
-    //         scope->gc));
+    REGSTDFUNCTION("=",
+        itta(stt{
+            construct_type(tid_atom, NULL, gc),
+            construct_type(tid_integral, NULL, gc),
+            construct_type(tid_integral, NULL, gc)
+        }, 3, gc),
+        create_function(integral__equal, NULL, 2, NULL, 0, gc));
+    REGSTDFUNCTION("=",
+        itta(stt{
+            construct_type(tid_atom, NULL, gc),
+            construct_type(tid_real, NULL, gc),
+            construct_type(tid_real, NULL, gc)
+        }, 3, gc),
+        create_function(real__equal, NULL, 2, NULL, 0, gc));
+    REGSTDFUNCTION("=",
+        itta(stt{
+            construct_type(tid_atom, NULL, gc),
+            construct_type(tid_string, NULL, gc),
+            construct_type(tid_string, NULL, gc)
+        }, 3, gc),
+        create_function(string__equal, NULL, 2, NULL, 0, gc));
+
+    REGSTDFUNCTION(">",
+        itta(stt{
+            construct_type(tid_atom, NULL, gc),
+            construct_type(tid_integral, NULL, gc),
+            construct_type(tid_integral, NULL, gc)
+        }, 3, gc),
+        create_function(integral__bigger, NULL, 2, NULL, 0, gc));
+    REGSTDFUNCTION(">",
+        itta(stt{
+            construct_type(tid_atom, NULL, gc),
+            construct_type(tid_real, NULL, gc),
+            construct_type(tid_real, NULL, gc)
+        }, 3, gc),
+        create_function(real__bigger, NULL, 2, NULL, 0, gc));
+
+    REGSTDFUNCTION("<",
+        itta(stt{
+            construct_type(tid_atom, NULL, gc),
+            construct_type(tid_integral, NULL, gc),
+            construct_type(tid_integral, NULL, gc)
+        }, 3, gc),
+        create_function(integral__smaller, NULL, 2, NULL, 0, gc));
+    REGSTDFUNCTION("<",
+        itta(stt{
+            construct_type(tid_atom, NULL, gc),
+            construct_type(tid_real, NULL, gc),
+            construct_type(tid_real, NULL, gc)
+        }, 3, gc),
+        create_function(real__smaller, NULL, 2, NULL, 0, gc));
 )

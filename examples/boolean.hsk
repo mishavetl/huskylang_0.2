@@ -1,8 +1,44 @@
 -- boolean examples --
 
-yes -> ; io:puts 'always'.
-no -> ; io:puts 'never'.
+yes -> {
+    putsln 'always'
+}
+no -> {
+    putsln 'never'
+}
 
-yes |-> ; io:puts 'always'., ;
-    yes -> ; io:puts 'never'.
-.
+yes -> {
+    putsln 'always'
+}, {
+    yes -> {
+        putsln 'never'
+    }
+}
+
+fn compare, ([] (a | _alpha), (b | _alpha)), {
+    (($ a) = ($ b)) -> {
+        r 'equal'
+    }, {
+        (($ a) > ($ b)) -> {
+            r 'bigger'
+        }, {
+            r 'smaller'
+        }
+    }
+}
+
+putsln ((1 + 1) compare 2) --> equal
+putsln (1.1 compare 1.1) --> equal
+
+putsln (1.1 compare 1.19) --> smaller
+
+putsln (1 compare 2) --> smaller
+putsln (3 compare 1) --> bigger
+
+('abc' = 'abc') -> {
+    putsln 'yes'
+}
+
+('abc' = 'ab1') -> {
+    putsln 'no'
+}

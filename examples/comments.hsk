@@ -1,5 +1,5 @@
 -- prints one
-io:puts (number:to_string 1) -- 1
+putsln (to-string 1) -- 1
 
 -- prints two
-io:puts (number:to_string 2) -- 2
+putsln (to-string 2) -- 2

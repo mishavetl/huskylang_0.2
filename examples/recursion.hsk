@@ -1,18 +1,26 @@
 -- recursion example --
 
-def print, (([] (n {} num)) & ; []
-    (io:puts (number:to_string ($ n))),
-    ((($ n) = 1) |->
-        ; r good.
-        , ; print (($ n) - 1).
-    ).
-)
-def factorial, (([] (n {} num)) & ;
-    ($ n) * (
-        (($ n) = 1) |-> ; r 1., ; factorial (($ n) - 1).
-    ).
-)
+set print, (([] (n | 0)) & { r
+    (putsln (to-string ($ n))),
+    ((($ n) = 1) ->
+        {
+            r good
+        }, {
+            print (($ n) - 1)
+        }
+    )
+})
 
-io:puts (number:to_string (factorial 5)) -- 120
+fn factorial, ([] (n | 0)),  {
+    ($ n) * (
+        (($ n) = 1) -> {
+            r 1
+        }, {
+            factorial (($ n) - 1)
+        }
+    )
+}
+
+putsln (to-string (factorial 5)) --> 120
 print 5
 

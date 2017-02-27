@@ -32,32 +32,32 @@ error:
     return -1;
 }
 
-// int io__gets(data_t **args, argc_t argc, data_t *ret, scope_t *scope)
-// {
-//     (void) argc;
-//     (void) args;
+int io__gets(data_t **args, argc_t argc, data_t *ret, scope_t *scope)
+{
+    (void) argc;
+    (void) args;
 
-//     ret->type = tid_string;
+    ret->type = construct_type(tid_string, NULL, scope->gc);
 
-//     char *string = NULL;
+    char *string = NULL;
 
-//     size_t i = 0;
-//     ssize_t count = getline(&string, &i, stdin);
-//     check(count > 0, "Error getting input.");
-//     check_mem(string);
+    size_t i = 0;
+    ssize_t count = getline(&string, &i, stdin);
+    check(count > 0, "Error getting input.");
+    check_mem(string);
 
-//     if (string[count - 1] == '\n') {
-//         string[count - 1] = '\0';
-//     }
+    if (string[count - 1] == '\n') {
+        string[count - 1] = '\0';
+    }
 
-//     gc_add(scope->gc, string);
-//     ret->value.string = string;
+    gc_add(scope->gc, string);
+    ret->value.string = string;
 
-//     return 0;
+    return 0;
 
-// error:
-//     return -1;
-// }
+error:
+    return -1;
+}
 
 // STDFUNCTION(io__putln,
 //     puts("");

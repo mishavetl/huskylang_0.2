@@ -1,6 +1,7 @@
 -- atom usage example --
 
-fn `print sum`, ([] (`number one` {} num), (`number two` {} num), (`number three` {} num)), ;
-    io:puts (number:to_string (+ ($ `number one`), ($ `number two`), ($ `number three`))).
+fn `print sum`, ([] (`number one` | 0), (`number two` | 0), (`number three` | 0)), {
+    putsln (to-string (+ ($ `number one`), ($ `number two`), ($ `number three`)))
+}
 
 `print sum` 1, 2, 3

@@ -1,8 +1,14 @@
 -- functions usage example --
 
-fn bar, : r 'hello'.
-fn foo, : {} (1 + 1), (2 + 2), (bar).
-fn baz, : 1 + 1.
+fn bar, {
+    r 'hello'
+}
+fn foo, {
+    t (1 + 1), (2 + 2), (bar)
+}
+fn baz, {
+    1 + 1
+}
 
 -- puts (to-string ((type (foo)) # 1))
 

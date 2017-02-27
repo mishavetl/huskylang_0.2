@@ -1,4 +1,0 @@
--- functions can accept no arguments --
-
-puts (to-string (puts '\n'))
-puts '\n'

@@ -36,6 +36,8 @@ token_t **tokenizer__string(const token_config_t *config, const char *str, int *
                 token->value = NULL;
                 token->linefrom = *line;
 
+                bool has_dot = false;
+
                 for (
                     real_pos = 0, pos = 0, started = 0;
                     (stat = config->check_functions[j](pos, str[i], started));
@@ -44,6 +46,11 @@ token_t **tokenizer__string(const token_config_t *config, const char *str, int *
                     if (str[i] == '\n') {
                         *line += 1;
                         i_line_start = i + 1;
+                    }
+
+                    if (str[i] == '.' && j == tok_num) {
+                        if (has_dot) sentinel("syntaxErr at %d:%ld", *line, i - i_line_start + 1);
+                        has_dot = true;
                     }
 
                     if (stat == TOKEN_CHAR_SKIP) {

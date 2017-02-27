@@ -1,7 +1,8 @@
 -- functions with args example --
 
-fn plus, ([] (foo {} _alpha), (bar {} _alpha)), :
-    ($ foo) + ($ bar).
+fn plus, ([] (foo | _alpha), (bar | _alpha)), {
+    ($ foo) + ($ bar)
+}
 
 putsln (to-string (2 plus 3))
 putsln ('a' + 'b')

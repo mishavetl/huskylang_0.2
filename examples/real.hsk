@@ -1,0 +1,6 @@
+-- real numbers usage example --
+
+putsln (to-string 1.0) --> 1.0
+putsln (to-string (- 1.2)) --> -1.2
+putsln (to-string (33.5 + 12.8)) --> 46.3
+putsln (to-string (33.5 + 1.2.8)) --> error

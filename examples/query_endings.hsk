@@ -1,12 +1,14 @@
 -- query endings --
 
-io:puts (hd ([]
+puts (hd ([]
     'foo',
     'bar'
 ))
 
-io:putln
+puts '\n' -- \
+alskjdflkasjd
 
-io:puts     \
-    'foo',  \
+
+puts \
+    'foo', \
     'bar'

@@ -53,3 +53,16 @@ int string__add(data_t **args, argc_t argc, data_t *ret, scope_t *scope)
     ret->value.string = strcat(str1, src2);
     return 0;
 }
+
+int string__equal(data_t **args, argc_t argc, data_t *ret, scope_t *scope)
+{
+    (void) argc;
+
+    ret->type = construct_type(tid_atom, NULL, scope->gc);
+    ret->value.atom = gc_add(scope->gc, strdup(
+            (strcmp(args[0]->value.string, args[1]->value.string) == 0) ? BOOLEAN_TRUE : BOOLEAN_FALSE
+        )
+    );
+    
+    return 0;
+}

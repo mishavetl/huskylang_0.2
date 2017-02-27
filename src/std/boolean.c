@@ -14,7 +14,7 @@ int boolean__if(data_t **args, argc_t argc, data_t *ret, scope_t *scope)
     if (atom_is_true(args[0]->value.atom)) {
         return performer__execute(args[1]->value.tree, scope, ret);
     } else {
-        ret->type = tid_atom;
+        ret->type = construct_type(tid_atom, NULL, scope->gc);
         ret->value.atom = gc_add(scope->gc, strdup("good"));
         check_mem(ret->value.atom);
     }

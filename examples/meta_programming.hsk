@@ -1,11 +1,11 @@
 -- husky meta programming example --
 
-def plus, +
-def print, io:puts
-def good, io:puts
+set plus, +
+set print, puts
+set good, puts
 
-($ (($ print) (number:to_string (1 ($ plus) 2)))) 'good'
+-- ($ (($ print) (number:to_string (1 ($ plus) 2)))) 'good'
 
--- 1 ($ +) 2
+1 ($ plus) 2
 
--- (atom:to_string foo) ($ print) (1 ($ +) 2), (atom:to_string bar)
+($ print) ((to-string foo) ($ plus) (1 ($ +) 2), (to-string bar))

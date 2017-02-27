@@ -26,8 +26,14 @@ int data_from_token(token_t *token, data_t *data, gc_t *gc)
     check_mem(data);
 
     if (token->type == tok_num) {
-        data->value.integral = atof(token->value);
-        data->type = construct_type(tid_integral, NULL, gc);
+        REAL_TYPE n = atof(token->value);
+        if ((INTEGRAL_TYPE) n == n) {
+            data->type = construct_type(tid_integral, NULL, gc);
+            data->value.integral = n;
+        } else {
+            data->type = construct_type(tid_real, NULL, gc);
+            data->value.real = n;
+        }
     } else if (token->type == tok_atom) {
         data->value.atom = token->value;
         if (strcmp(token->value, "_alpha") == 0) 

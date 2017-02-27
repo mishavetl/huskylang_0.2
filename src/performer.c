@@ -115,10 +115,8 @@ performer__funcall(
         goto error;
     }
 
-    for (x = 0; x < size; ++x) {
-        if (fn->value.fn->argnames_size > x) {
-            setvar(&scope_, fn->value.fn->argnames[x], args[x]);
-        }
+    for (x = 0; x < fn->value.fn->argnames_size; ++x) {
+        setvar(&scope_, fn->value.fn->argnames[x], args[x]);
     }
 
     if (fn->value.fn->tree) {

@@ -1,10 +1,17 @@
 -- saved function calls example --
-set foo, : puts 'foobar'.
-set bar, :
-    puts 'foobarbaz'.
+set foo, {
+    puts 'foobar'
+}
+set bar, {
+    puts 'foobarbaz'
+}
 
-set baz, : [] foo, bar, baz.
-set quux, : r 'good'.
+set baz, {
+    [] foo, bar, baz
+}
+set quux, {
+    r 'good'
+}
 
 call ($ bar)
 puts '\n'

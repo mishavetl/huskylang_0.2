@@ -1,7 +1,0 @@
--- error exception example --
-
--- Test that it excepts the error.
-error:except_string ; foo - 2.
-
--- Then print it.
-io:puts (error:except_string ; foo - 2.)
