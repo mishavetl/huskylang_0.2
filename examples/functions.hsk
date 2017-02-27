@@ -4,7 +4,7 @@ fn bar, {
     r 'hello'
 }
 fn foo, {
-    t (1 + 1), (2 + 2), (bar)
+    | (1 + 1), (2 + 2), (bar)
 }
 fn baz, {
     1 + 1
