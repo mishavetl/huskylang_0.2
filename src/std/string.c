@@ -48,7 +48,7 @@ int string__add(data_t **args, argc_t argc, data_t *ret, scope_t *scope)
     (void) argc;
     ret->type = construct_type(tid_string, NULL, scope->gc);
     const char *src1 = args[0]->value.string, *src2 = args[1]->value.string;
-    char *str1 = gc_add(scope->gc, malloc(sizeof(src1) + sizeof(src2) + 1));
+    char *str1 = gc_add(scope->gc, malloc(strlen(src1) + strlen(src2) + 1));
     strcpy(str1, src1);
     ret->value.string = strcat(str1, src2);
     return 0;

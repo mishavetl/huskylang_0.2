@@ -64,10 +64,10 @@ int get_query(int interactive, int *line, char **buffer, size_t *size, FILE *f)
 
             (*buffer)[i] = c;
             (*buffer)[i + 1] = '\0';
-            ++i;
+
             if (c == '-' && prev == '-') {
-                i -= 2;
-                (*buffer)[i] = '\0';
+                --i;
+                (*buffer)[i + 1] = '\0';
                 is_comment = true;
             } else if (stack && stack_last < (ssize_t) stack_size && stack_last >= 0) {
                 if (stack[stack_last] == '\'') {
@@ -117,13 +117,13 @@ int get_query(int interactive, int *line, char **buffer, size_t *size, FILE *f)
             *line += 1;
 
             if (prev == '\\') {
-                (*buffer)[i] = '\0';
-                (*buffer)[--i] = '\n';
+                *buffer = realloc(*buffer, sizeof(char) * (++(*size)));
+                (*buffer)[i + 1] = '\0';
+                (*buffer)[i] = '\n';
             } else if (stack_last == -1) {
                 if (is_comment) {
-                    *buffer = realloc(*buffer, sizeof(char) * (++(*size)));
-                    (*buffer)[i + 1] = '\0';
-                    (*buffer)[i] = '\n';
+                    (*buffer)[i] = '\0';
+                    // (*buffer)[i] = '\n';
                 }
                 break;
             } else {
@@ -132,6 +132,8 @@ int get_query(int interactive, int *line, char **buffer, size_t *size, FILE *f)
         }
 
         prev = c;
+
+        if (!is_comment) ++i;
     }
 
     if (stack_last != -1) {
