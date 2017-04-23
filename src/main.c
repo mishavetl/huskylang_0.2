@@ -100,7 +100,7 @@ int main(int argc, char *argv[])
                 performer__execute(&tree, &scope, &ret);
 
                 if (scope.error) {
-                    printf(
+                    fprintf(stderr,
                         "Traceback %s: '%s' at token '%s' on line %ld-%ld, column %ld\n",
                         scope.error->name, scope.error->msg,
                         scope.error->token->value,
