@@ -2,10 +2,8 @@
 
 set plus, +
 set print, puts
-set good, puts
+-- set good, puts
 
--- ($ (($ print) (number:to_string (1 ($ plus) 2)))) 'good'
+($ print) (to-string (1 ($ plus) 2))
 
-1 ($ plus) 2
-
-($ print) ((to-string foo) ($ plus) (1 ($ +) 2), (to-string bar))
+-- ($ print) ((to-string foo) ($ plus) (1 ($ plus) 2), (to-string bar))

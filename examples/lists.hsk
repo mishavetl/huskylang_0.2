@@ -1,6 +1,6 @@
 -- lists usage example --
 
-set do-things, (([] (list | ([] ' ')), (emptyList | ([] ' '))) & { r
+set do-things, (([] (list | ([] '')), (emptyList | ([] ''))) & { r
     (putsln (hd (tl ($ list)))),
     (putsln (hd ($ emptyList)))
 })

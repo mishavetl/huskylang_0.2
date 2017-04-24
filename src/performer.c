@@ -49,7 +49,7 @@ performer__funcall(
             "Failed to construct data."
         );
     }
-
+    
     if (data->type->single != tid_atom) {
         scope->error = gc_add(scope->gc, malloc(sizeof(huserr_t)));
         scope->error->name = "typeErr";
@@ -57,6 +57,7 @@ performer__funcall(
         scope->error->token = tree->tokens[i];
         goto error;
     }
+    
     const char *fnname = data->value.atom;
 
     for (j = 1; tree->map[i][j] != TERMINATE_MAPV; j++) {
