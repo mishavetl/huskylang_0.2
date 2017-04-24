@@ -89,6 +89,8 @@ int main(int argc, char *argv[])
             break;
         }
 
+        // debug("'%s'", buffer);
+
         if (strlen(buffer) > 1) {
             tokens = tokenizer__string(&token_config, buffer, &line_saved);
             checkf(tokens, "Tokenization failed.");

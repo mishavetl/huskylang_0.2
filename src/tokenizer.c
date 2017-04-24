@@ -16,6 +16,7 @@ token_t **tokenizer__string(const token_config_t *config, const char *str, int *
         if (str[i] == '\n') {
             *line += 1;
             i_line_start = i + 1;
+            continue;
         }
 
         if (str[i] == '-' && str[i + 1] == '-') {

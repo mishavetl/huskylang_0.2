@@ -9,6 +9,8 @@ puts '\n' -- \
 alskjdflkasjd
 
 puts \
-    'foo', \
-    'bar'
+    ('foo' + \
+    'bar\n')
 
+-- \
+ hello

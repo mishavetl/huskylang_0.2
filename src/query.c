@@ -38,7 +38,7 @@ int stack_pop(char **stack, ssize_t *last)
 int get_query(int interactive, int *line, char **buffer, size_t *size, FILE *f)
 {
     int ret = 0, is_comment = false;
-    int c, prev = '\0';
+    int c, prev = '\0', prev_saved = '\\';
     char *stack = NULL;
     size_t stack_size = 0, i, j;
     ssize_t stack_last = -1;
@@ -57,7 +57,7 @@ int get_query(int interactive, int *line, char **buffer, size_t *size, FILE *f)
         if (c == '\r') continue;
 
         if (!is_comment) {
-            if (*size <= i + 1) {
+            if (*size <= i + 3) {
                 *size += 128;
                 *buffer = realloc(*buffer, sizeof(char) * (*size));
             }
@@ -67,8 +67,10 @@ int get_query(int interactive, int *line, char **buffer, size_t *size, FILE *f)
 
             if (c == '-' && prev == '-') {
                 --i;
-                (*buffer)[i + 1] = '\0';
+                (*buffer)[i] = '\0';
+                --i;
                 is_comment = true;
+                prev = (i > 0) ? (*buffer)[i] : '\0';
             } else if (stack && stack_last < (ssize_t) stack_size && stack_last >= 0) {
                 if (stack[stack_last] == '\'') {
                     if (c == '\'') {
@@ -116,22 +118,37 @@ int get_query(int interactive, int *line, char **buffer, size_t *size, FILE *f)
             linestart_i = i;
             *line += 1;
 
-            if (prev == '\\') {
+            if (prev_saved == '\\') {
                 *buffer = realloc(*buffer, sizeof(char) * (++(*size)));
-                (*buffer)[i + 1] = '\0';
                 (*buffer)[i] = '\n';
+                (*buffer)[i + 1] = '\0';
+                if (prev == '\\') {
+                    (*buffer)[i - 1] = '\n';
+                    (*buffer)[i] = '\0';
+                    --i;
+                    
+                    if (i >= 0) {
+                        c = (*buffer)[i];
+                    }
+                }
             } else if (stack_last == -1) {
                 if (is_comment) {
-                    (*buffer)[i] = '\0';
-                    // (*buffer)[i] = '\n';
+                    (*buffer)[i + 1] = '\n';
+                    (*buffer)[i + 2] = '\0';
                 }
                 break;
             } else {
+                (*buffer)[i] = '\n';
+                (*buffer)[i + 1] = '\0';                
                 is_comment = false;
             }
         }
 
-        prev = c;
+        if (!is_comment) {
+            prev = c;
+        }
+
+        prev_saved = c;
 
         if (!is_comment) ++i;
     }
