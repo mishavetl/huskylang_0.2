@@ -80,6 +80,10 @@ token_t **tokenizer__string(const token_config_t *config, const char *str, int *
                     real_pos++;
                 }
 
+                if (j == tok_string && !token->value) {
+                    token->value = malloc(sizeof(char) * 1);
+                }
+
                 token->value[real_pos] = '\0';
                 token->lineto = *line;
                 i--;

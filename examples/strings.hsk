@@ -1,3 +1,5 @@
 -- strings usage example --
 
 puts ('\\hello\\,\n\t\'world\'\n' + (to-string foobar))
+
+putsln ''
